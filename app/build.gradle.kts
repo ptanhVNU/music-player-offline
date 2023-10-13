@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.dev.musicplayer"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.dev.musicplayer"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -66,4 +66,13 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Navigation
+    val navVersion = "2.7.4"
+    implementation("androidx.navigation:navigation-compose:$navVersion")
+
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation("androidx.compose.material:material-icons-extended")
+
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
 }
