@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.LibraryMusic
 import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -30,7 +31,7 @@ import com.dev.musicplayer.navigation.Screen
 @Composable
 fun BottomBar(navController: NavHostController) {
 
-    val bottomNavItems = listOf<BottomNavItem>(
+    val bottomNavItems = listOf(
         BottomNavItem(
             title = "Songs",
             route = Screen.SongsScreen.route,
@@ -52,10 +53,10 @@ fun BottomBar(navController: NavHostController) {
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination;
+    val currentDestination = navBackStackEntry?.destination
 
     NavigationBar(
-        modifier = Modifier.height(105.dp)
+        modifier = Modifier.height(105.dp),
     ) {
         bottomNavItems.forEach { item ->
             AddItem(
@@ -85,8 +86,9 @@ fun RowScope.AddItem(
             Text(
                 text = item.title,
                 fontSize = 14.sp,
+                style = MaterialTheme.typography.bodyMedium
 
-                )
+            )
         },
 
 
@@ -106,5 +108,5 @@ fun RowScope.AddItem(
             )
         },
 
-    )
+        )
 }

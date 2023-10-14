@@ -28,7 +28,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            MusicPlayerTheme {
+            MusicPlayerTheme{
+
                 // change the system bar (nav bar and status bar) follow light/dark theme
                 ChangeSystemBarsTheme(!isSystemInDarkTheme())
 
