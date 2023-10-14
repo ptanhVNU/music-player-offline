@@ -23,12 +23,15 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         enableEdgeToEdge()
+
         setContent {
 
             MusicPlayerTheme {
+                // change the system bar (nav bar and status bar) follow light/dark theme
                 ChangeSystemBarsTheme(!isSystemInDarkTheme())
+
                 Surface(
                     modifier = Modifier
                         .windowInsetsPadding(
@@ -68,7 +71,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 
 }
 

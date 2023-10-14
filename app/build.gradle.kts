@@ -77,4 +77,11 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.33.2-alpha")
+
+    // coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
 }

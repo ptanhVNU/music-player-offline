@@ -6,11 +6,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.PlaylistPlay
 import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.LibraryMusic
 import androidx.compose.material.icons.outlined.MusicNote
-import androidx.compose.material.icons.outlined.PlaylistPlay
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -29,11 +29,6 @@ import com.dev.musicplayer.navigation.Screen
 
 @Composable
 fun BottomBar(navController: NavHostController) {
-//    val screen = listOf<Screen>(
-//        Screen.SongsScreen,
-//        Screen.PlaylistScreen,
-//        Screen.ImportScreen,
-//    )
 
     val bottomNavItems = listOf<BottomNavItem>(
         BottomNavItem(
@@ -45,8 +40,8 @@ fun BottomBar(navController: NavHostController) {
         BottomNavItem(
             title = "Playlist",
             route = Screen.PlaylistScreen.route,
-            selectedIcon = Icons.Filled.PlaylistPlay,
-            unselectedIcon = Icons.Outlined.PlaylistPlay,
+            selectedIcon = Icons.Filled.LibraryMusic,
+            unselectedIcon = Icons.Outlined.LibraryMusic,
         ),
         BottomNavItem(
             title = "Import",
@@ -85,6 +80,7 @@ fun RowScope.AddItem(
     NavigationBarItem(
 
         selected = isSelected,
+
         label = {
             Text(
                 text = item.title,
@@ -92,6 +88,8 @@ fun RowScope.AddItem(
 
                 )
         },
+
+
         onClick = {
             navController.navigate(item.route) {
                 popUpTo(navController.graph.findStartDestination().id)
@@ -107,5 +105,6 @@ fun RowScope.AddItem(
                 contentDescription = item.title,
             )
         },
+
     )
 }
