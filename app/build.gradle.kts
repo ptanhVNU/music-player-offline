@@ -1,6 +1,9 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    kotlin("kapt")
 }
 
 android {
@@ -30,11 +33,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -78,10 +81,25 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.33.2-alpha")
 
-    // coroutines
+    // Async
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-
     implementation("androidx.work:work-runtime-ktx:2.8.1")
+
+    val room_version = "2.5.2"
+
+    //noinspection GradleDependency
+    implementation("androidx.room:room-runtime:$room_version")
+    //noinspection GradleDependency
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    // To use Kotlin Symbol Processing (KSP)
+    ksp("androidx.room:room-compiler:$room_version")
+
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }
