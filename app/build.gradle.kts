@@ -88,15 +88,52 @@ dependencies {
 
     val room_version = "2.5.2"
 
-    //noinspection GradleDependency
     implementation("androidx.room:room-runtime:$room_version")
-    //noinspection GradleDependency
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-    // To use Kotlin Symbol Processing (KSP)
     ksp("androidx.room:room-compiler:$room_version")
 
     implementation("com.google.dagger:hilt-android:2.48")
-    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    ksp("com.google.dagger:hilt-android-compiler:2.48")
+
+    implementation("androidx.hilt:hilt-work:1.0.0")
+    // When using Kotlin.
+    ksp("androidx.hilt:hilt-compiler:1.0.0")
+
+    val lifecycle_version = "2.6.2"
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
+    // ViewModel utilities for Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version")
+    // Annotation processor
+    //noinspection LifecycleAnnotationProcessorWithJava8
+    ksp("androidx.lifecycle:lifecycle-compiler:$lifecycle_version")
+
+    // Load image and caching
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    ksp( "com.github.bumptech.glide:ksp:4.16.0" )
+
+    // play music
+    val media3_version = "1.1.1"
+
+    // For media playback using ExoPlayer
+    implementation("androidx.media3:media3-exoplayer:$media3_version")
+    // For building media playback UIs
+    implementation("androidx.media3:media3-ui:$media3_version")
+    // For exposing and controlling media sessions
+    implementation("androidx.media3:media3-session:$media3_version")
+
+    // For extracting data from media containers
+    implementation("androidx.media3:media3-extractor:$media3_version")
+    // For scheduling background operations using Jetpack Work's WorkManager with ExoPlayer
+    implementation("androidx.media3:media3-exoplayer-workmanager:$media3_version")
+
+    // For transforming media files
+    implementation("androidx.media3:media3-transformer:$media3_version")
+    // Common functionality for loading data
+    implementation("androidx.media3:media3-datasource:$media3_version")
+    // Common functionality used across multiple media libraries
+    implementation("androidx.media3:media3-common:$media3_version")
+
 }
 
 // Allow references to generated code
