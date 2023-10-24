@@ -126,6 +126,7 @@ dependencies {
     implementation("androidx.media3:media3-extractor:$media3_version")
     // For scheduling background operations using Jetpack Work's WorkManager with ExoPlayer
     implementation("androidx.media3:media3-exoplayer-workmanager:$media3_version")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
     // For transforming media files
     implementation("androidx.media3:media3-transformer:$media3_version")
