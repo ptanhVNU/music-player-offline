@@ -2,7 +2,6 @@ package com.dev.musicplayer.presentation.playlist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,13 +13,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,7 +31,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -60,6 +61,28 @@ fun PlusButton(icon: ImageVector, onClick: () -> Unit) {
         )
     }
 }
+
+@Composable
+fun SortButton(icon: ImageVector, onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier.width(150.dp).height(20.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.width(10.dp))
+            Icon(
+                imageVector = icon,
+                contentDescription = "Sort"
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = "Recently played"
+            )
+        }
+    }
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaylistScreen() {
@@ -83,7 +106,12 @@ fun PlaylistScreen() {
         mutableStateOf(false)
     }
     var textAdd by remember {
-        mutableStateOf("") }
+        mutableStateOf("")
+    }
+
+    var activeSort by remember {
+        mutableStateOf(false)
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -170,13 +198,19 @@ fun PlaylistScreen() {
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(16.dp))
+            SortButton(
+                icon = Icons.Default.Sort,
+                onClick = {
+                    activeSort = true;
+                }
+            )
             Scaffold(
             ) {
                 contentPadding->Box(
-                    modifier = Modifier.padding(contentPadding)
-                        .background(Color.Black)
-                        .fillMaxSize()
+                    modifier = Modifier.padding(contentPadding
                 )
+            )
                 if (showBottomSheet) {
                     ModalBottomSheet(
                         onDismissRequest = {
