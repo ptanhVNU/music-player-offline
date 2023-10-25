@@ -23,7 +23,7 @@ private const val NOTIFICATION_CHANNEL_ID = "notification channel id 1"
 
 class MusicNotificationManager @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val exoPlayer: ExoPlayer,
+     private val exoPlayer: ExoPlayer,
 ) {
     private val notificationManager: NotificationManagerCompat =
         NotificationManagerCompat.from(context)
