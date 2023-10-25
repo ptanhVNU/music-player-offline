@@ -12,15 +12,12 @@ import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.LibraryMusic
 import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -33,7 +30,7 @@ fun BottomBar(navController: NavHostController) {
 
     val bottomNavItems = listOf(
         BottomNavItem(
-            title = "Songs",
+            title = "Home",
             route = Screen.SongsScreen.route,
             selectedIcon = Icons.Filled.MusicNote,
             unselectedIcon = Icons.Outlined.MusicNote,
@@ -81,16 +78,6 @@ fun RowScope.AddItem(
     NavigationBarItem(
 
         selected = isSelected,
-
-        label = {
-            Text(
-                text = item.title,
-                fontSize = 14.sp,
-                style = MaterialTheme.typography.bodyMedium
-
-            )
-        },
-
 
         onClick = {
             navController.navigate(item.route) {
