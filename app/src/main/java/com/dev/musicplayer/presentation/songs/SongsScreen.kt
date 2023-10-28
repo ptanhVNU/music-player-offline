@@ -1,6 +1,5 @@
 package com.dev.musicplayer.presentation.songs
 
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PlayCircle
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
@@ -36,12 +35,9 @@ fun SongsScreen() {
     // Create the ExoPlayer.
     val player = ExoPlayer.Builder(context).build()
 
-    val mp3Path = "assets/audio/audio.mp3"
-
     Scaffold(
         topBar = {
             TopAppBar(
-
                 title = {
                     Text(
                         text = "Songs",
@@ -50,6 +46,15 @@ fun SongsScreen() {
                     )
                 },
                 actions = {
+                    IconButton(
+                        onClick = { /*TODO*/ },
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(32.dp),
+                            imageVector = Icons.Rounded.Add,
+                            contentDescription =  "Add audio"
+                        )
+                    }
                     IconButton(
                         onClick = {
                             //TODO: Implement search bar
@@ -63,7 +68,6 @@ fun SongsScreen() {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MusicAppColorScheme.background)
-
             )
 
 
@@ -75,14 +79,7 @@ fun SongsScreen() {
             Box(modifier = Modifier
                 .size(width = 100.dp, height = 50.dp)
                 .clickable {
-                    val mediaItem = MediaItem.fromUri(Uri.parse(mp3Path))
-                    println("media item:${mediaItem.mediaId}")
-                    println("test")
-                    player.addMediaItem(mediaItem)
 
-                    player.prepare()
-
-                    player.play()
                 }
             ) {
                 Icon(

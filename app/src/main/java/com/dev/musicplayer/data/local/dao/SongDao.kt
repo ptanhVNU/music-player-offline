@@ -4,23 +4,22 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
-import com.dev.musicplayer.data.local.entities.SongEntity
+import com.dev.musicplayer.data.local.entities.Song
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SongDao {
 
     @Upsert
-    suspend fun insertSong(song: SongEntity)
+    suspend fun insertSong(song: Song)
 
     @Delete
-    suspend fun deleteSong(song: SongEntity)
+    suspend fun deleteSong(song: Song)
 
     @Query("SELECT * FROM song ORDER BY title ASC")
-    fun getSongsOrderedByName() : Flow<List<SongEntity>>
+    fun getSongsOrderedByName() : Flow<List<Song>>
 
-    @Query("SELECT * FROM song ORDER BY createdAt ASC")
-    fun getSongsOrderedByCreatedAt() : Flow<List<SongEntity>>
-
+    @Query("SELECT * FROM song ORDER BY created_at ASC")
+    fun getSongsOrderedByCreatedAt() : Flow<List<Song>>
 
 }
