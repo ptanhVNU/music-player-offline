@@ -1,12 +1,10 @@
 package com.dev.musicplayer.presentation.songs
 
-import androidx.compose.foundation.clickable
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.PlayCircle
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,11 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.exoplayer.ExoPlayer
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
@@ -29,11 +27,15 @@ import com.dev.musicplayer.ui.theme.MusicAppTypography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SongsScreen() {
-    val context = LocalContext.current
+fun SongsScreen(
+    viewModel: SongsViewModel = viewModel()
+) {
 
-    // Create the ExoPlayer.
-    val player = ExoPlayer.Builder(context).build()
+    val selectVideoLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent() // sử dụng để lấy nội dung từ thiết bị
+    ) { uri ->
+        uri?.let(viewModel::setSongFileName)
+    }
 
     Scaffold(
         topBar = {
@@ -47,12 +49,14 @@ fun SongsScreen() {
                 },
                 actions = {
                     IconButton(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            //TODO: impl add audio
+                        },
                     ) {
                         Icon(
                             modifier = Modifier.size(32.dp),
                             imageVector = Icons.Rounded.Add,
-                            contentDescription =  "Add audio"
+                            contentDescription = "Add audio"
                         )
                     }
                     IconButton(
@@ -73,23 +77,6 @@ fun SongsScreen() {
 
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier.padding(innerPadding),
-        ) {
-            Box(modifier = Modifier
-                .size(width = 100.dp, height = 50.dp)
-                .clickable {
-
-                }
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .align(Alignment.Center),
-                    imageVector = Icons.Outlined.PlayCircle,
-                    contentDescription = "Play Music",
-                )
-            }
-        }
+        Box() {}
     }
 }
