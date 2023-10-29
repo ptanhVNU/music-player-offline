@@ -10,11 +10,11 @@ data class Song(
     val songId: Long = 0,
     // playlistId
     val artistName: List<String>? = null,
-    val durationSeconds: Int,
+//    val durationSeconds: Int,
     val thumbnails: String? = null, // song image url
     val title: String, // required
-    val isLiked : Boolean = false,
-    @ColumnInfo(name = "created_at") val createdAt: Int, // in milliseconds
+    @ColumnInfo(name = "is_liked") val isLiked: Boolean = false,
+    @ColumnInfo(name = "created_at") val createdAt: Long, // in milliseconds
 ) {
     fun toggleLike() = copy(isLiked = !isLiked)
 }

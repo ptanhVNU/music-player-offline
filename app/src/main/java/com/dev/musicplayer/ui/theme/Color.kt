@@ -15,15 +15,17 @@ fun ColorScheme.compositedOnSurface(alpha: Float): Color {
 }
 
 val primaryColor = Color(0xFF1E2129)
+val secondaryColor = Color(0xFFC0C6DD)
+val onSecondary = Color(0xFF2A3042)
 val errorColor = Color(0xFFEA6D7E)
 val backgroundColor = Color(0xFF121316)
 
 val MusicAppColorScheme = darkColorScheme(
     primary = primaryColor,
-    onPrimary = Color.Black,
+    onPrimary = Color.White,
     background = backgroundColor,
-    secondary = primaryColor,
-    onSecondary = Color.Black,
+    secondary = secondaryColor,
+    onSecondary = onSecondary,
     error = errorColor,
     onError = Color.Black
 )

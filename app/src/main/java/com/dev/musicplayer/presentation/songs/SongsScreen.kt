@@ -1,7 +1,10 @@
 package com.dev.musicplayer.presentation.songs
 
+import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -20,21 +23,28 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.media3.exoplayer.ExoPlayer
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
+import java.time.LocalDate
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongsScreen(
-    viewModel: SongsViewModel = viewModel()
+    viewModel: SongsViewModel = viewModel(),
 ) {
 
-    val selectVideoLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent() // sử dụng để lấy nội dung từ thiết bị
-    ) { uri ->
-        uri?.let(viewModel::setSongFileName)
+    val context = LocalContext.current
+
+    val selectAudioLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents()
+        // sử dụng để lấy một hoặc nhiều nội dung từ thiết bị
+    ) {
+        viewModel.selectMusicFromStorage(it)
+
+        // show toast representation num of tracks added to app
+        Toast.makeText(context, "${it.size} tracks added", Toast.LENGTH_SHORT).show()
     }
 
     Scaffold(
@@ -42,7 +52,7 @@ fun SongsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Songs",
+                        text = "JetMusic",
                         fontWeight = FontWeight.Bold,
                         style = MusicAppTypography.headlineMedium,
                     )
@@ -50,7 +60,8 @@ fun SongsScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            //TODO: impl add audio
+                            selectAudioLauncher.launch("audio/*")
+
                         },
                     ) {
                         Icon(

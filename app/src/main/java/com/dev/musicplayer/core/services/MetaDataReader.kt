@@ -1,4 +1,4 @@
-package com.dev.musicplayer.services
+package com.dev.musicplayer.core.services
 
 import android.app.Application
 import android.net.Uri
@@ -7,6 +7,7 @@ import android.provider.MediaStore
 data class MetaData(
     val fileName: String,
 )
+
 
 interface MetaDataReader {
     fun getMetaDataFromUri(contentUri: Uri): MetaData?
@@ -25,14 +26,14 @@ class MetaDataReaderImpl(
             .query(
                 contentUri,
                 arrayOf(
-                    MediaStore.Audio.AudioColumns.DISPLAY_NAME
+                    MediaStore.Audio.Media.DISPLAY_NAME
                 ),
                 null,
                 null,
                 null,
             )
             ?.use { cursor ->
-                val index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
+                val index = cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME)
                 cursor.moveToFirst()
                 cursor.getString(index)
 

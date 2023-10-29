@@ -1,4 +1,4 @@
-package com.dev.musicplayer.services
+package com.dev.musicplayer.core.services
 
 import android.content.Intent
 import android.os.Build

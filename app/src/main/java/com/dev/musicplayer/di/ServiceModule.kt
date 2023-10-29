@@ -6,18 +6,22 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.ExoPlayer
-import com.dev.musicplayer.services.MetaDataReader
-import com.dev.musicplayer.services.MetaDataReaderImpl
+import com.dev.musicplayer.core.services.MetaDataReader
+import com.dev.musicplayer.core.services.MetaDataReaderImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ServiceComponent
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ServiceScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
-@InstallIn(ServiceComponent::class)
+@InstallIn(
+    ServiceComponent::class,
+    ViewModelComponent::class,
+)
 object ServiceModule {
 
     @ServiceScoped
@@ -52,7 +56,6 @@ object ServiceModule {
     fun provideMetaDataReader(app: Application): MetaDataReader {
         return MetaDataReaderImpl(app)
     }
-
 
 
 }

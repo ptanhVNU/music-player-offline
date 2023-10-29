@@ -14,6 +14,7 @@ import com.dev.musicplayer.data.local.entities.Song
         Playlist::class,
     ],
     version = 1,
+    exportSchema = true
 )
 @TypeConverters(Converters::class)
 abstract class MusicAppDatabase : RoomDatabase() {

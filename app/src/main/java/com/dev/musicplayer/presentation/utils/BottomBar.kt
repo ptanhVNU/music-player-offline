@@ -14,6 +14,7 @@ import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -24,6 +25,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.dev.musicplayer.navigation.Screen
+import com.dev.musicplayer.ui.theme.MusicAppColorScheme
+import com.dev.musicplayer.ui.theme.onSecondary
 
 @Composable
 fun BottomBar(navController: NavHostController) {
@@ -53,7 +56,7 @@ fun BottomBar(navController: NavHostController) {
     val currentDestination = navBackStackEntry?.destination
 
     NavigationBar(
-        modifier = Modifier.height(105.dp),
+        modifier = Modifier.height(95.dp)
     ) {
         bottomNavItems.forEach { item ->
             AddItem(
@@ -91,12 +94,17 @@ fun RowScope.AddItem(
 
         icon = {
             Icon(
-                modifier = Modifier.size(28.dp),
+                modifier = Modifier.size(25.dp),
                 imageVector = if (isSelected) item.selectedIcon else
                     item.unselectedIcon,
                 contentDescription = item.title,
             )
         },
 
+        colors = NavigationBarItemDefaults.colors(
+            selectedIconColor = MusicAppColorScheme.secondary,
+            indicatorColor = onSecondary,
         )
+
+    )
 }
