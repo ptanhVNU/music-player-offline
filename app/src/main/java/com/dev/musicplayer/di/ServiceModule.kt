@@ -1,25 +1,27 @@
 package com.dev.musicplayer.di
 
+import android.app.Application
 import android.content.Context
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DefaultDataSource
-import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.datasource.cache.NoOpCacheEvictor
-import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.ExoPlayer
+import com.dev.musicplayer.core.services.MetaDataReader
+import com.dev.musicplayer.core.services.MetaDataReaderImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ServiceComponent
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ServiceScoped
-import java.io.File
+import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
-@InstallIn(ServiceComponent::class)
+@InstallIn(
+    ServiceComponent::class,
+    ViewModelComponent::class,
+)
 object ServiceModule {
 
     @ServiceScoped
@@ -50,26 +52,10 @@ object ServiceModule {
 
 
     @Provides
-    @ServiceScoped
-    @UnstableApi
-    // Creates a `CacheDataSource.Factory` that uses a `SimpleCache` to cache data from a `DefaultDataSource.Factory`.
-    fun provideCacheDataSourceFactory(
-        @ApplicationContext context: Context,
-        dataSource: DefaultDataSource.Factory
-    ): CacheDataSource.Factory {
-        // Creates a `File` object for the cache directory.
-        val cacheDir = File(context.cacheDir, "media")
-
-        // Creates a `StandaloneDatabaseProvider` object to provide a database connection to the `SimpleCache`.
-        val databaseProvides = StandaloneDatabaseProvider(context)
-
-        // Creates a `SimpleCache` object to cache data.
-        val cache = SimpleCache(cacheDir, NoOpCacheEvictor(), databaseProvides)
-
-        return CacheDataSource.Factory().apply {
-            setCache(cache)
-            setUpstreamDataSourceFactory(dataSource)
-        }
+    @ViewModelScoped
+    fun provideMetaDataReader(app: Application): MetaDataReader {
+        return MetaDataReaderImpl(app)
     }
+
 
 }
