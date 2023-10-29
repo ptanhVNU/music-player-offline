@@ -1,4 +1,6 @@
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -6,11 +8,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dev.musicplayer.navigation.Screen
-import com.dev.musicplayer.presentation.import.ImportScreen
 import com.dev.musicplayer.presentation.playlist.PlaylistSCreen
 import com.dev.musicplayer.presentation.songs.SongsScreen
 import com.dev.musicplayer.presentation.songs.SongsViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BottomNavGraph(navController: NavHostController) {
     NavHost(
@@ -30,11 +32,11 @@ fun BottomNavGraph(navController: NavHostController) {
             PlaylistSCreen()
         }
 
-        composable(
-            route = Screen.ImportScreen.route
-        ) {
-            ImportScreen()
-        }
+//        composable(
+//            route = Screen.SettingScreen.route
+//        ) {
+//            SettingScreen()
+//        }
     }
 }
 

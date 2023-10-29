@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.LibraryMusic
 import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material3.Icon
@@ -44,12 +42,12 @@ fun BottomBar(navController: NavHostController) {
             selectedIcon = Icons.Filled.LibraryMusic,
             unselectedIcon = Icons.Outlined.LibraryMusic,
         ),
-        BottomNavItem(
-            title = "Import",
-            route = Screen.ImportScreen.route,
-            selectedIcon = Icons.Filled.Download,
-            unselectedIcon = Icons.Outlined.Download,
-        ),
+//        BottomNavItem(
+//            title = "Setting",
+//            route = Screen.SettingScreen.route,
+//            selectedIcon = Icons.Filled.Download,
+//            unselectedIcon = Icons.Outlined.Download,
+//        ),
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()

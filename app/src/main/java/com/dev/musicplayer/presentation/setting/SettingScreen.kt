@@ -1,4 +1,4 @@
-package com.dev.musicplayer.presentation.import
+package com.dev.musicplayer.presentation.setting
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,14 +26,14 @@ import com.dev.musicplayer.ui.theme.MusicAppTypography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ImportScreen() {
+fun SettingScreen() {
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Import Music",
+                        text = "Setting",
                         fontWeight = FontWeight.Bold,
                         style = MusicAppTypography.headlineMedium,
                     )
