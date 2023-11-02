@@ -1,5 +1,6 @@
 package com.dev.musicplayer.presentation.playlist
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,12 +44,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dev.musicplayer.R
 import kotlinx.coroutines.launch
 
 @Composable
@@ -67,7 +74,9 @@ fun PlusButton(icon: ImageVector, onClick: () -> Unit) {
 fun SortButton(icon: ImageVector, onClick: () -> Unit) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.width(150.dp).height(20.dp)
+        modifier = Modifier
+            .width(150.dp)
+            .height(20.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -81,6 +90,55 @@ fun SortButton(icon: ImageVector, onClick: () -> Unit) {
             Text(
                 text = "Recently played"
             )
+        }
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun albumScreen(image: Painter, albumName: String, artistName: String, songCount: Int, onClick: () -> Unit) {
+     Card (
+        onClick = onClick,
+        modifier = Modifier.background(Color.Black)
+            .fillMaxWidth()
+            .padding(all = 5.dp)
+     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = 20.dp)
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(50.dp),
+                painter = image,
+                contentDescription = "Meme"
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Column {
+                Text(
+                    text = albumName,
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Row {
+                    Text(
+                        text = artistName,
+                        color = Color.Gray,
+                        fontSize = 12.sp,
+                    )
+                    Text(
+                        text = " | ",
+                        color = Color.Gray,
+                        fontSize = 12.sp,
+                    )
+                    Text(
+                        text = songCount.toString() + " songs",
+                        color = Color.LightGray,
+                        fontSize = 12.sp,
+                    )
+                }
+            }
         }
     }
 }
@@ -146,7 +204,8 @@ fun PlaylistScreen() {
                     .heightIn(max = 200.dp)
             ) {
                 SearchBar(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(all = 10.dp)
                         .clip(RoundedCornerShape(10.dp)),
                     query = text,
@@ -207,52 +266,87 @@ fun PlaylistScreen() {
                     activeSort = true;
                 }
             )
-            Scaffold(
-            ) {
-                contentPadding->Box(
-                    modifier = Modifier.padding(contentPadding
-                )
-            )
-                if (showBottomSheet) {
-                    ModalBottomSheet(
-                        onDismissRequest = {
-                            showBottomSheet = false
-                        },
-                        sheetState = sheetState
-                    ) {
-                        Column (
-                            modifier = Modifier.fillMaxWidth().padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            TextField(
-                                modifier = Modifier.clip(RoundedCornerShape(15.dp)),
-                                value = textAdd,
-                                onValueChange = {
-                                    textAdd = it
-                                },
-                                placeholder = {
-                                    Text(text = "Name of playlist")
-                                },
-                                label = {
-                                    Text("")
-                                }
-                            )
-                            Spacer(modifier = Modifier.height(15.dp))
-                            Button(
-                                onClick = {
-                                    scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                        if (!sheetState.isVisible) {
-                                            showBottomSheet = false
-                                        }
-                                    }
-                                }
-                            ) {
-                                Text("Submit")
-                            }
-                        }
+            Spacer(modifier = Modifier.height(16.dp))
+            Column() {
+                albumScreen(
+                    image = painterResource(id = R.drawable.meme),
+                    albumName = "Album1",
+                    artistName = "Artist",
+                    songCount = 10,
+                    onClick = {
                     }
-                }
+                )
+                albumScreen(
+                    image = painterResource(id = R.drawable.meme),
+                    albumName = "Album2",
+                    artistName = "Artist",
+                    songCount = 15,
+                    onClick = {
+                    }
+                )
+                albumScreen(
+                    image = painterResource(id = R.drawable.meme),
+                    albumName = "Album3",
+                    artistName = "Artist",
+                    songCount = 20,
+                    onClick = {
+                    }
+                )
+                albumScreen(
+                    image = painterResource(id = R.drawable.meme),
+                    albumName = "Album4",
+                    artistName = "Artist",
+                    songCount = 25,
+                    onClick = {
+                    }
+                )
             }
+//            Scaffold(
+//            ) {
+//                contentPadding->Box(
+//                    modifier = Modifier.padding(contentPadding
+//                )
+//            )
+//                if (showBottomSheet) {
+//                    ModalBottomSheet(
+//                        onDismissRequest = {
+//                            showBottomSheet = false
+//                        },
+//                        sheetState = sheetState
+//                    ) {
+//                        Column (
+//                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+//                            horizontalAlignment = Alignment.CenterHorizontally
+//                        ) {
+//                            TextField(
+//                                modifier = Modifier.clip(RoundedCornerShape(15.dp)),
+//                                value = textAdd,
+//                                onValueChange = {
+//                                    textAdd = it
+//                                },
+//                                placeholder = {
+//                                    Text(text = "Name of playlist")
+//                                },
+//                                label = {
+//                                    Text("")
+//                                }
+//                            )
+//                            Spacer(modifier = Modifier.height(15.dp))
+//                            Button(
+//                                onClick = {
+//                                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+//                                        if (!sheetState.isVisible) {
+//                                            showBottomSheet = false
+//                                        }
+//                                    }
+//                                }
+//                            ) {
+//                                Text("Submit")
+//                            }
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 }
