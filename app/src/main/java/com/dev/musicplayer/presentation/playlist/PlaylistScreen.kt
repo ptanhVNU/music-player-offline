@@ -45,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
@@ -84,6 +85,7 @@ fun SortButton(icon: ImageVector, onClick: () -> Unit) {
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
+@Preview
 @Composable
 fun PlaylistScreen() {
     var text by remember {
