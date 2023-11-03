@@ -1,4 +1,4 @@
-package com.dev.musicplayer.presentation.songs
+package com.dev.musicplayer.presentation.home
 
 import android.net.Uri
 import android.os.Build
@@ -12,14 +12,17 @@ import com.dev.musicplayer.core.services.MetaDataReader
 import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.data.local.reposity.MusicRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.time.Instant
 import javax.inject.Inject
-
+data class HomeViewState (
+    val songs: List<Song> = emptyList()
+)
 
 @HiltViewModel
-class SongsViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val metaDataReader: MetaDataReader,
     private val musicRepository: MusicRepository,
@@ -32,10 +35,15 @@ class SongsViewModel @Inject constructor(
     private var _songEntity: MutableLiveData<Song> = MutableLiveData()
     val songEntity: LiveData<Song> = _songEntity
 
-    private var _listSong: MutableLiveData<List<Song>> = MutableLiveData()
-    val listTrack: LiveData<List<Song>> = _listSong
+    private var _listSong: MutableStateFlow<List<Song>> = MutableStateFlow(arrayListOf())
+    val listSong: Flow<List<Song>> = _listSong
 
     val listJob: MutableStateFlow<ArrayList<Song>> = MutableStateFlow(arrayListOf())
+
+    init {
+        getLocalSongs()
+
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun selectMusicFromStorage(uris: List<Uri>) {
@@ -63,10 +71,12 @@ class SongsViewModel @Inject constructor(
     fun getLocalSongs() {
         viewModelScope.launch {
             musicRepository.getAllSongs().collect {
-                _listSong.postValue(it)
+                _listSong.value = it
             }
+
         }
     }
 
 
 }
+

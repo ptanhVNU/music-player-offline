@@ -8,9 +8,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dev.musicplayer.navigation.Screen
+import com.dev.musicplayer.presentation.home.HomeScreen
+import com.dev.musicplayer.presentation.home.HomeViewModel
 import com.dev.musicplayer.presentation.playlist.PlaylistSCreen
-import com.dev.musicplayer.presentation.songs.SongsScreen
-import com.dev.musicplayer.presentation.songs.SongsViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -22,8 +22,8 @@ fun BottomNavGraph(navController: NavHostController) {
         composable(
             route = Screen.SongsScreen.route
         ) {
-            val viewModel = hiltViewModel<SongsViewModel>()
-            SongsScreen(viewModel)
+            val viewModel = hiltViewModel<HomeViewModel>()
+            HomeScreen(viewModel)
         }
 
         composable(

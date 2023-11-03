@@ -17,7 +17,7 @@ class MusicRepository @Inject constructor(
 
     suspend fun deleteSong(song: Song) = songStore.deleteSong(song)
 
-    fun getAllSongs() = songStore.getLikedSongs()
+    fun getAllSongs() = songStore.getAllSongs()
 
     fun getSongsOrderedByName() = songStore.getSongsOrderedByName()
 
