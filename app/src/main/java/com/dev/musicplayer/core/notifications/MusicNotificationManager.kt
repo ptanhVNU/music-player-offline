@@ -1,4 +1,4 @@
-package com.dev.musicplayer.notifications
+package com.dev.musicplayer.core.notifications
 
 import android.app.Notification
 import android.app.NotificationChannel

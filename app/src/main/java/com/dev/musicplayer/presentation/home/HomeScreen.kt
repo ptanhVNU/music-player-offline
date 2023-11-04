@@ -71,6 +71,7 @@ fun HomeScreen(
     ) {
         viewModel.selectMusicFromStorage(it)
         // show toast representation num of tracks added to app
+        // TODO: handle event from database if added success else show toast
         if (it.isNotEmpty()) {
             Toast.makeText(context, "${it.size} tracks added", Toast.LENGTH_SHORT).show()
         }
@@ -78,9 +79,9 @@ fun HomeScreen(
 
     /// get all songs
     val allSong by viewModel.listSong.collectAsState(initial = listOf())
+    println("size all song: ${allSong.size}")
 
     // scroll controller
-
 
     Scaffold(
         topBar = {
@@ -124,16 +125,36 @@ fun HomeScreen(
         }
     ) { paddingValues ->
         val scrollState = rememberLazyListState()
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize().padding(paddingValues),
-            state = scrollState,
-            contentPadding = PaddingValues(8.dp),
+        if (allSong.isEmpty())
+            Text(text = "Thêm bài hát đầu tiên vào ứng dụng của bạn ")
+        else
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                state = scrollState,
+                contentPadding = PaddingValues(8.dp),
 //            verticalArrangement = Arrangement.Center,
-        ) {
-           items(allSong) {
-               data -> Text(modifier = Modifier.padding(10.dp),text = data.title)
-           }
-        }
+            ) {
+                items(
+                    allSong,
+                    key = { it.songId }
+                ) { item ->
+                    SongItem(
+                        item = item,
+                        modifier = Modifier.fillParentMaxWidth(),
+                        onItemClicked = {
+
+                        }
+                    )
+//                Text(text = data.title)
+                }
+
+                //TODO: Implement UI item songs
+            }
     }
 }
+// khi  bấm vào play nhạc => cần trả về uri
+
+
+

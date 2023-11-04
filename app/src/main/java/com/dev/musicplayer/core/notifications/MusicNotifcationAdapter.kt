@@ -1,4 +1,4 @@
-package com.dev.musicplayer.notifications
+package com.dev.musicplayer.core.notifications
 
 import android.app.PendingIntent
 import android.content.Context

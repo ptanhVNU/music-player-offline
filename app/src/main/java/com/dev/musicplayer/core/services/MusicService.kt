@@ -7,16 +7,18 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import com.dev.musicplayer.notifications.MusicNotificationManager
+import com.dev.musicplayer.core.notifications.MusicNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MusicService : MediaSessionService() {
 
+    @Inject
     lateinit var mediaSession: MediaSession
 
-
-    lateinit var notificationManager: MusicNotificationManager
+    @Inject
+     lateinit var notificationManager: MusicNotificationManager
 
     @RequiresApi(Build.VERSION_CODES.O)
     @UnstableApi

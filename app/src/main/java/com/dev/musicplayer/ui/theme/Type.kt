@@ -16,6 +16,7 @@ private val Montserrat = FontFamily(
 )
 
 val MusicAppTypography = Typography(
+
     displayLarge = TextStyle(
         fontFamily = Montserrat,
         fontSize = 96.sp,
@@ -66,6 +67,13 @@ val MusicAppTypography = Typography(
         fontSize = 14.sp,
         fontWeight = FontWeight.Medium,
         lineHeight = 17.sp,
+        letterSpacing = 0.1.sp
+    ),
+    titleSmall = TextStyle(
+        fontFamily = Montserrat,
+        fontSize = 12.sp,
+        fontWeight = FontWeight.W400,
+        lineHeight = 14.sp,
         letterSpacing = 0.1.sp
     ),
     bodyLarge = TextStyle(
