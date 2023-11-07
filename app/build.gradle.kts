@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.dev.musicplayer"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -121,6 +121,10 @@ dependencies {
     // Load image and caching
     implementation("com.github.bumptech.glide:glide:4.16.0")
     ksp( "com.github.bumptech.glide:ksp:4.16.0" )
+    implementation ("com.google.accompanist:accompanist-permissions:0.32.0")
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.3.0")
 
     // play music
     val media3_version = "1.1.1"

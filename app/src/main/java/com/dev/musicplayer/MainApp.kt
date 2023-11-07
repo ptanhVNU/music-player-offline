@@ -12,7 +12,9 @@ import com.dev.musicplayer.presentation.utils.BottomBar
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainApp() {
+fun MainApp(
+    startService: () -> Unit,
+) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -20,7 +22,7 @@ fun MainApp() {
             BottomBar(navController = navController)
         },
     ) {
-        BottomNavGraph(navController = navController)
+        BottomNavGraph(navController = navController, startService = startService)
     }
 }
 

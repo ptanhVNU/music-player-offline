@@ -20,21 +20,16 @@ import dagger.hilt.android.scopes.ViewModelScoped
     ViewModelComponent::class,
 )
 object AppModule {
-
-
-
     @Provides
     @ServiceScoped
     fun provideDataSourceFactory(
         @ApplicationContext context: Context
     ) = DefaultDataSource.Factory(context)
 
-
     @Provides
     @ViewModelScoped
     fun provideMetaDataReader(app: Application): MetaDataReader {
         return MetaDataReaderImpl(app)
     }
-
 
 }

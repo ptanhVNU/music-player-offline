@@ -1,7 +1,7 @@
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -12,18 +12,43 @@ import com.dev.musicplayer.presentation.home.HomeScreen
 import com.dev.musicplayer.presentation.home.HomeViewModel
 import com.dev.musicplayer.presentation.playlist.PlaylistScreen
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun BottomNavGraph(navController: NavHostController) {
+fun BottomNavGraph(
+    navController: NavHostController,
+    startService: () -> Unit,
+) {
+
     NavHost(
         navController = navController,
-        startDestination = Screen.SongsScreen.route,
+        startDestination = Screen.HomeScreen.route,
     ) {
+
+
         composable(
-            route = Screen.SongsScreen.route
+            route = Screen.HomeScreen.route
         ) {
-            val viewModel = hiltViewModel<HomeViewModel>()
-            HomeScreen(viewModel)
+
+            val homeViewModel = hiltViewModel<HomeViewModel>()
+            val songs by homeViewModel.listSong.collectAsState(initial = emptyList())
+
+            HomeScreen(
+//                audioViewModel = audioViewModel,
+//                progress = audioViewModel.progress,
+//                onProgress = { audioViewModel.onUiEvents(UIEvents.SeekTo(it)) },
+//                isAudioPlaying = audioViewModel.isPlaying,
+                songs = songs,
+//                currentPlayingAudio = audioViewModel.currentSelectedAudio,
+//                onStart = {
+//                    audioViewModel.onUiEvents(UIEvents.PlayPause)
+//                },
+//                onItemClick = {
+//                    audioViewModel.onUiEvents(UIEvents.SelectedAudioChange(it))
+//                    startService()
+//                },
+//                onNext = {
+//                    audioViewModel.onUiEvents(UIEvents.SeekToNext)
+//                }
+            )
         }
 
         composable(
@@ -34,10 +59,12 @@ fun BottomNavGraph(navController: NavHostController) {
 
 //        composable(
 //            route = Screen.SettingScreen.route
+
 //        ) {
 //            SettingScreen()
 //        }
     }
+
 }
 
 data class BottomNavItem(

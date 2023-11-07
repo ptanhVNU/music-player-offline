@@ -2,6 +2,8 @@ package com.dev.musicplayer.data.local.reposity
 
 import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.data.local.store.SongStore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -9,15 +11,23 @@ import javax.inject.Singleton
 class MusicRepository @Inject constructor(
     private val songStore: SongStore,
 
-) {
+    ) {
     // songs
-    suspend fun insertSong(song: Song)  {
-        return songStore.insertSong(song)
+    suspend fun insertSong(song: Song) = withContext(Dispatchers.IO) {
+        songStore.insertSong(song)
     }
 
-    suspend fun deleteSong(song: Song) = songStore.deleteSong(song)
+    suspend fun deleteSong(song: Song) = withContext(
+        Dispatchers.IO
+    ) {
+        songStore.deleteSong(song)
+    }
 
-    fun getAllSongs() = songStore.getAllSongs()
+    suspend fun getAllSongs() = withContext(
+        Dispatchers.IO
+    ) {
+        songStore.getAllSongs()
+    }
 
     fun getSongsOrderedByName() = songStore.getSongsOrderedByName()
 

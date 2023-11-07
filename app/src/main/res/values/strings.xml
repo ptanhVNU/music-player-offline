@@ -4,7 +4,7 @@
 
     <string name="library">Your library</string>
     <string name="song">Songs</string>
-
+    <string name="notification_channel_name">Music Playback Notification</string>
     <string name="cd_search">Search</string>
     <string name="cd_account">Account</string>
     <string name="cd_add">Add</string>

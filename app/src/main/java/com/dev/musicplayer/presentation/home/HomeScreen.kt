@@ -1,16 +1,12 @@
 package com.dev.musicplayer.presentation.home
 
-import android.os.Build
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
@@ -24,7 +20,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,17 +32,27 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = viewModel(),
+    homeViewModel: HomeViewModel = viewModel(),
+//    audioViewModel: AudioViewModel = viewModel(),
+//    progress: Float,
+//    onProgress: (Float) -> Unit,
+//    isAudioPlaying: Boolean,
+//    currentPlayingAudio: Song,
+    songs: List<Song>,
+//    onStart: () -> Unit,
+//    onItemClick: (Int) -> Unit,
+//    onNext: () -> Unit,
 ) {
     val context = LocalContext.current
+
     var lifecycle by remember {
         mutableStateOf(Lifecycle.Event.ON_CREATE)
     }
@@ -63,25 +68,15 @@ fun HomeScreen(
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
-
     /// select audio
     val selectAudioLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents()
         // sử dụng để lấy một h oặc nhiều nội dung từ thiết bị
     ) {
-        viewModel.selectMusicFromStorage(it)
-        // show toast representation num of tracks added to app
-        // TODO: handle event from database if added success else show toast
-        if (it.isNotEmpty()) {
-            Toast.makeText(context, "${it.size} tracks added", Toast.LENGTH_SHORT).show()
-        }
+        homeViewModel.selectMusicFromStorage(it)
     }
 
-    /// get all songs
-    val allSong by viewModel.listSong.collectAsState(initial = listOf())
-    println("size all song: ${allSong.size}")
 
-    // scroll controller
 
     Scaffold(
         topBar = {
@@ -97,7 +92,6 @@ fun HomeScreen(
                     IconButton(
                         onClick = {
                             selectAudioLauncher.launch("audio/*")
-
                         },
                     ) {
                         Icon(
@@ -120,41 +114,33 @@ fun HomeScreen(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MusicAppColorScheme.background)
             )
-
-
         }
-    ) { paddingValues ->
+    ) {
         val scrollState = rememberLazyListState()
-        if (allSong.isEmpty())
+        if (songs.isEmpty())
             Text(text = "Thêm bài hát đầu tiên vào ứng dụng của bạn ")
         else
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(it),
                 state = scrollState,
-                contentPadding = PaddingValues(8.dp),
-//            verticalArrangement = Arrangement.Center,
             ) {
-                items(
-                    allSong,
-                    key = { it.songId }
-                ) { item ->
+                itemsIndexed(
+                    songs,
+                ) { index, item ->
                     SongItem(
                         item = item,
                         modifier = Modifier.fillParentMaxWidth(),
                         onItemClicked = {
-
+//                            onItemClick(index)
                         }
                     )
-//                Text(text = data.title)
                 }
-
-                //TODO: Implement UI item songs
             }
     }
 }
-// khi  bấm vào play nhạc => cần trả về uri
+
 
 
 

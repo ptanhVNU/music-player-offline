@@ -1,14 +1,15 @@
 package com.dev.musicplayer.presentation.home
 
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import com.dev.musicplayer.core.services.MetaDataReader
+import com.dev.musicplayer.core.services.MusicServiceHandler
 import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.data.local.reposity.MusicRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,17 +21,15 @@ import kotlinx.coroutines.launch
 import java.time.Instant
 import javax.inject.Inject
 
-data class HomeViewState(
-    val songs: List<Song> = emptyList()
-)
-
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
+    val player: ExoPlayer,
+    private val musicServiceHandler: MusicServiceHandler,
     private val metaDataReader: MetaDataReader,
     private val musicRepository: MusicRepository,
 ) : ViewModel() {
-    val id: MutableLiveData<Long> = MutableLiveData()
+
 
     private val _selectedSongFileName = MutableLiveData<String>()
     private val selectedSongFileName: LiveData<String> get() = _selectedSongFileName
@@ -45,9 +44,11 @@ class HomeViewModel @Inject constructor(
 
     init {
         fetchSongs()
+
+//        player.prepare()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     fun selectMusicFromStorage(uris: List<Uri>) {
         for (uri: Uri in uris) {
             println("uri: ${uri.toString()}")
@@ -65,28 +66,40 @@ class HomeViewModel @Inject constructor(
                 if (_songEntity.value != null) {
                     insertSong(_songEntity.value!!)
                 }
-                fetchSongs()
+//                fetchSongs()
             }
         }
+
+
     }
 
     private fun insertSong(song: Song) {
         viewModelScope.launch {
             musicRepository.insertSong(song)
         }
+
     }
 
-     fun fetchSongs() {
+     private fun fetchSongs() {
         viewModelScope.launch {
             musicRepository.getAllSongs().catch { exception -> println(exception) }.collect {
-                _listSong.value = if (it.isNullOrEmpty()) emptyList<Song>() else it
-                if (it != null) {
-                    println("size: ${it.size}")
-                }
+                _listSong.value = if (it.isNullOrEmpty()) emptyList() else it
             }
 
         }
     }
+
+    private fun setMediaItems() {
+        listSong.value.map { audio ->
+            MediaItem.fromUri(audio.uri)
+        }.also {
+            musicServiceHandler.setMediaItemList(it)
+        }
+
+    }
+
+
+
 
 
 }

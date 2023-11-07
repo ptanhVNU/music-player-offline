@@ -1,6 +1,8 @@
 package com.dev.musicplayer.di
 
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
@@ -11,6 +13,7 @@ import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.dev.musicplayer.MainActivity
 import com.dev.musicplayer.R
 import com.dev.musicplayer.core.common.DB_NAME
 import com.dev.musicplayer.core.notifications.MusicNotificationManager
@@ -34,7 +37,6 @@ object LocalServiceModule {
     @Singleton
     fun provideMusicAppDatabase(
         @ApplicationContext context: Context,
-
         ): MusicAppDatabase = Room.databaseBuilder(
         context,
         MusicAppDatabase::class.java,
@@ -78,7 +80,10 @@ object LocalServiceModule {
         @ApplicationContext context: Context,
         audioAttributes: AudioAttributes,
     ) : ExoPlayer = ExoPlayer.Builder(context)
+        .setWakeMode(C.WAKE_MODE_LOCAL)
         .setAudioAttributes(audioAttributes, true)
+        .setSeekForwardIncrementMs(5000)
+        .setSeekBackIncrementMs(5000)
         .setHandleAudioBecomingNoisy(true)
         .setTrackSelector(DefaultTrackSelector(context))
         .build()
@@ -89,7 +94,11 @@ object LocalServiceModule {
     fun provideMediaSession(
         @ApplicationContext context: Context,
         player: ExoPlayer,
-    ): MediaSession = MediaSession.Builder(context, player).build()
+    ): MediaSession = MediaSession.Builder(context, player).setSessionActivity(
+        PendingIntent.getActivity(context, 0, Intent(context, MainActivity::class.java),
+            PendingIntent.FLAG_IMMUTABLE
+        )
+    ).build()
 
     @Provides
     @Singleton
