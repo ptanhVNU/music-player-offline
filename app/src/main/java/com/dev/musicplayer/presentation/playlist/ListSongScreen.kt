@@ -45,45 +45,6 @@ import androidx.compose.ui.unit.sp
 import androidx.palette.graphics.Palette
 import com.dev.musicplayer.R
 
-@Composable
-fun ReturnButton(icon: ImageVector, onClick: () -> Unit) {
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier.size(50.dp)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = "Return"
-        )
-    }
-}
-
-@Composable
-fun StartButton(icon: ImageVector, onClick: () -> Unit) {
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier.size(50.dp).background(Color.White, shape = CircleShape)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = "Start"
-        )
-    }
-}
-
-@Composable
-fun SettingButton(icon: ImageVector, onClick: () -> Unit) {
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier.size(50.dp)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = "Setting"
-        )
-    }
-}
-
 @Preview
 @Composable
 fun ListSongScreen() {
