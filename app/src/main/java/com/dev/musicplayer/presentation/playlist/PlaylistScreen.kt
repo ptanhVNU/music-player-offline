@@ -385,8 +385,8 @@ fun PlaylistScreen() {
                 itemsIndexed(
                     items = albumsState,
                     key = { _, item -> item.hashCode() }
-                ) { _, emailContent ->
-                    albumItem(emailContent, onRemove = albumViewModel::removeItem)
+                ) { _, albumContent ->
+                    albumItem(albumContent, onRemove = albumViewModel::removeItem)
                 }
             }
             Scaffold(
@@ -438,3 +438,4 @@ fun PlaylistScreen() {
         }
     }
 }
+

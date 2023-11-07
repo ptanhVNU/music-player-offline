@@ -46,7 +46,10 @@ class AlbumViewModel : ViewModel() {
             Album(ID = 4,imageResource = R.drawable.meme, albumName = "Album 4", artistName = "Artist", songCount = 25),
             Album(ID = 5,imageResource = R.drawable.meme, albumName = "Album 5", artistName = "Artist", songCount = 30),
             Album(ID = 6,imageResource = R.drawable.meme, albumName = "Album 6", artistName = "Artist", songCount = 30),
-            Album(ID = 7,imageResource = R.drawable.meme, albumName = "Album 7", artistName = "Artist", songCount = 30)
+            Album(ID = 7,imageResource = R.drawable.meme, albumName = "Album 7", artistName = "Artist", songCount = 30),
+            Album(ID = 8,imageResource = R.drawable.meme, albumName = "Album 8", artistName = "Artist", songCount = 30),
+            Album(ID = 9,imageResource = R.drawable.meme, albumName = "Album 9", artistName = "Artist", songCount = 30),
+            Album(ID = 10,imageResource = R.drawable.meme, albumName = "Album 10", artistName = "Artist", songCount = 30)
         )
         return albums
     }
