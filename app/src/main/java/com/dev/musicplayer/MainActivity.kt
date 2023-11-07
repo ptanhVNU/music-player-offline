@@ -7,59 +7,45 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import com.dev.musicplayer.ui.theme.MusicPlayerTheme
+import com.dev.musicplayer.ui.theme.MusicAppColorScheme
+import com.dev.musicplayer.ui.theme.MusicAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        // This app draws behind the system bars, so we want to handle fitting system windows
+//        WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
-
         setContent {
+            MusicAppTheme {
 
-            MusicPlayerTheme {
-                // change the system bar (nav bar and status bar) follow light/dark theme
                 ChangeSystemBarsTheme(!isSystemInDarkTheme())
-
                 Surface(
-                    modifier = Modifier
-                        .windowInsetsPadding(
-                            WindowInsets.statusBars
-                        ),
+
                 ) {
-                    MainScreen()
+                    MainApp()
                 }
 
 
             }
         }
+
+
     }
     @Composable
     private fun ChangeSystemBarsTheme(lightTheme: Boolean) {
-        val barColor = MaterialTheme.colorScheme.background.toArgb()
+        val barColor = MusicAppColorScheme.background.toArgb()
         val navBarColor = Color.Transparent.toArgb()
         LaunchedEffect(lightTheme) {
-            if (lightTheme) {
-                enableEdgeToEdge(
-                    statusBarStyle = SystemBarStyle.light(
-                        barColor, barColor,
-                    ),
-                    navigationBarStyle = SystemBarStyle.light(
-                        navBarColor, barColor,
-                    ),
-                )
-            } else {
+
                 enableEdgeToEdge(
                     statusBarStyle = SystemBarStyle.dark(
                         barColor,
@@ -68,10 +54,9 @@ class MainActivity : ComponentActivity() {
                         navBarColor,
                     ),
                 )
-            }
+
         }
     }
-
 }
 
 

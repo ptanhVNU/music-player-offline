@@ -1,13 +1,13 @@
 package com.dev.musicplayer.navigation
 
 sealed class Screen(val route: String) {
-    object SongsScreen : Screen("songs_screen")
+    object SongsScreen : Screen("songs")
 
-    object PlaylistScreen : Screen("playlist_screen")
+    object PlaylistScreen : Screen("playlist")
 
-    object ImportScreen : Screen("import_screen")
+    object SettingScreen : Screen("setting")
 
-    object PlayerScreen: Screen("player_screen")
+    object PlayerScreen: Screen("player")
 }
 
 

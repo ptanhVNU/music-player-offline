@@ -9,7 +9,7 @@ import com.dev.musicplayer.presentation.utils.BottomBar
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreen() {
+fun MainApp() {
     val navController = rememberNavController()
 
     Scaffold(
