@@ -2,12 +2,13 @@ package com.dev.musicplayer.core.services
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Tracks
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaSession
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -17,13 +18,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class MusicServiceHandler @Inject constructor(
-    private val player: ExoPlayer,
-    var coroutineScope: LifecycleCoroutineScope,
+@UnstableApi
+class MusicServiceHandler constructor(
+    val player: ExoPlayer,
+    private val mediaSession: MediaSession,
+//    var coroutineScope: LifecycleCoroutineScope,
     private val context: Context,
 ) : Player.Listener {
 
@@ -274,7 +275,7 @@ class MusicServiceHandler @Inject constructor(
             job = null
         }
         Log.w("Service", "Check job: ${job?.isActive}")
-        Log.w("Service", "scope is active: ${coroutineScope.isActive}")
+
     }
 
     fun getPlayerDuration(): Long {

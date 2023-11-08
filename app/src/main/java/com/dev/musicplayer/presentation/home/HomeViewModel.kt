@@ -3,13 +3,9 @@ package com.dev.musicplayer.presentation.home
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
 import com.dev.musicplayer.core.services.MetaDataReader
-import com.dev.musicplayer.core.services.MusicServiceHandler
 import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.data.local.reposity.MusicRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,9 +19,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
-    val player: ExoPlayer,
-    private val musicServiceHandler: MusicServiceHandler,
     private val metaDataReader: MetaDataReader,
     private val musicRepository: MusicRepository,
 ) : ViewModel() {
@@ -88,19 +81,5 @@ class HomeViewModel @Inject constructor(
 
         }
     }
-
-    private fun setMediaItems() {
-        listSong.value.map { audio ->
-            MediaItem.fromUri(audio.uri)
-        }.also {
-            musicServiceHandler.setMediaItemList(it)
-        }
-
-    }
-
-
-
-
-
 }
 

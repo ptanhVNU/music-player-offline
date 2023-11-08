@@ -48,7 +48,7 @@ fun HomeScreen(
 //    currentPlayingAudio: Song,
     songs: List<Song>,
 //    onStart: () -> Unit,
-//    onItemClick: (Int) -> Unit,
+    onItemClick: (Int) -> Unit,
 //    onNext: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -133,7 +133,7 @@ fun HomeScreen(
                         item = item,
                         modifier = Modifier.fillParentMaxWidth(),
                         onItemClicked = {
-//                            onItemClick(index)
+                            onItemClick(index)
                         }
                     )
                 }

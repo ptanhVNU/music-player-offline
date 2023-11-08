@@ -9,9 +9,8 @@ import javax.inject.Singleton
 
 @Singleton
 class MusicRepository @Inject constructor(
-    private val songStore: SongStore,
-
-    ) {
+    private val songStore: SongStore
+) {
     // songs
     suspend fun insertSong(song: Song) = withContext(Dispatchers.IO) {
         songStore.insertSong(song)
@@ -23,18 +22,21 @@ class MusicRepository @Inject constructor(
         songStore.deleteSong(song)
     }
 
-    suspend fun getAllSongs() = withContext(
-        Dispatchers.IO
-    ) {
+    suspend fun getAllSongs() = withContext(Dispatchers.IO) {
         songStore.getAllSongs()
     }
 
-    fun getSongsOrderedByName() = songStore.getSongsOrderedByName()
+    suspend fun getSongsOrderedByName() = withContext(Dispatchers.IO) {
+        songStore.getSongsOrderedByName()
+    }
 
-    fun getSongsOrderedByCreatedAt() = songStore.getSongsOrderedByCreatedAt()
+    suspend fun getSongsOrderedByCreatedAt() = withContext(Dispatchers.IO) {
+        songStore.getSongsOrderedByCreatedAt()
+    }
 
-    fun getLikedSongs() = songStore.getLikedSongs()
-
+    suspend fun getLikedSongs() = withContext(Dispatchers.IO) {
+        songStore.getLikedSongs()
+    }
 
     // playlist
 
