@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -42,24 +43,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.dev.musicplayer.R
+import com.dev.musicplayer.data.local.entities.Playlist
+import com.dev.musicplayer.data.local.entities.Song
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-data class Album(
-    val ID: Int,
-    val imageResource: Int,
-    val albumName: String,
-    val artistName: String,
-    val songCount: Int
-)
-
 class AlbumViewModel : ViewModel() {
-    private val _albumState = MutableStateFlow(emptyList<Album>())
-    val albumState: StateFlow<List<Album>> = _albumState.asStateFlow()
+    private val _albumState = MutableStateFlow(emptyList<Playlist>())
+    val albumState: StateFlow<List<Playlist>> = _albumState.asStateFlow()
 
     init {
         _albumState.update {
@@ -73,75 +70,68 @@ class AlbumViewModel : ViewModel() {
         }
     }
 
-    fun removeItem(currentItem: Album) {
+    fun removeItem(currentItem: Playlist) {
         _albumState.update {
             val mutableList = it.toMutableList()
             mutableList.remove(currentItem)
             mutableList
         }
     }
-
-    private fun sampleAlbum(): List<Album> {
+    private fun sampleAlbum(): List<Playlist> {
         val albums = listOf(
-            Album(ID = 1, imageResource = R.drawable.meme, albumName = "Album 1", artistName = "Artist", songCount = 10),
-            Album(ID = 2,imageResource = R.drawable.meme, albumName = "Album 2", artistName = "Artist", songCount = 15),
-            Album(ID = 3,imageResource = R.drawable.meme, albumName = "Album 3", artistName = "Artist", songCount = 20),
-            Album(ID = 4,imageResource = R.drawable.meme, albumName = "Album 4", artistName = "Artist", songCount = 25),
-            Album(ID = 5,imageResource = R.drawable.meme, albumName = "Album 5", artistName = "Artist", songCount = 30),
-            Album(ID = 6,imageResource = R.drawable.meme, albumName = "Album 6", artistName = "Artist", songCount = 30),
-            Album(ID = 7,imageResource = R.drawable.meme, albumName = "Album 7", artistName = "Artist", songCount = 30),
-            Album(ID = 8,imageResource = R.drawable.meme, albumName = "Album 8", artistName = "Artist", songCount = 30),
-            Album(ID = 9,imageResource = R.drawable.meme, albumName = "Album 9", artistName = "Artist", songCount = 30),
-            Album(ID = 10,imageResource = R.drawable.meme, albumName = "Album 10", artistName = "Artist", songCount = 30)
+            Playlist(id = 1, thumbnail = "https://m.media-amazon.com/images/I/51XQrcwyhkL._UF1000,1000_QL80_.jpg", title = "Album 1", songs = listOf("Song1", "Song2", "Song3"), createdAt = 1),
+            Playlist(id = 2, thumbnail = "https://pics.craiyon.com/2023-05-30/ca4e47993f67455a98ec3b939df5c08c.webp", title = "Album 2", songs = listOf("Song1", "Song2", "Song3"), createdAt = 2),
+            Playlist(id = 3, thumbnail = "https://play-lh.googleusercontent.com/qEpilTvPX27gd0qvv9g2oyzCpYIIJSEtHMDbEXfvvItPMnudkeN01TzD5GO3iOCHByp9", title = "Album 3", songs = listOf("Song1", "Song2", "Song3"), createdAt = 3),
+            Playlist(id = 4, thumbnail = "https://pics.craiyon.com/2023-05-30/ca4e47993f67455a98ec3b939df5c08c.webp", title = "Album 4", songs = listOf("Song1", "Song2", "Song3"), createdAt = 4),
+            Playlist(id = 5, thumbnail = "https://m.media-amazon.com/images/I/51XQrcwyhkL._UF1000,1000_QL80_.jpg", title = "Album 5", songs = listOf("Song1", "Song2", "Song3"), createdAt = 5),
+            Playlist(id = 6, thumbnail = "https://pics.craiyon.com/2023-05-30/ca4e47993f67455a98ec3b939df5c08c.webp", title = "Album 6", songs = listOf("Song1", "Song2", "Song3"), createdAt = 6),
+            Playlist(id = 7, thumbnail = "https://play-lh.googleusercontent.com/qEpilTvPX27gd0qvv9g2oyzCpYIIJSEtHMDbEXfvvItPMnudkeN01TzD5GO3iOCHByp9", title = "Album 7", songs = listOf("Song1", "Song2", "Song3"), createdAt = 7),
+            Playlist(id = 8, thumbnail = "https://m.media-amazon.com/images/I/51XQrcwyhkL._UF1000,1000_QL80_.jpg", title = "Album 8", songs = listOf("Song1", "Song2", "Song3"), createdAt = 8),
+            Playlist(id = 9, thumbnail = "https://pics.craiyon.com/2023-05-30/ca4e47993f67455a98ec3b939df5c08c.webp", title = "Album 9", songs = listOf("Song1", "Song2", "Song3"), createdAt = 9),
+            Playlist(id = 10, thumbnail = "https://play-lh.googleusercontent.com/qEpilTvPX27gd0qvv9g2oyzCpYIIJSEtHMDbEXfvvItPMnudkeN01TzD5GO3iOCHByp9", title = "Album 10", songs = listOf("Song1", "Song2", "Song3"), createdAt = 10),
         )
         return albums
     }
 }
 @Composable
-fun albumScreen(album: Album, onClick: () -> Unit) {
+fun albumScreen(album: Playlist, onClick: () -> Unit) {
+    val navController = rememberNavController()
     Card (
         modifier = Modifier
             .background(Color.Black)
             .fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
             .clickable(onClick = onClick)
+//            {
+//                navHost.navigate(NavigationItem.DetailCycleNavigationItem.routeWithId(cycle.id))
+//            }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(all = 20.dp)
         ) {
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .size(50.dp),
-                painter = painterResource(id = album.imageResource),
-                contentDescription = "Meme"
+                model = album.thumbnail,
+                contentDescription = "Title Album"
             )
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(20.dp))
             Column {
                 Text(
-                    text = album.albumName,
+                    text = album.title,
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                 )
-                Row {
-                    Text(
-                        text = album.artistName,
-                        color = Color.Gray,
-                        fontSize = 12.sp,
-                    )
-                    Text(
-                        text = " | ",
-                        color = Color.Gray,
-                        fontSize = 12.sp,
-                    )
-                    Text(
-                        text = album.songCount.toString() + " songs",
-                        color = Color.LightGray,
-                        fontSize = 12.sp,
-                    )
-                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "${album.songs?.size ?: 0} songs",
+                    color = Color.LightGray,
+                    fontSize = 12.sp,
+                )
+
             }
         }
     }
@@ -180,8 +170,8 @@ fun DismissBackground(dismissState: DismissState) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun albumItem(
-    album: Album,
-    onRemove: (Album) -> Unit
+    album: Playlist,
+    onRemove: (Playlist) -> Unit
 ) {
     val context = LocalContext.current
     var show by remember { mutableStateOf(true) }

@@ -35,7 +35,7 @@ fun SortButton(icon: ImageVector, onClick: () -> Unit) {
     IconButton(
         onClick = onClick,
         modifier = Modifier
-            .width(150.dp)
+            .width(200.dp)
             .height(20.dp)
     ) {
         Row(
@@ -53,6 +53,79 @@ fun SortButton(icon: ImageVector, onClick: () -> Unit) {
         }
     }
 }
+
+@Composable
+fun EditTitleButton(icon: ImageVector, onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier
+            .width(200.dp)
+            .height(20.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.width(10.dp))
+            Icon(
+                imageVector = icon,
+                contentDescription = "Edit Title Album"
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = "Chỉnh sửa tiêu đề"
+            )
+        }
+    }
+}
+
+@Composable
+fun EditImageButton(icon: ImageVector, onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier
+            .width(200.dp)
+            .height(20.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.width(10.dp))
+            Icon(
+                imageVector = icon,
+                contentDescription = "Edit image album"
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = "Chỉnh sửa hình ảnh"
+            )
+        }
+    }
+}
+
+@Composable
+fun RemoveAlbumButton(icon: ImageVector, onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier
+            .width(200.dp)
+            .height(20.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.width(10.dp))
+            Icon(
+                imageVector = icon,
+                contentDescription = "Remove album"
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = "Xóa danh sách phát"
+            )
+        }
+    }
+}
+
 
 @Composable
 fun ReturnButton(icon: ImageVector, onClick: () -> Unit) {
@@ -75,7 +148,8 @@ fun StartButton(icon: ImageVector, onClick: () -> Unit) {
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = "Start"
+            contentDescription = "Start",
+            tint = Color.Black
         )
     }
 }
