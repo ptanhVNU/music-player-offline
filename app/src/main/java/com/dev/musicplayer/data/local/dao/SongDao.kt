@@ -16,16 +16,16 @@ interface SongDao {
     @Delete
     suspend fun deleteSong(song: Song)
 
-    @Query("SELECT * FROM song")
-    fun getAllSongs() : Flow<List<Song>?>
+    @Query("SELECT * FROM song ")
+    fun getAllSongs() : Flow<List<Song>>
 
     @Query("SELECT * FROM song ORDER BY title ASC")
-    fun getSongsOrderedByName() : Flow<List<Song>?>
+    fun getSongsOrderedByName() : Flow<List<Song>>
 
     @Query("SELECT * FROM song ORDER BY created_at ASC")
-    fun getSongsOrderedByCreatedAt() : Flow<List<Song>?>
+    fun getSongsOrderedByCreatedAt() : Flow<List<Song>>
 
     @Query("SELECT * FROM song WHERE is_liked = 1")
-    fun getLikedSongs() : Flow<List<Song>?>
+    fun getLikedSongs() : Flow<List<Song>>
 
 }

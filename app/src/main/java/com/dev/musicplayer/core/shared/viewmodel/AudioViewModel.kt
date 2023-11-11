@@ -9,11 +9,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
 import com.dev.musicplayer.core.services.AudioState
 import com.dev.musicplayer.core.services.MusicServiceHandler
 import com.dev.musicplayer.core.services.PlayerEvent
-import com.dev.musicplayer.data.local.reposity.MusicRepository
+import com.dev.musicplayer.data.local.entities.Song
+import com.dev.musicplayer.data.local.repositories.MusicRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,20 +23,21 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@UnstableApi
 @OptIn(SavedStateHandleSaveableApi::class)
 @HiltViewModel
 class AudioViewModel @Inject constructor(
-
-    private val repository: MusicRepository,
+    private val repository: MusicRepositoryImpl,
     private val application: Application,
 ) : AndroidViewModel(application) {
 
-    var musicServiceHandler: MusicServiceHandler?=null
+    var musicServiceHandler: MusicServiceHandler? = null
 
     private val _duration = MutableStateFlow<Long>(0L)
     val duration: SharedFlow<Long> = _duration.asSharedFlow()
@@ -50,7 +53,6 @@ class AudioViewModel @Inject constructor(
 
     var isPlaying = MutableStateFlow<Boolean>(false)
     var notReady = MutableLiveData<Boolean>(true)
-
 
     private var _nowPlayingMediaItem = MutableLiveData<MediaItem?>()
     val nowPlayingMediaItem: LiveData<MediaItem?> = _nowPlayingMediaItem
@@ -70,7 +72,7 @@ class AudioViewModel @Inject constructor(
 
 
 //    init {
-//        loadSongData()
+//        fetchSongs()
 //    }
 
     fun init() {
@@ -95,9 +97,11 @@ class AudioViewModel @Inject constructor(
                                 _progressMillis.value = audioState.progress
                             }
                         }
+
                         is AudioState.CurrentPlaying -> {
 //                        currentSelectedAudio = audioList[audioState.mediaItemIndex]
                         }
+
                         is AudioState.Ready -> {
                             notReady.value = false
                             _duration.value = audioState.duration
@@ -123,6 +127,34 @@ class AudioViewModel @Inject constructor(
 
         }
 
+    }
+
+    private var _listSong: MutableStateFlow<List<Song>> = MutableStateFlow(arrayListOf())
+    val listSong: StateFlow<List<Song>> = _listSong.asStateFlow()
+
+    private fun fetchSongs() {
+        viewModelScope.launch {
+            repository.getAllSongs().catch { exception -> println(exception) }.collect {
+                _listSong.value = if (it.isNullOrEmpty()) emptyList() else it
+            }
+        }
+        setMediaItems()
+    }
+
+    private fun setMediaItems() {
+        listSong.value.map { song ->
+            MediaItem.Builder()
+                .setUri(song.uri)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setAlbumArtist(song.artistName)
+                        .setDisplayTitle(song.title)
+                        .build()
+                )
+                .build()
+        }.also {
+            musicServiceHandler?.addMediaItemList(it)
+        }
     }
 
     fun getCurrentMediaItem(): MediaItem? {
@@ -220,7 +252,8 @@ sealed class UIEvents {
     object SeekToNext : UIEvents()
     object Backward : UIEvents()
     object Forward : UIEvents()
-//     object Stop : UIEvents()
+
+    //     object Stop : UIEvents()
 //     object Shuffle : UIEvents()
 //     object Repeat : UIEvents()
     data class UpdateProgress(val newProgress: Float) : UIEvents()

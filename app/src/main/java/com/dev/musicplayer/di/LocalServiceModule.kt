@@ -32,7 +32,6 @@ object LocalServiceModule {
         DB_NAME,
     ).addTypeConverter(Converters()).build()
 
-
     @Provides
     @Singleton
     fun provideSongDao(musicAppDatabase: MusicAppDatabase): SongDao = musicAppDatabase.songDao()

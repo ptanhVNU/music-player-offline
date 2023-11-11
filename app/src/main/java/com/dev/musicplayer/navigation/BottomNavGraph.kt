@@ -1,8 +1,11 @@
+
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,6 +16,7 @@ import com.dev.musicplayer.presentation.home.HomeScreen
 import com.dev.musicplayer.presentation.home.HomeViewModel
 import com.dev.musicplayer.presentation.playlist.PlaylistScreen
 
+@UnstableApi
 @Composable
 fun BottomNavGraph(
     navController: NavHostController,
@@ -29,25 +33,31 @@ fun BottomNavGraph(
 
             val homeViewModel = hiltViewModel<HomeViewModel>()
             val audioViewModel = hiltViewModel<AudioViewModel>()
+
             val songs by homeViewModel.listSong.collectAsState(initial = emptyList())
+            val progress by audioViewModel.progress.collectAsState(initial = 0F)
+            val isPlaying by audioViewModel.isPlaying.collectAsState()
+
+
+
             HomeScreen(
                 homeViewModel = homeViewModel,
-//                audioViewModel = audioViewModel,
-//                progress = audioViewModel.progress,
-//                onProgress = { audioViewModel.onUiEvents(UIEvents.SeekTo(it)) },
-//                isAudioPlaying = audioViewModel.isPlaying,
+                audioViewModel = audioViewModel,
+                progress = progress,
+                onProgress = { audioViewModel.onUiEvents(UIEvents.SeekTo(it)) },
+                isAudioPlaying = isPlaying,
                 songs = songs,
-//                currentPlayingAudio = audioViewModel.currentSelectedAudio,
-//                onStart = {
-//                    audioViewModel.onUiEvents(UIEvents.PlayPause)
-//                },
+//                currentPlayingAudio = audioViewModel.,
+                onStart = {
+                    audioViewModel.onUiEvents(UIEvents.PlayPause)
+                },
                 onItemClick = {
                     audioViewModel.onUiEvents(UIEvents.SelectedAudioChange(it))
-                    print("index: $it")
+                    Log.d("TAG", "HOME: $it")
                 },
-//                onNext = {
-//                    audioViewModel.onUiEvents(UIEvents.SeekToNext)
-//                }
+                onNext = {
+                    audioViewModel.onUiEvents(UIEvents.SeekToNext)
+                }
             )
         }
 
@@ -56,13 +66,6 @@ fun BottomNavGraph(
         ) {
             PlaylistScreen()
         }
-
-//        composable(
-//            route = Screen.SettingScreen.route
-
-//        ) {
-//            SettingScreen()
-//        }
     }
 
 }

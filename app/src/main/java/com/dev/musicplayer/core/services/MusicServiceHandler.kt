@@ -55,14 +55,22 @@ class MusicServiceHandler constructor(
         _nowPlaying.value = player.currentMediaItem
     }
 
-    fun addMediaItem(mediaItem: MediaItem) {
+
+
+    fun addMediaItem(mediaItem: MediaItem, playWhenReady: Boolean = true) {
+        player.clearMediaItems()
         player.addMediaItem(mediaItem)
         player.prepare()
+        player.playWhenReady = playWhenReady
     }
 
-    fun setMediaItemList(mediaItems: List<MediaItem>) {
-        player.addMediaItems(mediaItems)
-        player.prepare()
+    fun addMediaItemNotSet(mediaItem: MediaItem) {
+        player.addMediaItem(mediaItem)
+        if (player.mediaItemCount == 1){
+            player.prepare()
+            player.playWhenReady = true
+        }
+        updateNextPreviousTrackAvailability()
     }
 
     private fun updateNextPreviousTrackAvailability() {
@@ -79,14 +87,6 @@ class MusicServiceHandler constructor(
         _currentSongIndex.value = currentIndex()
     }
 
-    private fun addMediaItemNotSet(mediaItem: MediaItem) {
-        player.addMediaItem(mediaItem)
-        if (player.mediaItemCount == 1) {
-            player.prepare()
-            player.playWhenReady = true
-        }
-        updateNextPreviousTrackAvailability()
-    }
 
     fun clearMediaItems() {
         player.clearMediaItems()
@@ -94,7 +94,7 @@ class MusicServiceHandler constructor(
 
     fun addMediaItemList(mediaItemList: List<MediaItem>) {
         for (mediaItem in mediaItemList) {
-            addMediaItemNotSet(mediaItem)
+            addMediaItem(mediaItem)
         }
         Log.d("Media Item List", "addMediaItemList: ${player.mediaItemCount}")
     }
@@ -103,13 +103,6 @@ class MusicServiceHandler constructor(
         player.seekTo(index, 0)
         player.prepare()
         player.playWhenReady = true
-    }
-
-    fun addMediaItem(mediaItem: MediaItem, playWhenReady: Boolean = true) {
-        player.clearMediaItems()
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.playWhenReady = playWhenReady
     }
 
     fun moveMediaItem(fromIndex: Int, newIndex: Int) {

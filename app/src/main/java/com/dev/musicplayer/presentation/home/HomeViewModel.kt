@@ -7,38 +7,34 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dev.musicplayer.core.services.MetaDataReader
 import com.dev.musicplayer.data.local.entities.Song
-import com.dev.musicplayer.data.local.reposity.MusicRepository
+import com.dev.musicplayer.data.local.repositories.MusicRepositoryImpl
+import com.dev.musicplayer.domain.entities.MusicEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val metaDataReader: MetaDataReader,
-    private val musicRepository: MusicRepository,
-) : ViewModel() {
+    private val musicRepository: MusicRepositoryImpl,
+
+    ) : ViewModel() {
 
 
     private val _selectedSongFileName = MutableLiveData<String>()
     private val selectedSongFileName: LiveData<String> get() = _selectedSongFileName
 
-    private var _songEntity: MutableLiveData<Song> = MutableLiveData()
-    val songEntity: LiveData<Song> = _songEntity
-
-    private var _listSong: MutableStateFlow<List<Song>> = MutableStateFlow(arrayListOf())
-    val listSong: StateFlow<List<Song>> = _listSong.asStateFlow()
+    private var _listSong: MutableStateFlow<List<MusicEntity>> = MutableStateFlow(arrayListOf())
+    val listSong: StateFlow<List<MusicEntity>> = _listSong.asStateFlow()
 
     val listJob: MutableStateFlow<ArrayList<Song>> = MutableStateFlow(arrayListOf())
 
     init {
         fetchSongs()
-
-//        player.prepare()
     }
 
 
@@ -48,35 +44,25 @@ class HomeViewModel @Inject constructor(
             val songMetaData = metaDataReader.getMetaDataFromUri(uri)
             if (songMetaData != null) {
                 _selectedSongFileName.value = songMetaData.fileName ?: "Unknown"
-                _songEntity.value =
-                    Song(
-                        title = selectedSongFileName.value ?: "Unknown",
-                        createdAt = Instant.now().toEpochMilli(),
-                        uri = uri.toString(),
-                    )
 
-                // lưu vào local db
-                if (_songEntity.value != null) {
-                    insertSong(_songEntity.value!!)
-                }
-//                fetchSongs()
+                selectedSongFileName.value?.let { insertSong(it, uri.toString()) }
             }
         }
 
 
     }
 
-    private fun insertSong(song: Song) {
+    private fun insertSong(title: String, uri: String) {
         viewModelScope.launch {
-            musicRepository.insertSong(song)
+            musicRepository.insertSong(title, uri)
         }
 
     }
 
-     private fun fetchSongs() {
+    private fun fetchSongs() {
         viewModelScope.launch {
             musicRepository.getAllSongs().catch { exception -> println(exception) }.collect {
-                _listSong.value = if (it.isNullOrEmpty()) emptyList() else it
+                _listSong.value = if (it.isEmpty()) emptyList() else it
             }
 
         }

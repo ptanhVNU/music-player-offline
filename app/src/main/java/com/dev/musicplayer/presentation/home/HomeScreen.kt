@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.SimpleExoPlayer
+import com.dev.musicplayer.core.shared.viewmodel.AudioViewModel
 import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
@@ -41,15 +44,15 @@ import com.dev.musicplayer.ui.theme.MusicAppTypography
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(),
-//    audioViewModel: AudioViewModel = viewModel(),
-//    progress: Float,
-//    onProgress: (Float) -> Unit,
-//    isAudioPlaying: Boolean,
+    audioViewModel: AudioViewModel = viewModel(),
+    progress: Float,
+    onProgress: (Float) -> Unit,
+    isAudioPlaying: Boolean,
 //    currentPlayingAudio: Song,
     songs: List<Song>,
-//    onStart: () -> Unit,
+    onStart: () -> Unit,
     onItemClick: (Int) -> Unit,
-//    onNext: () -> Unit,
+    onNext: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -74,6 +77,12 @@ fun HomeScreen(
         // sử dụng để lấy một h oặc nhiều nội dung từ thiết bị
     ) {
         homeViewModel.selectMusicFromStorage(it)
+    }
+
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            this.prepare()
+        }
     }
 
 

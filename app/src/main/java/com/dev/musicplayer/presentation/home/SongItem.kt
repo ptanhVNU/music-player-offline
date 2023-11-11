@@ -27,13 +27,13 @@ import com.dev.musicplayer.ui.theme.MusicAppTypography
 fun SongItem(
     modifier: Modifier = Modifier,
     item: Song,
-    onItemClicked: (uri: String) -> Unit,
+    onItemClicked:( ) -> Unit,
 ) {
     Row(
 
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onItemClicked(item.uri) }
+            .clickable { onItemClicked() }
             .padding(12.dp),
         horizontalArrangement = Arrangement.SpaceAround,
     ) {

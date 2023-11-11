@@ -3,6 +3,7 @@ package com.dev.musicplayer.data.local.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.dev.musicplayer.domain.entities.MusicEntity
 
 @Entity(
     tableName = "song",
@@ -21,5 +22,18 @@ data class Song(
     @ColumnInfo(name = "is_liked") val isLiked: Boolean = false,
     @ColumnInfo(name = "created_at") val createdAt: Long, // in milliseconds
 ) {
+
+
     fun toggleLike() = copy(isLiked = !isLiked)
+
+    fun toEntity() : MusicEntity {
+        return MusicEntity(
+            id = songId.toString(),
+            title = title,
+            artist = artistName,
+            source =  uri,
+            image = thumbnail,
+            createdAt= createdAt,
+        )
+    }
 }

@@ -59,7 +59,6 @@ class MainActivity : ComponentActivity() {
         override fun onServiceDisconnected(name: ComponentName?) {
             Log.w("MainActivity", "onServiceDisconnected....")
             viewModel.musicServiceHandler = null
-
         }
     }
 
@@ -125,7 +124,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
-
                 job1.join()
                 job2.join()
             }
