@@ -62,10 +62,16 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.palette:palette-ktx:1.0.0")
     implementation("androidx.window:window:1.1.0")
     implementation("com.android.volley:volley:1.2.1")
+<<<<<<< HEAD
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+=======
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("androidx.datastore:datastore-core-android:1.1.0-alpha05")
+>>>>>>> main
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -101,6 +107,7 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.10.1")
 
     implementation("com.google.dagger:hilt-android:2.48.1")
+    implementation("io.coil-kt:coil-compose:2.5.0")
     ksp("com.google.dagger:hilt-android-compiler:2.48")
 
     implementation("androidx.hilt:hilt-work:1.0.0")
