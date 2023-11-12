@@ -1,5 +1,3 @@
-
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -9,8 +7,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.dev.musicplayer.core.shared.viewmodel.AudioViewModel
-import com.dev.musicplayer.core.shared.viewmodel.UIEvents
+import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
 import com.dev.musicplayer.navigation.Screen
 import com.dev.musicplayer.presentation.home.HomeScreen
 import com.dev.musicplayer.presentation.home.HomeViewModel
@@ -18,10 +15,11 @@ import com.dev.musicplayer.presentation.playlist.PlaylistScreen
 
 @UnstableApi
 @Composable
-fun BottomNavGraph(
+fun NavGraph(
     navController: NavHostController,
-
-    ) {
+    sharedViewModel: SharedViewModel,
+) {
+    val musicPlaybackUiState = sharedViewModel.musicPlaybackUiState
 
     NavHost(
         navController = navController,
@@ -32,31 +30,18 @@ fun BottomNavGraph(
         ) {
 
             val homeViewModel = hiltViewModel<HomeViewModel>()
-            val audioViewModel = hiltViewModel<AudioViewModel>()
-
             val songs by homeViewModel.listSong.collectAsState(initial = emptyList())
-            val progress by audioViewModel.progress.collectAsState(initial = 0F)
-            val isPlaying by audioViewModel.isPlaying.collectAsState()
-
-
 
             HomeScreen(
-                homeViewModel = homeViewModel,
-                audioViewModel = audioViewModel,
-                progress = progress,
-                onProgress = { audioViewModel.onUiEvents(UIEvents.SeekTo(it)) },
-                isAudioPlaying = isPlaying,
                 songs = songs,
-//                currentPlayingAudio = audioViewModel.,
-                onStart = {
-                    audioViewModel.onUiEvents(UIEvents.PlayPause)
+                onEvent = homeViewModel::onEvent,
+                homeUiState = homeViewModel.homeUiState,
+                musicPlaybackUiState = musicPlaybackUiState,
+                onNavigateToMusicPlayer = {
+//                    navController.navigate(Screen.MusicPlayer.route)
                 },
-                onItemClick = {
-                    audioViewModel.onUiEvents(UIEvents.SelectedAudioChange(it))
-                    Log.d("TAG", "HOME: $it")
-                },
-                onNext = {
-                    audioViewModel.onUiEvents(UIEvents.SeekToNext)
+                selectMusicFromStorage = {
+                    homeViewModel.selectMusicFromStorage(it)
                 }
             )
         }

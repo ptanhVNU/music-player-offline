@@ -1,4 +1,4 @@
-package com.dev.musicplayer.presentation.home
+package com.dev.musicplayer.presentation.home.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

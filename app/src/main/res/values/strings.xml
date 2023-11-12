@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Music Offline</string>
+    <string name="app_name">Music Player Offline</string>
 
     <string name="library">Your library</string>
     <string name="song">Songs</string>

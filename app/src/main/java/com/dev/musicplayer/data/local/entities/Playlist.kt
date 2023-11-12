@@ -11,4 +11,4 @@ data class Playlist(
     val thumbnail: String? = null, // image url
     val songs: List<String>? = null, //
     @ColumnInfo(name = "created_at") val createdAt: Int,
-) {}
+)

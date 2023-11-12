@@ -52,17 +52,4 @@ object LocalServiceModule {
             .error(R.drawable.ic_launcher_background)
             .diskCacheStrategy(DiskCacheStrategy.DATA)
     )
-
-
-//    @Provides
-//    @Singleton
-//    fun provideNotificationManager(
-//        @ApplicationContext context: Context,
-//        player: ExoPlayer,
-//    ): MusicNotificationManager = MusicNotificationManager(
-//        context = context,
-//        exoPlayer = player
-//    )
-
-
 }
