@@ -1,6 +1,10 @@
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
@@ -11,6 +15,8 @@ import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
 import com.dev.musicplayer.navigation.Screen
 import com.dev.musicplayer.presentation.home.HomeScreen
 import com.dev.musicplayer.presentation.home.HomeViewModel
+import com.dev.musicplayer.presentation.nowplaying.PlayerScreen
+import com.dev.musicplayer.presentation.nowplaying.PlayerViewModel
 import com.dev.musicplayer.presentation.playlist.PlaylistScreen
 
 @UnstableApi
@@ -38,7 +44,7 @@ fun NavGraph(
                 homeUiState = homeViewModel.homeUiState,
                 musicPlaybackUiState = musicPlaybackUiState,
                 onNavigateToMusicPlayer = {
-//                    navController.navigate(Screen.MusicPlayer.route)
+                    navController.navigate(Screen.PlayerScreen.route)
                 },
                 selectMusicFromStorage = {
                     homeViewModel.selectMusicFromStorage(it)
@@ -50,6 +56,30 @@ fun NavGraph(
             route = Screen.PlaylistScreen.route
         ) {
             PlaylistScreen()
+        }
+
+        composable(
+            route = Screen.PlayerScreen.route,
+            enterTransition = {
+                expandVertically(
+                    animationSpec = tween(300),
+                    expandFrom = Alignment.Top
+                )
+            },
+            exitTransition = {
+                shrinkVertically(
+                    animationSpec = tween(300),
+                    shrinkTowards = Alignment.Top
+                )
+            }
+        ) {
+            val playerViewModel =  hiltViewModel<PlayerViewModel>()
+
+            PlayerScreen(
+                onEvent = playerViewModel::onEvent,
+                musicPlaybackUiState = musicPlaybackUiState,
+                onNavigateUp = { navController.navigateUp() }
+            )
         }
     }
 
