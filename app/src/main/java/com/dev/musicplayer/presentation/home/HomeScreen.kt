@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +27,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -49,13 +51,16 @@ fun HomeScreen(
     selectMusicFromStorage: (List<Uri>) -> Unit
 ) {
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
 
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
 
 
     val selectAudioLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents()
     ) {
-       selectMusicFromStorage(it)
+        selectMusicFromStorage(it)
     }
 
     Scaffold(
@@ -108,55 +113,56 @@ fun HomeScreen(
                         CircularProgressIndicator()
                     }
                 }
+
                 false -> {
 
-                        Box {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(it),
-                                contentPadding = PaddingValues(bottom = 80.dp),
-                                state = scrollState,
-                            ) {
-                                items(
-                                    songs,
-                                ) { item ->
-                                    SongItem(
-                                        item = item,
-                                        modifier = Modifier.fillParentMaxWidth(),
-                                        onItemClicked = {
-                                            Log.d("HOMESCREEN", "item: ${item.title}")
-                                            onEvent(HomeEvent.OnMusicSelected(item))
-                                            onEvent(HomeEvent.PlayMusic)
-                                        }
-                                    )
-                                }
+                    Box {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(it),
+                            contentPadding = PaddingValues(bottom = 80.dp),
+                            state = scrollState,
+                        ) {
+                            items(
+                                songs,
+                            ) { item ->
+                                SongItem(
+                                    item = item,
+                                    modifier = Modifier.fillParentMaxWidth(),
+                                    onItemClicked = {
+                                        Log.d("HOME-SCREEN", "item: ${item.title}")
+                                        onEvent(HomeEvent.OnMusicSelected(item))
+                                        onEvent(HomeEvent.PlayMusic)
+                                    }
+                                )
                             }
+                        }
 
-                            with(musicPlaybackUiState) {
-                                if (playerState != PlayerState.STOPPED) {
-                                    MusicMiniPlayerCard(
-                                        modifier = Modifier
-                                            .padding(10.dp)
-                                            .align(Alignment.Center),
-                                        music = currentMusic,
-                                        playerState = playerState,
-                                        onResumeClicked = { onEvent(HomeEvent.ResumeMusic) },
-                                        onPauseClicked = { onEvent(HomeEvent.PauseMusic) },
-                                        onClick = { onNavigateToMusicPlayer() }
-                                    )
-                                }
+                        with(musicPlaybackUiState) {
+                            if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
+                                MusicMiniPlayerCard(
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                        .offset(y = screenHeight - 100.dp),
+                                    music = currentMusic,
+                                    playerState = playerState,
+                                    onResumeClicked = { onEvent(HomeEvent.ResumeMusic) },
+                                    onPauseClicked = { onEvent(HomeEvent.PauseMusic) },
+                                    onClick = { onNavigateToMusicPlayer() }
+                                )
                             }
                         }
                     }
+                }
 
                 else -> {}
             }
 
 
-            }
         }
     }
+}
 
 
 
