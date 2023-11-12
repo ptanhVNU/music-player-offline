@@ -1,14 +1,18 @@
-
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.dev.musicplayer.navigation.Screen
+import com.dev.musicplayer.presentation.playlist.AlbumViewModel
+import com.dev.musicplayer.presentation.playlist.ListSongScreen
 import com.dev.musicplayer.presentation.playlist.PlaylistScreen
+import com.dev.musicplayer.presentation.setting.SettingScreen
 import com.dev.musicplayer.presentation.songs.SongsScreen
 import com.dev.musicplayer.presentation.songs.SongsViewModel
 
@@ -29,14 +33,23 @@ fun BottomNavGraph(navController: NavHostController) {
         composable(
             route = Screen.PlaylistScreen.route
         ) {
-            PlaylistScreen()
+            PlaylistScreen(navController)
         }
 
-//        composable(
-//            route = Screen.SettingScreen.route
-//        ) {
-//            SettingScreen()
-//        }
+        composable(
+            route = "listSong/{albumId}",
+            arguments = listOf(navArgument("albumId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val albumId = backStackEntry.arguments?.getLong("albumId") ?: 0
+            val viewModel =  hiltViewModel<AlbumViewModel>()
+            ListSongScreen(navController, albumId, viewModel)
+        }
+
+        composable(
+            route = Screen.SettingScreen.route
+        ) {
+            SettingScreen()
+        }
     }
 }
 

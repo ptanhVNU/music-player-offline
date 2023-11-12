@@ -1,5 +1,7 @@
 package com.dev.musicplayer.presentation.playlist
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
@@ -43,11 +45,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.dev.musicplayer.R
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.data.local.entities.Song
+import com.dev.musicplayer.navigation.Screen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -77,8 +84,8 @@ class AlbumViewModel : ViewModel() {
             mutableList
         }
     }
-    private fun sampleAlbum(): List<Playlist> {
-        val albums = listOf(
+
+    private fun sampleAlbum() = listOf(
             Playlist(id = 1, thumbnail = "https://m.media-amazon.com/images/I/51XQrcwyhkL._UF1000,1000_QL80_.jpg", title = "Album 1", songs = listOf("Song1", "Song2", "Song3"), createdAt = 1),
             Playlist(id = 2, thumbnail = "https://pics.craiyon.com/2023-05-30/ca4e47993f67455a98ec3b939df5c08c.webp", title = "Album 2", songs = listOf("Song1", "Song2", "Song3"), createdAt = 2),
             Playlist(id = 3, thumbnail = "https://play-lh.googleusercontent.com/qEpilTvPX27gd0qvv9g2oyzCpYIIJSEtHMDbEXfvvItPMnudkeN01TzD5GO3iOCHByp9", title = "Album 3", songs = listOf("Song1", "Song2", "Song3"), createdAt = 3),
@@ -89,22 +96,21 @@ class AlbumViewModel : ViewModel() {
             Playlist(id = 8, thumbnail = "https://m.media-amazon.com/images/I/51XQrcwyhkL._UF1000,1000_QL80_.jpg", title = "Album 8", songs = listOf("Song1", "Song2", "Song3"), createdAt = 8),
             Playlist(id = 9, thumbnail = "https://pics.craiyon.com/2023-05-30/ca4e47993f67455a98ec3b939df5c08c.webp", title = "Album 9", songs = listOf("Song1", "Song2", "Song3"), createdAt = 9),
             Playlist(id = 10, thumbnail = "https://play-lh.googleusercontent.com/qEpilTvPX27gd0qvv9g2oyzCpYIIJSEtHMDbEXfvvItPMnudkeN01TzD5GO3iOCHByp9", title = "Album 10", songs = listOf("Song1", "Song2", "Song3"), createdAt = 10),
-        )
-        return albums
+    )
+
+    fun getAlbumById(albumId: Long): Playlist? {
+        return sampleAlbum().find { it.id == albumId }
     }
 }
+
 @Composable
 fun albumScreen(album: Playlist, onClick: () -> Unit) {
-    val navController = rememberNavController()
     Card (
         modifier = Modifier
             .background(Color.Black)
             .fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
-            .clickable(onClick = onClick)
-//            {
-//                navHost.navigate(NavigationItem.DetailCycleNavigationItem.routeWithId(cycle.id))
-//            }
+            .clickable(onClick =  onClick)
     ) {
         Row(
             modifier = Modifier
@@ -131,7 +137,6 @@ fun albumScreen(album: Playlist, onClick: () -> Unit) {
                     color = Color.LightGray,
                     fontSize = 12.sp,
                 )
-
             }
         }
     }
@@ -171,7 +176,8 @@ fun DismissBackground(dismissState: DismissState) {
 @Composable
 fun albumItem(
     album: Playlist,
-    onRemove: (Playlist) -> Unit
+    onRemove: (Playlist) -> Unit,
+    navController: NavController
 ) {
     val context = LocalContext.current
     var show by remember { mutableStateOf(true) }
@@ -195,14 +201,14 @@ fun albumItem(
                 DismissBackground(dismissState)
             },
             dismissContent = {
-                albumScreen(album, onClick = {})
+                albumScreen(album, onClick = { navController.navigate("listSong/${album.id}") })
             }
         )
     }
 
     LaunchedEffect(show) {
         if (!show) {
-            delay(800)
+            delay(200)
             onRemove(currentItem)
             Toast.makeText(context, "Album removed", Toast.LENGTH_SHORT).show()
         }

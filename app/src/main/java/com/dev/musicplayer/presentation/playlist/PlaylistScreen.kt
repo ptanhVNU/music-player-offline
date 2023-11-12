@@ -78,12 +78,12 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun PlaylistScreen() {
+fun PlaylistScreen(navController: NavController) {
     var text by remember {
         mutableStateOf("")
     }
@@ -219,7 +219,7 @@ fun PlaylistScreen() {
                     items = albumsState,
                     key = { _, item -> item.hashCode() }
                 ) { _, albumContent ->
-                    albumItem(albumContent, onRemove = albumViewModel::removeItem)
+                    albumItem(albumContent, onRemove = albumViewModel::removeItem, navController = navController)
                 }
             }
             Scaffold(
@@ -236,7 +236,9 @@ fun PlaylistScreen() {
                         sheetState = sheetState
                     ) {
                         Column (
-                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             TextField(
