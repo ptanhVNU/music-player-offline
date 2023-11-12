@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.dev.musicplayer"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -65,8 +65,13 @@ dependencies {
     implementation("androidx.palette:palette-ktx:1.0.0")
     implementation("androidx.window:window:1.1.0")
     implementation("com.android.volley:volley:1.2.1")
+<<<<<<< HEAD
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+=======
     implementation("io.coil-kt:coil-compose:2.5.0")
     implementation("androidx.datastore:datastore-core-android:1.1.0-alpha05")
+>>>>>>> main
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -85,6 +90,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.33.2-alpha")
+
 
     // Async
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
@@ -122,6 +128,10 @@ dependencies {
     // Load image and caching
     implementation("com.github.bumptech.glide:glide:4.16.0")
     ksp( "com.github.bumptech.glide:ksp:4.16.0" )
+    implementation ("com.google.accompanist:accompanist-permissions:0.32.0")
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.3.0")
 
     // play music
     val media3_version = "1.1.1"

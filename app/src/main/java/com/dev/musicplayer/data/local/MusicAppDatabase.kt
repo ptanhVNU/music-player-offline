@@ -13,7 +13,7 @@ import com.dev.musicplayer.data.local.entities.Song
         Song::class,
         Playlist::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(Converters::class)

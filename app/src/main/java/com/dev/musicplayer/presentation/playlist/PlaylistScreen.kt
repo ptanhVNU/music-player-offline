@@ -84,6 +84,27 @@ import kotlinx.coroutines.launch
 @Preview
 @Composable
 fun PlaylistScreen() {
+<<<<<<< HEAD
+    Scaffold(
+        topBar = {
+            Surface(shadowElevation = 5.dp) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Playlist",
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.headlineMedium,
+                        )
+                    },
+                    actions = {
+                        IconButton(
+                            onClick = {
+                                //TODO: Implement search bar
+                            },
+                        ) {
+                            Icon(imageVector = Icons.Filled.Search, contentDescription = "Search music")
+                        }
+=======
     var text by remember {
         mutableStateOf("")
     }
@@ -141,6 +162,7 @@ fun PlaylistScreen() {
                     icon = Icons.Default.Add,
                     onClick = {
                         showBottomSheet = true
+>>>>>>> main
                     }
                 )
             }

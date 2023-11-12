@@ -2,6 +2,10 @@ package com.dev.musicplayer.di
 
 import android.content.Context
 import androidx.room.Room
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.dev.musicplayer.R
 import com.dev.musicplayer.core.common.DB_NAME
 import com.dev.musicplayer.data.local.Converters
 import com.dev.musicplayer.data.local.MusicAppDatabase
@@ -22,13 +26,11 @@ object LocalServiceModule {
     @Singleton
     fun provideMusicAppDatabase(
         @ApplicationContext context: Context,
-
         ): MusicAppDatabase = Room.databaseBuilder(
         context,
         MusicAppDatabase::class.java,
         DB_NAME,
     ).addTypeConverter(Converters()).build()
-
 
     @Provides
     @Singleton
@@ -39,4 +41,15 @@ object LocalServiceModule {
     fun providePlaylistDao(musicAppDatabase: MusicAppDatabase): PlaylistDao =
         musicAppDatabase.playlistDao()
 
+    @Singleton
+    @Provides
+    fun provideGlideInstance(
+        @ApplicationContext context: Context
+
+    ) = Glide.with(context).setDefaultRequestOptions(
+        RequestOptions()
+            .placeholder(R.drawable.ic_launcher_background)
+            .error(R.drawable.ic_launcher_background)
+            .diskCacheStrategy(DiskCacheStrategy.DATA)
+    )
 }

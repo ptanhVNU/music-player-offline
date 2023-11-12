@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class Playlist(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val title: String,
-    val thumbnail: String? = null,
-    val songs: List<String>? = null,
+    val thumbnail: String? = null, // image url
+    val songs: List<String>? = null, //
     @ColumnInfo(name = "created_at") val createdAt: Int,
-) {}
+)
