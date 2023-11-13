@@ -1,48 +1,65 @@
 package com.dev.musicplayer.core.services
 
-import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import com.dev.musicplayer.notifications.MusicNotificationManager
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MusicService : MediaSessionService() {
+    private var mediaSession: MediaSession? = null
+    private lateinit var exoPlayer: ExoPlayer
 
-    lateinit var mediaSession: MediaSession
+    private val audioAttributes = AudioAttributes.Builder()
+        .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+        .setUsage(C.USAGE_MEDIA)
+        .build()
 
+    override fun onCreate() {
+        super.onCreate()
 
-    lateinit var notificationManager: MusicNotificationManager
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @UnstableApi
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.startNotificationService(
-                mediaSession = mediaSession,
-                mediaSessionService = this
-            )
-        }
-        return super.onStartCommand(intent, flags, startId)
+        initExoPlayer()
+        mediaSession = MediaSession.Builder(this, exoPlayer)
+            .setCallback(MediaSessionCallback())
+            .build()
     }
 
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession =
-        mediaSession
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaSession
 
     override fun onDestroy() {
-        super.onDestroy()
-        mediaSession.apply {
+        mediaSession?.run {
+            exoPlayer.release()
             release()
-            if (player.playbackState != Player.STATE_IDLE) {
-                player.seekTo(0)
-                player.playWhenReady = false
-                player.stop()
-            }
+            mediaSession = null
         }
+
+        super.onDestroy()
     }
 
+    private fun initExoPlayer() {
+        exoPlayer = ExoPlayer.Builder(this)
+            .setAudioAttributes(audioAttributes, true)
+            .setHandleAudioBecomingNoisy(true)
+            .build()
+    }
+
+    private inner class MediaSessionCallback : MediaSession.Callback {
+        override fun onAddMediaItems(
+            mediaSession: MediaSession,
+            controller: MediaSession.ControllerInfo,
+            mediaItems: MutableList<MediaItem>
+        ): ListenableFuture<MutableList<MediaItem>> {
+            val updatedMediaItems = mediaItems.map {
+                it.buildUpon().setUri(it.mediaId).build()
+            }.toMutableList()
+
+            return Futures.immediateFuture(updatedMediaItems)
+        }
+    }
 }

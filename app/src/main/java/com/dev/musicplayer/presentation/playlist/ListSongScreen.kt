@@ -66,7 +66,6 @@ import coil.compose.AsyncImage
 import com.bumptech.glide.Glide
 import com.dev.musicplayer.R
 import com.dev.musicplayer.data.local.entities.Playlist
-import com.dev.musicplayer.presentation.songs.SongsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

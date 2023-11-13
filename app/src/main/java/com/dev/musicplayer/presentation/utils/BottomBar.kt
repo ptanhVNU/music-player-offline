@@ -32,7 +32,7 @@ fun BottomBar(navController: NavHostController) {
     val bottomNavItems = listOf(
         BottomNavItem(
             title = "Home",
-            route = Screen.SongsScreen.route,
+            route = Screen.HomeScreen.route,
             selectedIcon = Icons.Filled.MusicNote,
             unselectedIcon = Icons.Outlined.MusicNote,
         ),

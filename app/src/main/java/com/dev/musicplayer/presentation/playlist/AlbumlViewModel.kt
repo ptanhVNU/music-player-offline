@@ -208,7 +208,7 @@ fun albumItem(
 
     LaunchedEffect(show) {
         if (!show) {
-            delay(200)
+            delay(1000)
             onRemove(currentItem)
             Toast.makeText(context, "Album removed", Toast.LENGTH_SHORT).show()
         }

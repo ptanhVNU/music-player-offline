@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Music Offline</string>
+    <string name="app_name">Music Player Offline</string>
 
     <string name="library">Your library</string>
     <string name="song">Songs</string>
-
+    <string name="notification_channel_name">Music Playback Notification</string>
     <string name="cd_search">Search</string>
     <string name="cd_account">Account</string>
     <string name="cd_add">Add</string>
