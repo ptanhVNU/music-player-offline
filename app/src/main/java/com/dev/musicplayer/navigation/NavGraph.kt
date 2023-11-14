@@ -31,6 +31,7 @@ fun NavGraph(
         navController = navController,
         startDestination = Screen.HomeScreen.route,
     ) {
+
         composable(
             route = Screen.HomeScreen.route
         ) {
@@ -62,13 +63,14 @@ fun NavGraph(
             route = Screen.PlayerScreen.route,
             enterTransition = {
                 expandVertically(
-                    animationSpec = tween(300),
-                    expandFrom = Alignment.Top
+                    animationSpec = tween(400),
+                    expandFrom = Alignment.Top,
+                    clip = true
                 )
             },
             exitTransition = {
                 shrinkVertically(
-                    animationSpec = tween(300),
+                    animationSpec = tween(400),
                     shrinkTowards = Alignment.Top
                 )
             }
