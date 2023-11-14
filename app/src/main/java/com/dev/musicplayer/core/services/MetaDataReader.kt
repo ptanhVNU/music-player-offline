@@ -22,7 +22,10 @@ class MetaDataReaderImpl(
             return null
         }
 
-        val fileName = app.contentResolver
+        val contentResolver = app.contentResolver
+//        contentResolver.takePersistableUriPermission(contentUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+        val fileName = contentResolver
             .query(
                 contentUri,
                 arrayOf(

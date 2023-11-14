@@ -22,7 +22,21 @@ fun MainApp(
             BottomBar(navController = navController)
         },
     ) {
-        NavGraph(navController = navController, sharedViewModel = sharedViewModel)
+        NavGraph(
+            navController = navController,
+            sharedViewModel = sharedViewModel,
+        )
     }
+
+//    DisposableEffect(navController) {
+//        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
+//        }
+//
+//        navController.addOnDestinationChangedListener(listener)
+//
+//        onDispose {
+//            navController.removeOnDestinationChangedListener(listener)
+//        }
+//    }
 }
 
