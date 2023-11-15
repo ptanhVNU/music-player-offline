@@ -20,7 +20,7 @@ import com.dev.musicplayer.presentation.home.HomeViewModel
 import com.dev.musicplayer.presentation.nowplaying.PlayerScreen
 import com.dev.musicplayer.presentation.nowplaying.PlayerViewModel
 import com.dev.musicplayer.presentation.playlist.AlbumViewModel
-import com.dev.musicplayer.presentation.playlist.ListSongScreen
+import com.dev.musicplayer.presentation.playlist.listSongOfAlbum.ListSongScreen
 import com.dev.musicplayer.presentation.playlist.PlaylistScreen
 
 @UnstableApi
@@ -68,7 +68,14 @@ fun NavGraph(
         composable(
             route = Screen.PlaylistScreen.route
         ) {
-            PlaylistScreen(navController)
+            val viewModel =  hiltViewModel<AlbumViewModel>()
+            val playlist by viewModel.playlist.collectAsState(initial = emptyList())
+            PlaylistScreen(playlist = playlist,
+                onEvent = viewModel::onPlaylistEvent,
+                playlistUiState = viewModel.playlistUiState,
+                albumViewModel = viewModel,
+                navController = navController
+            )
         }
 
         composable(

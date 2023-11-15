@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -38,6 +40,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+        languageVersion = "1.9"
     }
     buildFeatures {
         compose = true
@@ -151,9 +154,16 @@ dependencies {
     // Common functionality used across multiple media libraries
     implementation("androidx.media3:media3-common:$media3_version")
 
+    implementation ("androidx.compose.runtime:runtime-livedata:c1.0.0-beta01")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+
 }
 
 // Allow references to generated code
 kapt {
     correctErrorTypes = true
 }
+//val compileKotlin: KotlinCompile by tasks
+//compileKotlin.kotlinOptions {
+//    languageVersion = "1.9"
+//}

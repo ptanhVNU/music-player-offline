@@ -3,8 +3,11 @@ package com.dev.musicplayer.di
 import android.content.Context
 import com.dev.musicplayer.core.services.MusicPlaybackController
 import com.dev.musicplayer.data.local.repositories.MusicRepositoryImpl
+import com.dev.musicplayer.data.local.repositories.PlaylistRepositoryImpl
+import com.dev.musicplayer.data.local.store.PlaylistStore
 import com.dev.musicplayer.data.local.store.SongStore
 import com.dev.musicplayer.domain.repositories.MusicRepository
+import com.dev.musicplayer.domain.repositories.PlaylistRepository
 import com.dev.musicplayer.domain.service.PlaybackController
 import dagger.Module
 import dagger.Provides
@@ -21,6 +24,13 @@ object DataModule {
     fun provideMusicRepository(songStore: SongStore) : MusicRepository {
         return MusicRepositoryImpl(songStore)
     }
+
+    @Provides
+    @Singleton
+    fun providePlaylistRepository(playListStore: PlaylistStore) : PlaylistRepository {
+        return PlaylistRepositoryImpl(playListStore)
+    }
+
 
     @Provides
     @Singleton
