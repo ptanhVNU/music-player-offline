@@ -9,14 +9,18 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
 import com.dev.musicplayer.navigation.Screen
 import com.dev.musicplayer.presentation.home.HomeScreen
 import com.dev.musicplayer.presentation.home.HomeViewModel
 import com.dev.musicplayer.presentation.nowplaying.PlayerScreen
 import com.dev.musicplayer.presentation.nowplaying.PlayerViewModel
+import com.dev.musicplayer.presentation.playlist.AlbumViewModel
+import com.dev.musicplayer.presentation.playlist.listSongOfAlbum.ListSongScreen
 import com.dev.musicplayer.presentation.playlist.PlaylistScreen
 
 @UnstableApi
@@ -54,9 +58,25 @@ fun NavGraph(
         }
 
         composable(
+            route = "listSong/{albumId}",
+            arguments = listOf(navArgument("albumId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val albumId = backStackEntry.arguments?.getLong("albumId") ?: 0
+            val viewModel =  hiltViewModel<AlbumViewModel>()
+            ListSongScreen(navController, albumId, viewModel)
+        }
+
+        composable(
             route = Screen.PlaylistScreen.route
         ) {
-            PlaylistScreen()
+            val viewModel =  hiltViewModel<AlbumViewModel>()
+            val playlist by viewModel.playlist.collectAsState(initial = emptyList())
+            PlaylistScreen(playlist = playlist,
+                onEvent = viewModel::onPlaylistEvent,
+                playlistUiState = viewModel.playlistUiState,
+                albumViewModel = viewModel,
+                navController = navController
+            )
         }
 
         composable(

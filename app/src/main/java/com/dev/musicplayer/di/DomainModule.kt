@@ -1,5 +1,6 @@
 package com.dev.musicplayer.di
 
+import com.dev.musicplayer.data.local.dao.PlaylistDao
 import com.dev.musicplayer.domain.repositories.MusicRepository
 import com.dev.musicplayer.domain.service.PlaybackController
 import com.dev.musicplayer.domain.use_case.AddMediaItemsUseCase
@@ -18,6 +19,7 @@ import com.dev.musicplayer.domain.use_case.SkipPreviousMusicUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -102,5 +104,4 @@ object DomainModule {
     fun provideSkipPreviousMusicUseCase(playbackController: PlaybackController): SkipPreviousMusicUseCase {
         return SkipPreviousMusicUseCase(playbackController)
     }
-
 }
