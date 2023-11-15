@@ -14,7 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.media3.common.util.UnstableApi
-import com.dev.musicplayer.core.services.MusicService
+import com.dev.musicplayer.core.services.MusicPlaybackService
 import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTheme
@@ -60,6 +60,6 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
 
         sharedViewModel.destroyMediaController()
-        stopService(Intent(this, MusicService::class.java))
+        stopService(Intent(this, MusicPlaybackService::class.java))
     }
 }

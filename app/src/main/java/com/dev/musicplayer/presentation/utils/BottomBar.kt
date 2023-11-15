@@ -1,6 +1,7 @@
 package com.dev.musicplayer.presentation.utils
 
 import BottomNavItem
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -14,20 +15,23 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.dev.musicplayer.navigation.Screen
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.onSecondary
 
 @Composable
-fun BottomBar(navController: NavHostController) {
+fun BottomBar(
+    navController: NavHostController,
+    navBackStackEntry: NavBackStackEntry?,
+    bottomBarState: Boolean,
+) {
 
     val bottomNavItems = listOf(
         BottomNavItem(
@@ -42,28 +46,28 @@ fun BottomBar(navController: NavHostController) {
             selectedIcon = Icons.Filled.LibraryMusic,
             unselectedIcon = Icons.Outlined.LibraryMusic,
         ),
-//        BottomNavItem(
-//            title = "Setting",
-//            route = Screen.SettingScreen.route,
-//            selectedIcon = Icons.Filled.Download,
-//            unselectedIcon = Icons.Outlined.Download,
-//        ),
     )
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    NavigationBar(
-        modifier = Modifier.height(95.dp)
-    ) {
-        bottomNavItems.forEach { item ->
-            AddItem(
-                item = item,
-                currentDestination = currentDestination,
-                navController = navController
-            )
+    AnimatedVisibility(
+        visible = bottomBarState,
+//        enter = slideInVertically(initialOffsetY = { -it }),
+//        exit = slideOutVertically(targetOffsetY = { -it }),
+        content = {
+            NavigationBar(
+                modifier = Modifier.height(95.dp)
+            ) {
+                bottomNavItems.forEach { item ->
+                    AddItem(
+                        item = item,
+                        currentDestination = currentDestination,
+                        navController = navController
+                    )
+                }
+            }
         }
-    }
+    )
 }
 
 @Composable
