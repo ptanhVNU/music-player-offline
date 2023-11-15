@@ -32,6 +32,7 @@ class HomeViewModel @Inject constructor(
     private val playMusicUseCase: PlayMusicUseCase,
     private val resumeMusicUseCase: ResumeMusicUseCase,
     private val pauseMusicUseCase: PauseMusicUseCase,
+
     private val musicRepository: MusicRepositoryImpl,
     private val metaDataReader: MetaDataReader,
 ) : ViewModel() {
@@ -76,12 +77,20 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    // tương tác với db
     private fun insertSong(title: String, uri: String) {
         viewModelScope.launch {
             musicRepository.insertSong(title, uri)
-
         }
     }
+
+    public fun deleteSong(song: Song) {
+        viewModelScope.launch {
+            musicRepository.deleteSong(song)
+        }
+    }
+
+
 
     private fun getMusics() {
 

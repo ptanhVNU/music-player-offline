@@ -49,6 +49,9 @@ fun NavGraph(
                 },
                 selectMusicFromStorage = {
                     homeViewModel.selectMusicFromStorage(it)
+                },
+                onDeleteMusic = {
+                    homeViewModel.deleteSong(it)
                 }
             )
         }

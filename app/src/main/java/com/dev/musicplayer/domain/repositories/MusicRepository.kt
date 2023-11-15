@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface MusicRepository {
     suspend fun insertSong(title: String, uri: String)
 
-//    suspend fun deleteSong()
+    suspend fun deleteSong(song: Song)
 
     fun getAllSongs(): Flow<List<Song>>
 

@@ -18,6 +18,8 @@ class MetaDataReaderImpl(
 ) : MetaDataReader {
 
     override fun getMetaDataFromUri(contentUri: Uri): MetaData? {
+        print("content uri meta data reader: $contentUri")
+
         if (contentUri.scheme != "content") {
             return null
         }

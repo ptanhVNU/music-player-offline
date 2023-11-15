@@ -48,7 +48,8 @@ fun HomeScreen(
     homeUiState: HomeUiState,
     musicPlaybackUiState: MusicPlaybackUiState,
     onNavigateToMusicPlayer: () -> Unit,
-    selectMusicFromStorage: (List<Uri>) -> Unit
+    selectMusicFromStorage: (List<Uri>) -> Unit,
+    onDeleteMusic: (Song) -> Unit,
 ) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
@@ -134,6 +135,9 @@ fun HomeScreen(
                                         Log.d("HOME-SCREEN", "item: ${item.title}")
                                         onEvent(HomeEvent.OnMusicSelected(item))
                                         onEvent(HomeEvent.PlayMusic)
+                                    },
+                                    onDeleteSong = {
+                                        onDeleteMusic(it)
                                     }
                                 )
                             }
@@ -142,6 +146,7 @@ fun HomeScreen(
                         with(musicPlaybackUiState) {
                             if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
                                 MusicMiniPlayerCard(
+                                    /// TODO: Impl progress bar
                                     modifier = Modifier
                                         .padding(10.dp)
                                         .offset(y = screenHeight - 100.dp),
