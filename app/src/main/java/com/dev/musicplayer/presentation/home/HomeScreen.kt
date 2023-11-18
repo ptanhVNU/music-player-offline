@@ -1,15 +1,8 @@
 package com.dev.musicplayer.presentation.home
 
-import android.content.ContentUris
-import android.content.Context
-import android.database.Cursor
 import android.net.Uri
-import android.os.Environment
-import android.provider.DocumentsContract
-import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -66,7 +59,7 @@ fun HomeScreen(
 
 
     val selectAudioLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia()
+        contract = ActivityResultContracts.GetMultipleContents()
     ) {
         selectMusicFromStorage(it)
     }
@@ -85,9 +78,7 @@ fun HomeScreen(
                     IconButton(
                         onClick = {
                             selectAudioLauncher.launch(
-                                PickVisualMediaRequest(
-                                    ActivityResultContracts.PickVisualMedia.ImageAndVideo
-                                )
+                              "audio/*"
                             )
                         },
                     ) {
@@ -174,109 +165,6 @@ fun HomeScreen(
 
                 else -> {}
             }
-
-
         }
     }
-}
-
-
-
-
-fun convertTemporaryUriToPermanent(context: Context, uri: Uri): Uri {
-    return if (DocumentsContract.isDocumentUri(context, uri)) {
-        // Nếu là Uri của DocumentProvider, thực hiện xử lý tương ứng
-        if (isExternalStorageDocument(uri)) {
-            val docId = DocumentsContract.getDocumentId(uri)
-            val split = docId.split(":").toTypedArray()
-            val type = split[0]
-
-            if ("primary".equals(type, ignoreCase = true)) {
-                // External Storage
-                Uri.parse("file://" + Environment.getExternalStorageDirectory() + "/" + split[1])
-            } else {
-                // TODO: Xử lý các loại DocumentProvider khác (nếu có)
-                uri
-            }
-        } else if (isDownloadsDocument(uri)) {
-            // DownloadsProvider
-            val id = DocumentsContract.getDocumentId(uri)
-            val contentUri = ContentUris.withAppendedId(
-                Uri.parse("content://downloads/public_downloads"),
-                id.toLong()
-            )
-            Uri.parse("file://" + getDataColumn(context, contentUri, null, null))
-        } else if (isMediaDocument(uri)) {
-            // MediaProvider
-            val docId = DocumentsContract.getDocumentId(uri)
-            val split = docId.split(":").toTypedArray()
-            val type = split[0]
-
-            var contentUri: Uri? = null
-            when (type) {
-                "image" -> contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                "video" -> contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                "audio" -> contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-            }
-
-            Uri.parse("file://" + getDataColumn(context, contentUri, "_id=?", arrayOf(split[1])))
-        } else {
-            // TODO: Xử lý các loại DocumentProvider khác (nếu có)
-            uri
-        }
-    } else if ("content".equals(uri.scheme, ignoreCase = true)) {
-        // Uri có scheme là "content"
-        Uri.parse("file://" + getDataColumn(context, uri, null, null))
-    } else if ("file".equals(uri.scheme, ignoreCase = true)) {
-        // Uri có scheme là "file"
-        uri
-    } else {
-        // Không xác định được loại Uri, trả về nguyên bản
-        uri
-    }
-}
-
-private fun isExternalStorageDocument(uri: Uri): Boolean {
-    return "com.android.externalstorage.documents" == uri.authority
-}
-
-private fun isDownloadsDocument(uri: Uri): Boolean {
-    return "com.android.providers.downloads.documents" == uri.authority
-}
-
-private fun isMediaDocument(uri: Uri): Boolean {
-    return "com.android.providers.media.documents" == uri.authority
-}
-
-private fun getDataColumn(
-    context: Context,
-    uri: Uri?,
-    selection: String?,
-    selectionArgs: Array<String>?
-): String? {
-    var cursor: Cursor? = null
-    val column = "_data"
-    val projection = arrayOf(column)
-
-    try {
-        cursor = uri?.let {
-            context.contentResolver.query(
-                it,
-                projection,
-                selection,
-                selectionArgs,
-                null
-            )
-        }
-        cursor?.let {
-            if (it.moveToFirst()) {
-                val columnIndex = it.getColumnIndexOrThrow(column)
-                return it.getString(columnIndex)
-            }
-        }
-    } finally {
-        cursor?.close()
-    }
-
-    return null
 }

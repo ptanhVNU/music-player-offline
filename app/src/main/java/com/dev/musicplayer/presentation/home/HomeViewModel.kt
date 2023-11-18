@@ -60,8 +60,6 @@ class HomeViewModel @Inject constructor(
                 application.contentResolver.let { contentResolver ->
 
                     val readUriPermission: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
- val permissions = contentResolver.persistedUriPermissions
-                  contentResolver.takePersistableUriPermission(uri, readUriPermission)
 
                     val songMetaData = metaDataReader.getMetaDataFromUri(uri, contentResolver)
                     if (songMetaData != null) {
