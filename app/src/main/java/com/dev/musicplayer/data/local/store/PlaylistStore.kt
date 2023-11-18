@@ -2,7 +2,6 @@ package com.dev.musicplayer.data.local.store
 
 import com.dev.musicplayer.data.local.dao.PlaylistDao
 import com.dev.musicplayer.data.local.entities.Playlist
-import com.dev.musicplayer.data.local.entities.Song
 import javax.inject.Inject
 
 class PlaylistStore @Inject constructor(

@@ -20,8 +20,8 @@ import com.dev.musicplayer.presentation.home.HomeViewModel
 import com.dev.musicplayer.presentation.nowplaying.PlayerScreen
 import com.dev.musicplayer.presentation.nowplaying.PlayerViewModel
 import com.dev.musicplayer.presentation.playlist.AlbumViewModel
-import com.dev.musicplayer.presentation.playlist.listSongOfAlbum.ListSongScreen
 import com.dev.musicplayer.presentation.playlist.PlaylistScreen
+import com.dev.musicplayer.presentation.playlist.listSongOfAlbum.ListSongScreen
 
 @UnstableApi
 @Composable
@@ -51,8 +51,11 @@ fun NavGraph(
                 onNavigateToMusicPlayer = {
                     navController.navigate(Screen.PlayerScreen.route)
                 },
-                selectMusicFromStorage = {
-                    homeViewModel.selectMusicFromStorage(it)
+                selectMusicFromStorage = { uris  ->
+                    homeViewModel.selectMusicFromStorage(uris)
+                },
+                onDeleteMusic = {
+                    homeViewModel.deleteSong(it)
                 }
             )
         }
@@ -62,16 +65,17 @@ fun NavGraph(
             arguments = listOf(navArgument("albumId") { type = NavType.LongType })
         ) { backStackEntry ->
             val albumId = backStackEntry.arguments?.getLong("albumId") ?: 0
-            val viewModel =  hiltViewModel<AlbumViewModel>()
+            val viewModel = hiltViewModel<AlbumViewModel>()
             ListSongScreen(navController, albumId, viewModel)
         }
 
         composable(
             route = Screen.PlaylistScreen.route
         ) {
-            val viewModel =  hiltViewModel<AlbumViewModel>()
+            val viewModel = hiltViewModel<AlbumViewModel>()
             val playlist by viewModel.playlist.collectAsState(initial = emptyList())
-            PlaylistScreen(playlist = playlist,
+            PlaylistScreen(
+                playlist = playlist,
                 onEvent = viewModel::onPlaylistEvent,
                 playlistUiState = viewModel.playlistUiState,
                 albumViewModel = viewModel,
@@ -95,7 +99,7 @@ fun NavGraph(
                 )
             }
         ) {
-            val playerViewModel =  hiltViewModel<PlayerViewModel>()
+            val playerViewModel = hiltViewModel<PlayerViewModel>()
 
             PlayerScreen(
                 onEvent = playerViewModel::onEvent,

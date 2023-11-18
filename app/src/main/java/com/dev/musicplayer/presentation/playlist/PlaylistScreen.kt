@@ -28,7 +28,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -89,12 +88,15 @@ fun PlaylistScreen(
             }
         }
     }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        Column {
+        Column (
+            modifier = Modifier.padding(10.dp)
+        ) {
             Spacer(modifier = Modifier.height(25.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -102,7 +104,7 @@ fun PlaylistScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "   Your Library",
+                    text = "Your Library",
                     color = Color.White,
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
@@ -204,12 +206,6 @@ fun PlaylistScreen(
                     }
                 }
             }
-            Scaffold(
-            ) {
-                    contentPadding->Box(
-                modifier = Modifier.padding(contentPadding
-                )
-            )
                 if (showBottomSheet) {
                     ModalBottomSheet(
                         onDismissRequest = {
@@ -258,6 +254,6 @@ fun PlaylistScreen(
             }
         }
     }
-}
+
 
 

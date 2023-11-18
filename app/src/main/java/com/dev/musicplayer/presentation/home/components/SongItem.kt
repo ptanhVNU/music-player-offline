@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Image
-import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,6 +26,7 @@ fun SongItem(
     modifier: Modifier = Modifier,
     item: Song,
     onItemClicked:( ) -> Unit,
+    onDeleteSong: (Song) -> Unit,
 ) {
     Row(
 
@@ -71,15 +70,12 @@ fun SongItem(
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        IconButton(onClick = { /*TODO*/ }) {
-            Icon(
-                modifier = Modifier.size(18.dp),
-                imageVector = Icons.Rounded.MoreVert,
-                contentDescription = "MORE",
-                tint = Color.White
-            )
-        }
-
+        DropDownMenuButton(
+            onAddPlayList = {},
+            onDeleteSong = {
+                onDeleteSong(item)
+            }
+        )
 
     }
 }

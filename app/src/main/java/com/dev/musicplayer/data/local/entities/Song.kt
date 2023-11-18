@@ -12,7 +12,7 @@ import java.time.Instant
 //    ],
 )
 data class Song(
-    @PrimaryKey(autoGenerate = true) val songId : Long = 0,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val songId : Long = 0,
     @ColumnInfo(name = "uri") val uri: String,
     // playlistId
     val artistName: String = "Unknown artist",
