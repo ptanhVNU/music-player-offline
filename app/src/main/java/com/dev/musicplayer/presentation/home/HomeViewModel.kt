@@ -1,13 +1,14 @@
 package com.dev.musicplayer.presentation.home
 
+import android.annotation.SuppressLint
+import android.app.Application
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.dev.musicplayer.core.services.MetaDataReader
 import com.dev.musicplayer.data.local.entities.Song
@@ -18,6 +19,7 @@ import com.dev.musicplayer.domain.use_case.PauseMusicUseCase
 import com.dev.musicplayer.domain.use_case.PlayMusicUseCase
 import com.dev.musicplayer.domain.use_case.ResumeMusicUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,12 +37,11 @@ class HomeViewModel @Inject constructor(
 
     private val musicRepository: MusicRepositoryImpl,
     private val metaDataReader: MetaDataReader,
-) : ViewModel() {
+
+    private val application: Application,
+) : AndroidViewModel(application) {
     var homeUiState by mutableStateOf(HomeUiState())
         private set
-
-    private val _selectedSongFileName = MutableLiveData<String>()
-    private val selectedSongFileName: LiveData<String> get() = _selectedSongFileName
 
     private var _listSong: MutableStateFlow<List<Song>> = MutableStateFlow(arrayListOf())
     val listSong: StateFlow<List<Song>> = _listSong.asStateFlow()
@@ -52,13 +53,22 @@ class HomeViewModel @Inject constructor(
     }
 
 
+    @SuppressLint("SuspiciousIndentation")
     fun selectMusicFromStorage(uris: List<Uri>) {
-        for (uri: Uri in uris) {
-            println("uri: ${uri.toString()}")
-            val songMetaData = metaDataReader.getMetaDataFromUri(uri)
-            if (songMetaData != null) {
-                _selectedSongFileName.value = songMetaData.fileName ?: "Unknown"
-                selectedSongFileName.value?.let { insertSong(it, uri.toString()) }
+        viewModelScope.launch(Dispatchers.IO) {
+            for (uri: Uri in uris) {
+                application.contentResolver.let { contentResolver ->
+
+                    val readUriPermission: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
+ val permissions = contentResolver.persistedUriPermissions
+                  contentResolver.takePersistableUriPermission(uri, readUriPermission)
+
+                    val songMetaData = metaDataReader.getMetaDataFromUri(uri, contentResolver)
+                    if (songMetaData != null) {
+
+                        insertSong(songMetaData.fileName, songMetaData.uri.toString())
+                    }
+                }
             }
         }
     }
@@ -91,7 +101,6 @@ class HomeViewModel @Inject constructor(
     }
 
 
-
     private fun getMusics() {
 
         viewModelScope.launch {
@@ -102,7 +111,7 @@ class HomeViewModel @Inject constructor(
                 )
             }.collect {
                 Log.d("TAG", "SIZE MUSIC ENTITY: ${it.size}")
-                _listSong.value  = it
+                _listSong.value = it
                 homeUiState = homeUiState.copy(
                     loading = false,
                     musics = _listSong.value

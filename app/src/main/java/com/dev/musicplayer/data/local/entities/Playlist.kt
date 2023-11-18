@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "playlist")
 data class Playlist(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")  val playlistId: Long = 0,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")  val id: Long = 0,
     val title: String,
     val thumbnail: String? = null, // image url
     val songs: List<String>? = null, //
-    @ColumnInfo(name = "created_at") val createdAt: Int,
+    @ColumnInfo(name = "created_at") val createdAt: Long,
 )

@@ -1,6 +1,5 @@
 package com.dev.musicplayer.di
 
-import android.app.Application
 import com.dev.musicplayer.core.services.MetaDataReader
 import com.dev.musicplayer.core.services.MetaDataReaderImpl
 import dagger.Module
@@ -16,7 +15,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 object AppModule {
     @Provides
     @ViewModelScoped
-    fun provideMetaDataReader(app: Application): MetaDataReader {
-        return MetaDataReaderImpl(app)
+    fun provideMetaDataReader(): MetaDataReader {
+        return MetaDataReaderImpl()
     }
 }
