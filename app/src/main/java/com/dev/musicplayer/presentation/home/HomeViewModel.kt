@@ -56,8 +56,7 @@ class HomeViewModel @Inject constructor(
             println("uri: ${uri.toString()}")
             val songMetaData = metaDataReader.getMetaDataFromUri(uri)
             if (songMetaData != null) {
-                _selectedSongFileName.value = songMetaData.fileName ?: "Unknown"
-                selectedSongFileName.value?.let { insertSong(it, uri.toString()) }
+                 insertSong(songMetaData.fileName, uri.toString())
             }
         }
     }
