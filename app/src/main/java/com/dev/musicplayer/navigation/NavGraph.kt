@@ -30,6 +30,7 @@ fun NavGraph(
     sharedViewModel: SharedViewModel,
 ) {
     val musicPlaybackUiState = sharedViewModel.musicPlaybackUiState
+    val homeViewModel = hiltViewModel<HomeViewModel>()
 
     NavHost(
         navController = navController,
@@ -39,8 +40,6 @@ fun NavGraph(
         composable(
             route = Screen.HomeScreen.route
         ) {
-
-            val homeViewModel = hiltViewModel<HomeViewModel>()
             val songs by homeViewModel.listSong.collectAsState(initial = emptyList())
 
             HomeScreen(
@@ -51,12 +50,22 @@ fun NavGraph(
                 onNavigateToMusicPlayer = {
                     navController.navigate(Screen.PlayerScreen.route)
                 },
-                selectMusicFromStorage = { uris  ->
+                selectMusicFromStorage = { uris ->
                     homeViewModel.selectMusicFromStorage(uris)
                 },
+                pickPhoto = {uri ->
+                    homeViewModel.pickPhoto(uri)
+
+                },
+
                 onDeleteMusic = {
                     homeViewModel.deleteSong(it)
-                }
+                },
+                onEditMusic = {
+                    //TODO: EDIT
+                    homeViewModel.editSong(it)
+                },
+
             )
         }
 
@@ -76,10 +85,14 @@ fun NavGraph(
             val playlist by viewModel.playlist.collectAsState(initial = emptyList())
             PlaylistScreen(
                 playlist = playlist,
-                onEvent = viewModel::onPlaylistEvent,
+                onEvent = homeViewModel::onEvent,
                 playlistUiState = viewModel.playlistUiState,
                 albumViewModel = viewModel,
-                navController = navController
+                navController = navController,
+                musicPlaybackUiState = musicPlaybackUiState,
+                onNavigateToMusicPlayer = {
+                    navController.navigate(Screen.PlayerScreen.route)
+                },
             )
         }
 

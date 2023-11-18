@@ -3,6 +3,7 @@ package com.dev.musicplayer.data.local.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import com.dev.musicplayer.data.local.entities.Song
 import kotlinx.coroutines.flow.Flow
@@ -16,8 +17,12 @@ interface SongDao {
     @Delete
     suspend fun deleteSong(song: Song)
 
+    @Update
+    suspend fun editSong(song: Song)
+
     @Query("SELECT * FROM song ")
     fun getAllSongs(): Flow<List<Song>>
+
 
     @Query("SELECT * FROM song ORDER BY title ASC")
     fun getSongsOrderedByName(): Flow<List<Song>>

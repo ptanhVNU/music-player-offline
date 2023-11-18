@@ -1,9 +1,12 @@
 package com.dev.musicplayer.presentation.playlist
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -16,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.dev.musicplayer.ui.theme.MusicAppTypography
 
 @Composable
 fun PlusButton(icon: ImageVector, onClick: () -> Unit) {
@@ -32,23 +36,24 @@ fun PlusButton(icon: ImageVector, onClick: () -> Unit) {
 
 @Composable
 fun SortButton(icon: ImageVector, onClick: () -> Unit) {
-    IconButton(
-        onClick = onClick,
+    Box(
+
         modifier = Modifier
-            .width(200.dp)
-            .height(20.dp)
+            .height(25.dp)
+            .padding(start = 10.dp)
+            .clickable { onClick() }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.width(10.dp))
             Icon(
                 imageVector = icon,
                 contentDescription = "Sort"
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
-                text = "Recently played"
+                text = "Recently played",
+                style = MusicAppTypography.bodyMedium
             )
         }
     }

@@ -1,7 +1,6 @@
-package com.dev.musicplayer.presentation.playlist.Component
+package com.dev.musicplayer.presentation.playlist.components
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
@@ -46,7 +45,7 @@ import com.dev.musicplayer.presentation.playlist.AlbumViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlaylistItem(
+fun PlaylistItemView(
     item: Playlist,
     albumViewModel: AlbumViewModel,
     navController: NavController
@@ -55,7 +54,8 @@ fun PlaylistItem(
     val dismissState = rememberDismissState(
         confirmValueChange = {
             if (it == DismissValue.DismissedToStart ||
-                it == DismissValue.DismissedToEnd) {
+                it == DismissValue.DismissedToEnd
+            ) {
                 Log.d("Item", "{${item.title}}")
                 albumViewModel.deletePlaylist(item)
                 show = false
@@ -75,22 +75,22 @@ fun PlaylistItem(
                 DismissBackground(dismissState)
             },
             dismissContent = {
-                albumScreen(item, onClick = { navController.navigate("listSong/${item.id}") })
+                PlaylistContent(item, onClick = { navController.navigate("listSong/${item.id}") })
             }
         )
     }
 }
 
 @Composable
-fun albumScreen(
+fun PlaylistContent(
     album: Playlist,
-    onClick: () -> Unit) {
-    Card (
+    onClick: () -> Unit,
+) {
+    Card(
         modifier = Modifier
-            .background(Color.Black)
             .fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
-            .clickable(onClick =  onClick)
+            .clickable(onClick = onClick)
     ) {
         Row(
             modifier = Modifier
@@ -146,9 +146,9 @@ fun DismissBackground(dismissState: DismissState) {
             contentDescription = "delete"
         )
         Spacer(modifier = Modifier)
-        if (direction == DismissDirection.EndToStart ) Icon(
-        Icons.Default.Delete,
-        contentDescription = "delete"
-    )
+        if (direction == DismissDirection.EndToStart) Icon(
+            Icons.Default.Delete,
+            contentDescription = "delete"
+        )
     }
 }

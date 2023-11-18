@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material3.DropdownMenu
@@ -26,6 +27,7 @@ import com.dev.musicplayer.ui.theme.MusicAppTypography
 fun DropDownMenuButton(
     onDeleteSong: () -> Unit,
     onAddPlayList: () -> Unit,
+    onEditSong: () -> Unit,
 ) {
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
@@ -69,6 +71,18 @@ fun DropDownMenuButton(
                 text = { Text("Delete",  style = MusicAppTypography.bodySmall,) },
                 onClick = {
                     onDeleteSong()
+                }
+            )
+            DropdownMenuItem(
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Delete",
+                    )
+                },
+                text = { Text("Edit",  style = MusicAppTypography.bodySmall,) },
+                onClick = {
+                    onEditSong()
                 }
             )
         }
