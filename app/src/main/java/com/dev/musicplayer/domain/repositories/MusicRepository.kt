@@ -9,6 +9,8 @@ interface MusicRepository {
 
     suspend fun deleteSong(song: Song)
 
+    suspend fun editSong(song: Song)
+
     fun getAllSongs(): Flow<List<Song>>
 
     fun getSongsOrderedByName(): Flow<List<MusicEntity>>

@@ -77,12 +77,13 @@ class AlbumViewModel @Inject constructor(
 
     //lắng nghe sự kiện của UI
     fun onPlaylistEvent(event: PlaylistEvent) {
-        when (event) {
+        playlistUiState = when (event) {
             is PlaylistEvent.SelectedPlaylist -> {
-                playlistUiState = playlistUiState.copy(selectedPlaylist = event.selectedPlaylist)
+                playlistUiState.copy(selectedPlaylist = event.selectedPlaylist)
             }
+
             is PlaylistEvent.SwipeTdoDelete -> {
-                playlistUiState = playlistUiState.copy(deletedPlaylist = event.deletedPlaylist)
+                playlistUiState.copy(deletedPlaylist = event.deletedPlaylist)
             }
         }
     }

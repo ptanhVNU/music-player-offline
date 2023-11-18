@@ -46,6 +46,10 @@ class HomeViewModel @Inject constructor(
     private var _listSong: MutableStateFlow<List<Song>> = MutableStateFlow(arrayListOf())
     val listSong: StateFlow<List<Song>> = _listSong.asStateFlow()
 
+    private val _selectedPhotoUri = MutableStateFlow<String>(value = "")
+    val selectedPhotoUri: StateFlow<String> get() = _selectedPhotoUri
+
+
     init {
         getMusics()
 
@@ -59,7 +63,6 @@ class HomeViewModel @Inject constructor(
             for (uri: Uri in uris) {
                 application.contentResolver.let { contentResolver ->
 
-                    val readUriPermission: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
 
                     val songMetaData = metaDataReader.getMetaDataFromUri(uri, contentResolver)
                     if (songMetaData != null) {
@@ -71,15 +74,39 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: HomeEvent) {
+    fun pickPhoto(uri: Uri) {
+
+        application.contentResolver.let { contentResolver ->
+            val readUriPermission: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            contentResolver.takePersistableUriPermission(uri, readUriPermission)
+
+            _selectedPhotoUri.value = uri.toString()
+        }
+
+    }
+
+
+     fun editSong(song: Song) {
+//        song.thumbnail = pickPhoto()
+            viewModelScope.launch(Dispatchers.IO) {
+                song.thumbnail = selectedPhotoUri.value
+
+                musicRepository.editSong(song)
+
+                getMusics()
+            }
+
+    }
+
+    fun onEvent(event: MusicEvent) {
         when (event) {
-            HomeEvent.PlayMusic -> playMusic()
+            MusicEvent.PlayMusic -> playMusic()
 
-            HomeEvent.ResumeMusic -> resumeMusic()
+            MusicEvent.ResumeMusic -> resumeMusic()
 
-            HomeEvent.PauseMusic -> pauseMusic()
+            MusicEvent.PauseMusic -> pauseMusic()
 
-            is HomeEvent.OnMusicSelected -> {
+            is MusicEvent.OnMusicSelected -> {
                 homeUiState = homeUiState.copy(selectedMusic = event.selectedMusic)
             }
         }
@@ -91,6 +118,7 @@ class HomeViewModel @Inject constructor(
             musicRepository.insertSong(title, uri)
         }
     }
+
 
     public fun deleteSong(song: Song) {
         viewModelScope.launch {
