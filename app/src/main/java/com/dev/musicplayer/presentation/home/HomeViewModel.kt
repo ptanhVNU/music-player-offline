@@ -1,16 +1,12 @@
 package com.dev.musicplayer.presentation.home
 
-import android.annotation.SuppressLint
 import android.app.Application
-import android.content.Intent
-import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.dev.musicplayer.core.services.MetaDataReader
+import com.dev.musicplayer.core.services.LocalMediaProvider
 import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.data.local.repositories.MusicRepositoryImpl
 import com.dev.musicplayer.domain.use_case.AddMediaItemsUseCase
@@ -19,11 +15,8 @@ import com.dev.musicplayer.domain.use_case.PauseMusicUseCase
 import com.dev.musicplayer.domain.use_case.PlayMusicUseCase
 import com.dev.musicplayer.domain.use_case.ResumeMusicUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,73 +27,36 @@ class HomeViewModel @Inject constructor(
     private val playMusicUseCase: PlayMusicUseCase,
     private val resumeMusicUseCase: ResumeMusicUseCase,
     private val pauseMusicUseCase: PauseMusicUseCase,
-
     private val musicRepository: MusicRepositoryImpl,
-    private val metaDataReader: MetaDataReader,
-
+    private val localMediaProvider: LocalMediaProvider,
     private val application: Application,
 ) : AndroidViewModel(application) {
     var homeUiState by mutableStateOf(HomeUiState())
         private set
 
-    private var _listSong: MutableStateFlow<List<Song>> = MutableStateFlow(arrayListOf())
-    val listSong: StateFlow<List<Song>> = _listSong.asStateFlow()
+    private val _videoItemsStateFlow = localMediaProvider.getMediaVideosFlow().stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
 
-    private val _selectedPhotoUri = MutableStateFlow<String>(value = "")
-    val selectedPhotoUri: StateFlow<String> get() = _selectedPhotoUri
+    val videoItemsStateFlow = _videoItemsStateFlow
+
 
 
     init {
-        getMusics()
 
-        addMediaItemsUseCase(_listSong.value)
+//        videoItemsStateFlow.collect()
+//        addMediaItemsUseCase()
     }
 
 
-    @SuppressLint("SuspiciousIndentation")
-    fun selectMusicFromStorage(uris: List<Uri>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            for (uri: Uri in uris) {
-                application.contentResolver.let { contentResolver ->
 
-
-                    val songMetaData = metaDataReader.getMetaDataFromUri(uri, contentResolver)
-                    if (songMetaData != null) {
-
-                        insertSong(songMetaData.fileName, songMetaData.uri.toString())
-                    }
-                }
-            }
-        }
-    }
-
-    fun pickPhoto(uri: Uri) {
-
-        application.contentResolver.let { contentResolver ->
-            val readUriPermission: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            contentResolver.takePersistableUriPermission(uri, readUriPermission)
-
-            _selectedPhotoUri.value = uri.toString()
-        }
-
-    }
-
-
-     fun editSong(song: Song) {
-//        song.thumbnail = pickPhoto()
-            viewModelScope.launch(Dispatchers.IO) {
-                song.thumbnail = selectedPhotoUri.value
-
-                musicRepository.editSong(song)
-
-                getMusics()
-            }
-
-    }
 
     fun onEvent(event: MusicEvent) {
         when (event) {
-            MusicEvent.PlayMusic -> playMusic()
+
+//            HomeEvent.PlayMusic -> playMusic()
 
             MusicEvent.ResumeMusic -> resumeMusic()
 
@@ -109,15 +65,11 @@ class HomeViewModel @Inject constructor(
             is MusicEvent.OnMusicSelected -> {
                 homeUiState = homeUiState.copy(selectedMusic = event.selectedMusic)
             }
+
+            else -> {}
         }
     }
 
-    // tương tác với db
-    private fun insertSong(title: String, uri: String) {
-        viewModelScope.launch {
-            musicRepository.insertSong(title, uri)
-        }
-    }
 
 
     public fun deleteSong(song: Song) {
@@ -126,37 +78,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-
-    private fun getMusics() {
-
-        viewModelScope.launch {
-            getMusicsUseCase().catch {
-                homeUiState = homeUiState.copy(
-                    loading = false,
-                    errorMessage = it.message
-                )
-            }.collect {
-                Log.d("TAG", "SIZE MUSIC ENTITY: ${it.size}")
-                _listSong.value = it
-                homeUiState = homeUiState.copy(
-                    loading = false,
-                    musics = _listSong.value
-                )
-
-                addMediaItemsUseCase(_listSong.value)
-            }
-
-        }
-    }
-
-    private fun playMusic() {
-
-        homeUiState.apply {
-            _listSong.value.indexOf(selectedMusic).let {
-                playMusicUseCase(it)
-            }
-        }
-    }
+//    private fun playMusic() {
+//
+//        homeUiState.apply {
+//            _listSong.value.indexOf(selectedMusic).let {
+//                playMusicUseCase(it)
+//            }
+//        }
+//    }
 
     private fun resumeMusic() {
         resumeMusicUseCase()

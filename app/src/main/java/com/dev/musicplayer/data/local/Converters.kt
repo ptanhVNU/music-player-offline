@@ -32,4 +32,6 @@ class Converters {
     @TypeConverter
     fun dateToTimestamp(date: LocalDateTime?): Long? =
         date?.atZone(ZoneOffset.UTC)?.toInstant()?.toEpochMilli()
+
+
 }

@@ -41,7 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
-import com.dev.musicplayer.data.local.entities.Song
+import com.dev.musicplayer.core.shared.models.MediaAudioItem
 import com.dev.musicplayer.presentation.home.components.MusicMiniPlayerCard
 import com.dev.musicplayer.presentation.home.components.SongItem
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
@@ -52,52 +52,15 @@ import com.dev.musicplayer.utils.PlayerState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    songs: List<Song>,
+    songs: List<MediaAudioItem>,
     onEvent: (MusicEvent) -> Unit,
     homeUiState: HomeUiState,
     musicPlaybackUiState: MusicPlaybackUiState,
     onNavigateToMusicPlayer: () -> Unit,
-    selectMusicFromStorage: (List<Uri>) -> Unit,
-    pickPhoto: (Uri) -> Unit,
-    onDeleteMusic: (Song) -> Unit,
-    onEditMusic: (Song) -> Unit,
 ) {
-    val context = LocalContext.current
     val configuration = LocalConfiguration.current
 
     val screenHeight = configuration.screenHeightDp.dp
-    val screenWidth = configuration.screenWidthDp.dp
-
-
-    val selectAudioLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetMultipleContents(),
-    ) {
-        selectMusicFromStorage(it)
-
-        if (it.size == 1)
-            Toast.makeText(context, "Added ${it.size} song success", Toast.LENGTH_LONG).show()
-        else
-            Toast.makeText(context, "Added ${it.size} songs success", Toast.LENGTH_LONG).show()
-    }
-    var selectedImageUri by remember {
-        mutableStateOf<Uri?>(null)
-    }
-
-    val selectPhotoLauncher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
-            it?.let {
-
-                pickPhoto(it)
-            }
-            selectedImageUri = it
-        }
-
-
-    fun selectePhoto() {
-        selectPhotoLauncher.launch(
-            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-        )
-    }
 
     Scaffold(
         topBar = {
@@ -111,22 +74,7 @@ fun HomeScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = {
-                            selectAudioLauncher.launch(
-                                "audio/*"
-                            )
-                        },
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(32.dp),
-                            imageVector = Icons.Rounded.Add,
-                            contentDescription = "Add audio"
-                        )
-                    }
-                    IconButton(
-                        onClick = {
-                            selectePhoto()
-                        },
+                        onClick = {},
                     ) {
                         Icon(
                             modifier = Modifier.size(32.dp),
@@ -169,27 +117,13 @@ fun HomeScreen(
                                     item = item,
                                     modifier = Modifier.fillParentMaxWidth(),
                                     onItemClicked = {
-                                        Log.d("HOME-SCREEN", "item: ${item.title}")
-                                        onEvent(MusicEvent.OnMusicSelected(item))
-                                        onEvent(MusicEvent.PlayMusic)
+                                        Log.d("HOME-SCREEN", "item: ${item.artWork}")
+//                                        onEvent(HomeEvent.OnMusicSelected(item))
+//                                        onEvent(HomeEvent.PlayMusic)
                                     },
-                                    onDeleteSong = {
-                                        onDeleteMusic(it)
-                                    },
-                                    onEditSong = {
-                                        onEditMusic(it)
-                                    }
 
-                                )
-                            }
 
-                            item {
-                                AsyncImage(
-                                    model = selectedImageUri,
-                                    contentDescription = null,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    contentScale = ContentScale.Crop
-                                )
+                                    )
                             }
                         }
 

@@ -1,7 +1,6 @@
 package com.dev.musicplayer.domain.service
 
 import com.dev.musicplayer.data.local.entities.Song
-import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.utils.PlayerState
 
 interface PlaybackController {

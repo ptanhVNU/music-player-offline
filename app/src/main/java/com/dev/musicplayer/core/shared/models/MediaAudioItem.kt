@@ -15,7 +15,8 @@ data class MediaAudioItem(
     val dateModified: Long,
     val artWork: Bitmap?,
 
-    ) {
+
+) {
     fun Long.toHhMmSs(): String {
         val seconds = (this / 1000).toInt()
         val hours = seconds / 3600
@@ -32,3 +33,4 @@ data class MediaAudioItem(
         )
     }
 }
+

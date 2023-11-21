@@ -40,7 +40,11 @@ fun NavGraph(
         composable(
             route = Screen.HomeScreen.route
         ) {
-            val songs by homeViewModel.listSong.collectAsState(initial = emptyList())
+
+
+            val songs by homeViewModel.videoItemsStateFlow.collectAsState()
+//            val songs by homeViewModel.listSong.collectAsState(initial = emptyList())
+
 
             HomeScreen(
                 songs = songs,
@@ -49,21 +53,6 @@ fun NavGraph(
                 musicPlaybackUiState = musicPlaybackUiState,
                 onNavigateToMusicPlayer = {
                     navController.navigate(Screen.PlayerScreen.route)
-                },
-                selectMusicFromStorage = { uris ->
-                    homeViewModel.selectMusicFromStorage(uris)
-                },
-                pickPhoto = {uri ->
-                    homeViewModel.pickPhoto(uri)
-
-                },
-
-                onDeleteMusic = {
-                    homeViewModel.deleteSong(it)
-                },
-                onEditMusic = {
-                    //TODO: EDIT
-                    homeViewModel.editSong(it)
                 },
 
             )
