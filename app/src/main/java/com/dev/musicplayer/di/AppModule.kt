@@ -1,11 +1,12 @@
 package com.dev.musicplayer.di
 
-import com.dev.musicplayer.core.services.MetaDataReader
-import com.dev.musicplayer.core.services.MetaDataReaderImpl
+import android.content.Context
+import com.dev.musicplayer.core.services.LocalMediaProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
@@ -15,7 +16,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 object AppModule {
     @Provides
     @ViewModelScoped
-    fun provideMetaDataReader(): MetaDataReader {
-        return MetaDataReaderImpl()
+    fun provideLocalMediaProvider(@ApplicationContext context: Context): LocalMediaProvider {
+        return LocalMediaProvider(context)
     }
 }

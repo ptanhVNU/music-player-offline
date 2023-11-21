@@ -41,7 +41,8 @@ fun NavGraph(
         ) {
 
             val homeViewModel = hiltViewModel<HomeViewModel>()
-            val songs by homeViewModel.listSong.collectAsState(initial = emptyList())
+            val songs by homeViewModel.videoItemsStateFlow.collectAsState()
+//            val songs by homeViewModel.listSong.collectAsState(initial = emptyList())
 
             HomeScreen(
                 songs = songs,
@@ -51,12 +52,16 @@ fun NavGraph(
                 onNavigateToMusicPlayer = {
                     navController.navigate(Screen.PlayerScreen.route)
                 },
-                selectMusicFromStorage = { uris  ->
-                    homeViewModel.selectMusicFromStorage(uris)
-                },
-                onDeleteMusic = {
-                    homeViewModel.deleteSong(it)
-                }
+//                selectMusicFromStorage = { uris ->
+//                    homeViewModel.selectMusicFromStorage(uris)
+//                },
+//                onDeleteMusic = {
+//                    homeViewModel.deleteSong(it)
+//                },
+//                onEditMusic = {
+//                    print(it)
+//                },
+//                pickPhoto = {},
             )
         }
 

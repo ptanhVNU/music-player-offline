@@ -18,21 +18,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.dev.musicplayer.data.local.entities.Song
+import com.dev.musicplayer.core.shared.models.SongItem
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 
 @Composable
 fun SongItem(
     modifier: Modifier = Modifier,
-    item: Song,
+    item: SongItem,
     onItemClicked:( ) -> Unit,
-    onDeleteSong: (Song) -> Unit,
+//    onDeleteSong: (Song) -> Unit,
 ) {
     Row(
 
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onItemClicked() }
+            .clickable {
+                onItemClicked() }
             .padding(12.dp),
         horizontalArrangement = Arrangement.SpaceAround,
     ) {
@@ -56,13 +57,13 @@ fun SongItem(
         ) {
             Text(
 //                modifier = Modifier.fillMaxWidth(),
-                text = item.title,
+                text = item.name,
                 style = MusicAppTypography.titleMedium,
             )
             Spacer(Modifier.height(4.dp))
             Text(
 //                modifier = Modifier.fillMaxWidth(),
-                text = item.artistName, style = MusicAppTypography.titleSmall.copy(
+                text = item.id.toString(), style = MusicAppTypography.titleSmall.copy(
                     color = Color.Gray
                 )
             )
@@ -73,7 +74,7 @@ fun SongItem(
         DropDownMenuButton(
             onAddPlayList = {},
             onDeleteSong = {
-                onDeleteSong(item)
+//                onDeleteSong(item)
             }
         )
 

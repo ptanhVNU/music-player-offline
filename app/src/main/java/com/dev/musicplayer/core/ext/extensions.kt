@@ -25,3 +25,12 @@ fun Long.toTime(): String {
 
     return stringBuffer.toString()
 }
+
+fun String.removeFileExtension(): String {
+    val lastDotIndex = lastIndexOf('.')
+    return if (lastDotIndex != -1) {
+        substring(0, lastDotIndex)
+    } else {
+        this
+    }
+}
