@@ -12,7 +12,7 @@ import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.database.getStringOrNull
-import com.dev.musicplayer.core.shared.models.SongItem
+import com.dev.musicplayer.core.shared.models.MediaAudioItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +24,7 @@ import java.io.File
 class LocalMediaProvider(
 	private val applicationContext: Context
 ){
-	fun getSongItemFromContentUri(uri: Uri): SongItem?{
+	fun getSongItemFromContentUri(uri: Uri): MediaAudioItem?{
 
 		var displayName:String? = null
 
@@ -54,7 +54,7 @@ class LocalMediaProvider(
 
 	fun getMediaVideosFlow(
 
-	): Flow<List<SongItem>> = callbackFlow {
+	): Flow<List<MediaAudioItem>> = callbackFlow {
 		val observer = object : ContentObserver(null) {
 			override fun onChange(selfChange: Boolean) {
 				trySend(getMediaSong())
@@ -68,8 +68,8 @@ class LocalMediaProvider(
 	}.flowOn(Dispatchers.IO).distinctUntilChanged()
 
 	private fun getMediaSong(
-	): List<SongItem> {
-		val songItems = mutableListOf<SongItem>()
+	): List<MediaAudioItem> {
+		val mediaAudioItems = mutableListOf<MediaAudioItem>()
 		applicationContext.contentResolver.query(
 			MUSIC_COLLECTION_URI,
 			AUDIO_PROJECTION,
@@ -99,8 +99,8 @@ class LocalMediaProvider(
 				val songCover: Bitmap? = if (coverBytes != null)
 					BitmapFactory.decodeByteArray(coverBytes, 0, coverBytes.size) else null
 
-				songItems.add(
-					SongItem(
+				mediaAudioItems.add(
+					MediaAudioItem(
 						id = id,
 						name = title,
 						artist =artist,
@@ -108,12 +108,13 @@ class LocalMediaProvider(
 						duration = cursor.getLong(durationColumn),
 						uri = uri,
 						size = cursor.getLong(sizeColumn),
-						dateModified = cursor.getLong(dateModifiedColumn)
+						dateModified = cursor.getLong(dateModifiedColumn),
+						artWork = songCover,
 					)
 				)
 			}
 		}
-		return songItems.filter { File(it.absolutePath).exists() }
+		return mediaAudioItems.filter { File(it.absolutePath).exists() }
 	}
 
 	companion object {

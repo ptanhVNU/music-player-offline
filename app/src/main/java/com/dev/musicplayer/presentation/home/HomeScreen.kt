@@ -41,7 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
-import com.dev.musicplayer.core.shared.models.SongItem
+import com.dev.musicplayer.core.shared.models.MediaAudioItem
 import com.dev.musicplayer.presentation.home.components.MusicMiniPlayerCard
 import com.dev.musicplayer.presentation.home.components.SongItem
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
@@ -52,7 +52,7 @@ import com.dev.musicplayer.utils.PlayerState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    songs: List<SongItem>,
+    songs: List<MediaAudioItem>,
     onEvent: (HomeEvent) -> Unit,
     homeUiState: HomeUiState,
     musicPlaybackUiState: MusicPlaybackUiState,
@@ -169,7 +169,7 @@ fun HomeScreen(
                                     item = item,
                                     modifier = Modifier.fillParentMaxWidth(),
                                     onItemClicked = {
-                                        Log.d("HOME-SCREEN", "item: ${item.uri}")
+                                        Log.d("HOME-SCREEN", "item: ${item.artWork}")
 //                                        onEvent(HomeEvent.OnMusicSelected(item))
 //                                        onEvent(HomeEvent.PlayMusic)
                                     },
