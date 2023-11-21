@@ -2,11 +2,14 @@ package com.dev.musicplayer.presentation.home
 
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,12 +28,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.presentation.home.components.MusicMiniPlayerCard
@@ -44,11 +53,14 @@ import com.dev.musicplayer.utils.PlayerState
 @Composable
 fun HomeScreen(
     songs: List<Song>,
-    onEvent: (HomeEvent) -> Unit,
+    onEvent: (MusicEvent) -> Unit,
     homeUiState: HomeUiState,
     musicPlaybackUiState: MusicPlaybackUiState,
     onNavigateToMusicPlayer: () -> Unit,
-    selectMusicFromStorage: (List<Uri>) -> Unit
+    selectMusicFromStorage: (List<Uri>) -> Unit,
+    pickPhoto: (Uri) -> Unit,
+    onDeleteMusic: (Song) -> Unit,
+    onEditMusic: (Song) -> Unit,
 ) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
@@ -58,9 +70,33 @@ fun HomeScreen(
 
 
     val selectAudioLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetMultipleContents()
+        contract = ActivityResultContracts.GetMultipleContents(),
     ) {
         selectMusicFromStorage(it)
+
+        if (it.size == 1)
+            Toast.makeText(context, "Added ${it.size} song success", Toast.LENGTH_LONG).show()
+        else
+            Toast.makeText(context, "Added ${it.size} songs success", Toast.LENGTH_LONG).show()
+    }
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val selectPhotoLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
+            it?.let {
+
+                pickPhoto(it)
+            }
+            selectedImageUri = it
+        }
+
+
+    fun selectePhoto() {
+        selectPhotoLauncher.launch(
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+        )
     }
 
     Scaffold(
@@ -76,7 +112,9 @@ fun HomeScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            selectAudioLauncher.launch("audio/*")
+                            selectAudioLauncher.launch(
+                                "audio/*"
+                            )
                         },
                     ) {
                         Icon(
@@ -87,7 +125,7 @@ fun HomeScreen(
                     }
                     IconButton(
                         onClick = {
-                            //TODO: Implement search bar
+                            selectePhoto()
                         },
                     ) {
                         Icon(
@@ -132,9 +170,25 @@ fun HomeScreen(
                                     modifier = Modifier.fillParentMaxWidth(),
                                     onItemClicked = {
                                         Log.d("HOME-SCREEN", "item: ${item.title}")
-                                        onEvent(HomeEvent.OnMusicSelected(item))
-                                        onEvent(HomeEvent.PlayMusic)
+                                        onEvent(MusicEvent.OnMusicSelected(item))
+                                        onEvent(MusicEvent.PlayMusic)
+                                    },
+                                    onDeleteSong = {
+                                        onDeleteMusic(it)
+                                    },
+                                    onEditSong = {
+                                        onEditMusic(it)
                                     }
+
+                                )
+                            }
+
+                            item {
+                                AsyncImage(
+                                    model = selectedImageUri,
+                                    contentDescription = null,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentScale = ContentScale.Crop
                                 )
                             }
                         }
@@ -142,13 +196,14 @@ fun HomeScreen(
                         with(musicPlaybackUiState) {
                             if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
                                 MusicMiniPlayerCard(
+                                    /// TODO: Impl progress bar
                                     modifier = Modifier
                                         .padding(10.dp)
                                         .offset(y = screenHeight - 100.dp),
                                     music = currentMusic,
                                     playerState = playerState,
-                                    onResumeClicked = { onEvent(HomeEvent.ResumeMusic) },
-                                    onPauseClicked = { onEvent(HomeEvent.PauseMusic) },
+                                    onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
+                                    onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
                                     onClick = { onNavigateToMusicPlayer() }
                                 )
                             }
@@ -158,13 +213,6 @@ fun HomeScreen(
 
                 else -> {}
             }
-
-
         }
     }
 }
-
-
-
-
-

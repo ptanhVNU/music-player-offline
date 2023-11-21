@@ -28,20 +28,16 @@ class MusicRepositoryImpl @Inject constructor(
 
     override fun getAllSongs() = songStore.getAllSongs()
 
-//    override suspend fun deleteSong(song: MusicEntity) = withContext(
-//        Dispatchers.IO
-//    ) {
-//        songStore.deleteSong(song)
-//    }
+    override suspend fun deleteSong(song: Song) = withContext(
+        Dispatchers.IO
+    ) {
+        songStore.deleteSong(song)
+    }
 
-//    override fun getAllSongs() = flow  {
-//        val songs = songStore.getAllSongs()
-//
-//        val musicEntities = songs.map { it.toEntity() }
-//
-//        emit(musicEntities)
-//
-//    }.flowOn(Dispatchers.IO)
+    override suspend fun editSong(song: Song) = withContext(Dispatchers.IO) {
+
+        songStore.editSong(song)
+    }
 
 
     override fun getSongsOrderedByName() = flow<List<MusicEntity>> {
