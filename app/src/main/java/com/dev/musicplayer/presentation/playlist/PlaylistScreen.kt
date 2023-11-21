@@ -64,12 +64,6 @@ fun PlaylistScreen(
     albumViewModel: AlbumViewModel,
     navController : NavController
 ) {
-    var text by remember {
-        mutableStateOf("")
-    }
-    var active by remember {
-        mutableStateOf(false)
-    }
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember {
@@ -113,51 +107,6 @@ fun PlaylistScreen(
                         showBottomSheet = true
                     }
                 )
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                SearchBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(all = 10.dp)
-                        .clip(RoundedCornerShape(10.dp)),
-                    query = text,
-                    onQueryChange = {
-                        text = it
-                    },
-                    onSearch = {
-                        active = false
-                    },
-                    active = active,
-                    onActiveChange = {
-                        active = it
-                    },
-                    placeholder = {
-                        Text(text = "Search")
-                    },
-                    leadingIcon = {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")
-                    },
-                    trailingIcon = {
-                        if(active) {
-                            Icon(
-                                modifier = Modifier.clickable {
-                                    if(text.isNotEmpty()) {
-                                        text = ""
-                                    } else {
-                                        //ấn close thì list search biến mất
-                                        active = false;
-                                    }
-                                },
-                                imageVector =  Icons.Default.Close,
-                                contentDescription = "Close Icon"
-                            )
-                        }
-                    }
-                ) {
-                }
             }
             Spacer(modifier = Modifier.height(16.dp))
             SortButton(
