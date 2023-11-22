@@ -1,24 +1,16 @@
 package com.dev.musicplayer.presentation.home
 
-import android.net.Uri
-import android.util.Log
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,18 +20,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.core.shared.models.MediaAudioItem
 import com.dev.musicplayer.presentation.home.components.MusicMiniPlayerCard
@@ -58,6 +44,7 @@ fun HomeScreen(
     musicPlaybackUiState: MusicPlaybackUiState,
     onNavigateToMusicPlayer: () -> Unit,
 ) {
+    val context = LocalContext.current
     val configuration = LocalConfiguration.current
 
     val screenHeight = configuration.screenHeightDp.dp
@@ -110,16 +97,21 @@ fun HomeScreen(
                             contentPadding = PaddingValues(bottom = 80.dp),
                             state = scrollState,
                         ) {
-                            items(
+                            itemsIndexed(
                                 songs,
-                            ) { item ->
+                            ) { index, item ->
                                 SongItem(
                                     item = item,
                                     modifier = Modifier.fillParentMaxWidth(),
                                     onItemClicked = {
-                                        Log.d("HOME-SCREEN", "item: ${item.artWork}")
-//                                        onEvent(HomeEvent.OnMusicSelected(item))
-//                                        onEvent(HomeEvent.PlayMusic)
+//                                        val player = ExoPlayer.Builder(context).build()
+//                                        val mediaItem = MediaItem.fromUri(item.uri)
+//                                        player.setMediaItem(mediaItem)
+//                                        player.prepare()
+//                                        player.play()
+//                                        Log.d("HOME-SCREEN", "absolute path: ${item.absolutePath}")
+//                                        onEvent(MusicEvent.OnMusicSelected(item))
+//                                        onEvent(MusicEvent.PlayMusic)
                                     },
 
 
@@ -128,7 +120,7 @@ fun HomeScreen(
                         }
 
                         with(musicPlaybackUiState) {
-                            if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
+                            if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED)
                                 MusicMiniPlayerCard(
                                     /// TODO: Impl progress bar
                                     modifier = Modifier
@@ -140,7 +132,7 @@ fun HomeScreen(
                                     onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
                                     onClick = { onNavigateToMusicPlayer() }
                                 )
-                            }
+
                         }
                     }
                 }

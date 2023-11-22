@@ -26,14 +26,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.dev.musicplayer.data.local.entities.Song
+import com.dev.musicplayer.core.shared.models.MediaAudioItem
 import com.dev.musicplayer.utils.PlayerState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MusicMiniPlayerCard(
     modifier: Modifier = Modifier,
-    music: Song?,
+    music: MediaAudioItem?,
     playerState: PlayerState?,
     onResumeClicked: () -> Unit,
     onPauseClicked: () -> Unit,
@@ -65,14 +65,14 @@ fun MusicMiniPlayerCard(
                     Spacer(modifier = Modifier.width(15.dp))
                     Column {
                         Text(
-                            text = title,
+                            text = name,
                             style = MaterialTheme.typography.titleMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                         Text(
-                            text = artistName,
+                            text = artist,
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis

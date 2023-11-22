@@ -9,6 +9,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import com.dev.musicplayer.core.shared.models.MediaAudioItem
 import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.domain.service.PlaybackController
 import com.dev.musicplayer.utils.PlayerState
@@ -21,7 +22,7 @@ class MusicPlaybackController(context: Context) : PlaybackController {
     private val mediaController: MediaController?
         get() = if (mediaControllerFuture.isDone) mediaControllerFuture.get() else null
 
-    override var mediaControllerCallback: ((PlayerState, Song?, Long, Long, Boolean, Boolean) -> Unit)? = null
+    override var mediaControllerCallback: ((PlayerState, MediaAudioItem?, Long, Long, Boolean, Boolean) -> Unit)? = null
 
     init {
         val sessionToken =
@@ -38,7 +39,7 @@ class MusicPlaybackController(context: Context) : PlaybackController {
                 with(player) {
                     mediaControllerCallback?.invoke(
                         playbackState.toPlayerState(isPlaying),
-                        currentMediaItem?.toSong(),
+                        currentMediaItem?.toMediaAudioItem(),
                         currentPosition.coerceAtLeast(0L),
                         duration.coerceAtLeast(0L),
                         shuffleModeEnabled,
@@ -56,29 +57,34 @@ class MusicPlaybackController(context: Context) : PlaybackController {
             else -> if (isPlaying) PlayerState.PLAYING else PlayerState.PAUSED
         }
 
-    override fun addMediaItems(musics: List<Song>) {
+
+    override fun addMediaItemsFromStorage(musics: List<MediaAudioItem>) {
         val mediaItems = musics.map {
             MediaItem.Builder()
-                .setMediaId(it.uri)
-                .setUri(it.uri.toUri())
+                .setMediaId(it.absolutePath)
+                .setUri(it.uri)
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setTitle(it.title)
-                        .setArtist(it.artistName)
-//                        .setArtworkUri(Uri.parse(it.thumbnail))
+                        .setTitle(it.name)
+                        .setArtist(it.artist)
                         .build()
                 )
                 .build()
         }
-        Log.d("TAG", "addMediaItems: ${mediaItems.size}")
+
         mediaController?.setMediaItems(mediaItems)
+
+        Log.d("TAG", "addMediaItems: ${mediaItems.size}")
     }
 
     override fun play(mediaItemIndex: Int) {
+
         mediaController?.apply {
             seekToDefaultPosition(mediaItemIndex)
+            Log.d("Music Playback Controller", "play index: $mediaItemIndex")
             playWhenReady = true
             prepare()
+
         }
     }
 
@@ -129,4 +135,15 @@ fun MediaItem.toSong() = Song(
     artistName = mediaMetadata.artist.toString(),
     uri = mediaId,
     thumbnail = mediaMetadata.artworkUri.toString(),
+)
+
+fun MediaItem.toMediaAudioItem() = MediaAudioItem(
+    id = mediaId.toLong(),
+    name = mediaMetadata.title.toString(),
+    artist = mediaMetadata.artist.toString(),
+    absolutePath = mediaId,
+    artWork = null,
+    duration = 0L,
+    uri = mediaId.toUri(),
+    size = 0L,
 )

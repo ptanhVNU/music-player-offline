@@ -60,7 +60,6 @@ class MainActivity : ComponentActivity() {
                     RequestPermissionAndDisplayContent {
                         MainApp(sharedViewModel)
                     }
-
                 }
             }
         }
@@ -133,7 +132,7 @@ private fun RequestPermissionAndDisplayContent(
                 tint = MaterialTheme.colorScheme.error
             )
             Text(
-                text = "Chưa được cấp quyền",
+                text = "Grant permission first to use this app",
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.error
             )

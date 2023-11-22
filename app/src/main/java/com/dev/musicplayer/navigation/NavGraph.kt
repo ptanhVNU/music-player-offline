@@ -42,12 +42,8 @@ fun NavGraph(
         ) {
 
 
-            val songs by homeViewModel.videoItemsStateFlow.collectAsState()
-//            val songs by homeViewModel.listSong.collectAsState(initial = emptyList())
-
-
             HomeScreen(
-                songs = songs,
+                songs = homeViewModel.musicList,
                 onEvent = homeViewModel::onEvent,
                 homeUiState = homeViewModel.homeUiState,
                 musicPlaybackUiState = musicPlaybackUiState,

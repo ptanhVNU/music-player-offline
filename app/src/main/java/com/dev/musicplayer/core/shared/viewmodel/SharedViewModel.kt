@@ -42,7 +42,7 @@ class SharedViewModel @Inject constructor(
                 isRepeatOneEnabled = isRepeatOneEnabled
             )
 
-            Log.d("TAG", "setMediaControllerCallback: $playerState")
+            Log.d("SHARED-VIEW-MODEL", "Player state: $playerState")
 
             if (playerState == PlayerState.PLAYING) {
                 viewModelScope.launch {

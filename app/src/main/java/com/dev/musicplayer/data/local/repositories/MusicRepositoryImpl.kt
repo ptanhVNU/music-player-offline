@@ -1,5 +1,7 @@
 package com.dev.musicplayer.data.local.repositories
 
+import com.dev.musicplayer.core.services.LocalMediaProvider
+import com.dev.musicplayer.core.shared.models.MediaAudioItem
 import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.data.local.store.SongStore
 import com.dev.musicplayer.domain.repositories.MusicRepository
@@ -11,7 +13,8 @@ import javax.inject.Singleton
 
 @Singleton
 class MusicRepositoryImpl @Inject constructor(
-    private val songStore: SongStore
+    private val songStore: SongStore,
+    private val localMediaProvider: LocalMediaProvider,
 ) : MusicRepository {
     // songs
     override suspend fun insertSong(title: String, uri: String) = withContext(Dispatchers.IO) {
@@ -24,6 +27,9 @@ class MusicRepositoryImpl @Inject constructor(
     }
 
     override fun getAllSongs() = songStore.getAllSongs()
+    override suspend fun getMediaAudioFromStorage(): List<MediaAudioItem> = withContext(Dispatchers.IO) {
+        localMediaProvider.getMediaSong()
+    }
 
     override suspend fun deleteSong(song: Song) = withContext(
         Dispatchers.IO

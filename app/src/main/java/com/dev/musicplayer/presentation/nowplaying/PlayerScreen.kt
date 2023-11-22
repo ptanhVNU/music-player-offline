@@ -69,7 +69,7 @@ fun PlayerScreen(
             ) {
                 with(musicPlaybackUiState) {
                     currentMusic?.run {
-                        SongDescription(title = title, name = artistName)
+                        SongDescription(title = name, name = artist)
                         Spacer(modifier = Modifier.height(20.dp))
                     }
                     PlayerSlider(
