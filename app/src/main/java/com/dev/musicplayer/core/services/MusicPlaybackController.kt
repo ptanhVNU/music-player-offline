@@ -86,6 +86,7 @@ class MusicPlaybackController(context: Context) : PlaybackController {
             seekToDefaultPosition(mediaItemIndex)
             playWhenReady = true
             prepare()
+            play()
         }
     }
 

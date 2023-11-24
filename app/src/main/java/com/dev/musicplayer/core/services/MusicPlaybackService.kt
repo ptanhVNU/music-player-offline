@@ -3,6 +3,7 @@ package com.dev.musicplayer.core.services
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -47,7 +48,7 @@ class MusicPlaybackService : MediaSessionService() {
             .build()
     }
 
-    private inner class MediaSessionCallback : MediaSession.Callback {
+    @UnstableApi private inner class MediaSessionCallback : MediaSession.Callback {
         override fun onAddMediaItems(
             mediaSession: MediaSession,
             controller: MediaSession.ControllerInfo,
@@ -58,6 +59,15 @@ class MusicPlaybackService : MediaSessionService() {
             }.toMutableList()
 
             return Futures.immediateFuture(updatedMediaItems)
+        }
+
+        override fun onPlaybackResumption(
+            mediaSession: MediaSession,
+            controller: MediaSession.ControllerInfo
+        ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
+            mediaSession.player.prepare()
+            mediaSession.player.play()
+            return super.onPlaybackResumption(mediaSession, controller)
         }
     }
 }

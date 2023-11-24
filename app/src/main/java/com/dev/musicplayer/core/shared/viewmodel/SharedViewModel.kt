@@ -1,5 +1,6 @@
 package com.dev.musicplayer.core.shared.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -40,6 +41,7 @@ class SharedViewModel @Inject constructor(
                 isShuffleEnabled = isShuffleEnabled,
                 isRepeatOneEnabled = isRepeatOneEnabled
             )
+            Log.d("Shared View Model", "music playback: $musicPlaybackUiState")
 
             if (playerState == PlayerState.PLAYING) {
                 viewModelScope.launch {
