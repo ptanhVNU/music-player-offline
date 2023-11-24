@@ -41,7 +41,8 @@ fun MusicMiniPlayerCard(
 ) {
     Card(
         modifier = modifier,
-        onClick = onClick
+        onClick = onClick,
+//        colors = MusicAppColorScheme.onPrimary
     ) {
         Row(
             modifier = Modifier

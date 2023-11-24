@@ -34,11 +34,10 @@ class HomeViewModel @Inject constructor(
     }
 
     init {
-
         getMusicData()
     }
 
-    private fun getMusicData() {
+     fun getMusicData() {
         homeUiState = homeUiState.copy(loading = true)
         viewModelScope.launch {
             delay(1.seconds)
