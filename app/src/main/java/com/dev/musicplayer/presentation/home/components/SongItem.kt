@@ -14,28 +14,28 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.dev.musicplayer.core.ext.toTime
-import com.dev.musicplayer.core.shared.models.MediaAudioItem
+import coil.request.ImageRequest
+import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 
 @SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun SongItem(
     modifier: Modifier = Modifier,
-    item: MediaAudioItem,
+    item: MusicEntity,
     onItemClicked: () -> Unit,
-//    onDeleteSong: (Song) -> Unit,
-
 ) {
     Row(
         modifier = modifier
@@ -47,12 +47,20 @@ fun SongItem(
 
         horizontalArrangement = Arrangement.SpaceAround,
     ) {
-        if (item.artWork != null)
+        if (item.image.isNotEmpty())
             AsyncImage(
-                model = item.artWork,
-                contentDescription = null,
-                modifier = Modifier.size(50.dp),
-                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .size(45.dp)
+                    .shadow(
+                        elevation = 1.dp,
+                        shape = MaterialTheme.shapes.small
+                    )
+                    .clip(MaterialTheme.shapes.small),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(item.image)
+                    .build(),
+                contentScale = ContentScale.FillBounds,
+                contentDescription = "Music cover"
             ) else
             Box(modifier = Modifier.size(50.dp)) {
                 Icon(
@@ -71,7 +79,7 @@ fun SongItem(
             ) {
             Text(
 //                modifier = Modifier.fillMaxWidth(),
-                text = item.name,
+                text = item.title,
                 style = MusicAppTypography.bodyLarge,
             )
 
@@ -85,12 +93,7 @@ fun SongItem(
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        Text(
-            text = item.duration.toTime(),
-            style = MusicAppTypography.titleSmall.copy(
-                color = Color.Gray
-            )
-        )
+
         DropDownMenuButton(
             onAddPlayList = {},
             onDeleteSong = { },

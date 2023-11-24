@@ -22,9 +22,13 @@ import javax.inject.Singleton
 object DataModule {
     @Provides
     @Singleton
-    fun provideMusicRepository(songStore: SongStore, localMediaProvider: LocalMediaProvider) : MusicRepository {
+    fun provideMusicRepository(
+        songStore: SongStore,
+        localMediaProvider: LocalMediaProvider
+    ): MusicRepository {
         return MusicRepositoryImpl(songStore, localMediaProvider)
     }
+
     @Provides
     @Singleton
     fun provideLocalMediaProvider(@ApplicationContext context: Context): LocalMediaProvider {
@@ -34,16 +38,17 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun providePlaylistRepository(playListStore: PlaylistStore) : PlaylistRepository {
+    fun providePlaylistRepository(playListStore: PlaylistStore): PlaylistRepository {
         return PlaylistRepositoryImpl(playListStore)
     }
 
 
     @Provides
     @Singleton
+
     fun provideMusicPlaybackController(
         @ApplicationContext context: Context,
-    ) : PlaybackController {
+    ): PlaybackController {
         return MusicPlaybackController(context)
     }
 }

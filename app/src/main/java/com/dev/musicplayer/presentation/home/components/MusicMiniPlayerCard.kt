@@ -26,14 +26,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.dev.musicplayer.core.shared.models.MediaAudioItem
+import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.utils.PlayerState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MusicMiniPlayerCard(
     modifier: Modifier = Modifier,
-    music: MediaAudioItem?,
+    music: MusicEntity?,
     playerState: PlayerState?,
     onResumeClicked: () -> Unit,
     onPauseClicked: () -> Unit,
@@ -51,13 +51,12 @@ fun MusicMiniPlayerCard(
         ) {
             Row(modifier = Modifier.weight(1f)) {
                 music?.run {
-//                   Icon(imageVector = Icons.Default.MusicNote, contentDescription = null)
                     AsyncImage(
                         modifier = Modifier
                             .size(45.dp)
                             .clip(MaterialTheme.shapes.small),
                         model = coil.request.ImageRequest.Builder(LocalContext.current)
-                            .data("https://i1.sndcdn.com/artworks-y4ek09OJcvON38Ys-gs2icQ-t500x500.jpg")
+                            .data(image)
                             .build(),
                         contentScale = ContentScale.FillBounds,
                         contentDescription = "Music cover"
@@ -65,7 +64,7 @@ fun MusicMiniPlayerCard(
                     Spacer(modifier = Modifier.width(15.dp))
                     Column {
                         Text(
-                            text = name,
+                            text = title,
                             style = MaterialTheme.typography.titleMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis

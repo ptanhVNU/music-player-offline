@@ -2,15 +2,14 @@ package com.dev.musicplayer.core.services
 
 import android.content.ComponentName
 import android.content.Context
-import android.util.Log
-import androidx.core.net.toUri
+import android.net.Uri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
-import com.dev.musicplayer.core.shared.models.MediaAudioItem
-import com.dev.musicplayer.data.local.entities.Song
+import com.dev.musicplayer.core.ext.toMusicEntity
+import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.domain.service.PlaybackController
 import com.dev.musicplayer.utils.PlayerState
 import com.google.common.util.concurrent.ListenableFuture
@@ -22,7 +21,14 @@ class MusicPlaybackController(context: Context) : PlaybackController {
     private val mediaController: MediaController?
         get() = if (mediaControllerFuture.isDone) mediaControllerFuture.get() else null
 
-    override var mediaControllerCallback: ((PlayerState, MediaAudioItem?, Long, Long, Boolean, Boolean) -> Unit)? = null
+    override var mediaControllerCallback: (
+        (playerState: PlayerState,
+         currentMusic: MusicEntity?,
+         currentPosition: Long,
+         totalDuration: Long,
+         isShuffleEnabled: Boolean,
+         isRepeatOneEnabled: Boolean) -> Unit
+    )? = null
 
     init {
         val sessionToken =
@@ -39,7 +45,7 @@ class MusicPlaybackController(context: Context) : PlaybackController {
                 with(player) {
                     mediaControllerCallback?.invoke(
                         playbackState.toPlayerState(isPlaying),
-                        currentMediaItem?.toMediaAudioItem(),
+                        currentMediaItem?.toMusicEntity(),
                         currentPosition.coerceAtLeast(0L),
                         duration.coerceAtLeast(0L),
                         shuffleModeEnabled,
@@ -57,34 +63,29 @@ class MusicPlaybackController(context: Context) : PlaybackController {
             else -> if (isPlaying) PlayerState.PLAYING else PlayerState.PAUSED
         }
 
-
-    override fun addMediaItemsFromStorage(musics: List<MediaAudioItem>) {
+    override fun addMediaItems(musics: List<MusicEntity>) {
         val mediaItems = musics.map {
             MediaItem.Builder()
-                .setMediaId(it.absolutePath)
-                .setUri(it.uri)
+                .setMediaId(it.source)
+                .setUri(it.source)
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setTitle(it.name)
+                        .setTitle(it.title)
                         .setArtist(it.artist)
+                        .setArtworkUri(Uri.parse(it.image))
                         .build()
                 )
                 .build()
         }
-
+        mediaController?.clearMediaItems()
         mediaController?.setMediaItems(mediaItems)
-
-        Log.d("TAG", "addMediaItems: ${mediaItems.size}")
     }
 
     override fun play(mediaItemIndex: Int) {
-
         mediaController?.apply {
             seekToDefaultPosition(mediaItemIndex)
-            Log.d("Music Playback Controller", "play index: $mediaItemIndex")
             playWhenReady = true
             prepare()
-
         }
     }
 
@@ -127,23 +128,3 @@ class MusicPlaybackController(context: Context) : PlaybackController {
         mediaControllerCallback = null
     }
 }
-
-
-fun MediaItem.toSong() = Song(
-//    id = mediaId,
-    title = mediaMetadata.title.toString(),
-    artistName = mediaMetadata.artist.toString(),
-    uri = mediaId,
-    thumbnail = mediaMetadata.artworkUri.toString(),
-)
-
-fun MediaItem.toMediaAudioItem() = MediaAudioItem(
-    id = mediaId.toLong(),
-    name = mediaMetadata.title.toString(),
-    artist = mediaMetadata.artist.toString(),
-    absolutePath = mediaId,
-    artWork = null,
-    duration = 0L,
-    uri = mediaId.toUri(),
-    size = 0L,
-)

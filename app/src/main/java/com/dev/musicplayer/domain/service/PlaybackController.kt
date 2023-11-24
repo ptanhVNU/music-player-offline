@@ -1,13 +1,21 @@
 package com.dev.musicplayer.domain.service
 
-import com.dev.musicplayer.core.shared.models.MediaAudioItem
+import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.utils.PlayerState
 
 interface PlaybackController {
-    var mediaControllerCallback: ((PlayerState, MediaAudioItem?, Long, Long, Boolean, Boolean) -> Unit)?
+    var mediaControllerCallback: (
+        (
+        playerState: PlayerState,
+        currentMusic: MusicEntity?,
+        currentPosition: Long,
+        totalDuration: Long,
+        isShuffleEnabled: Boolean,
+        isRepeatOneEnabled: Boolean
+    ) -> Unit
+    )?
 
-
-    fun addMediaItemsFromStorage(musics: List<MediaAudioItem>)
+    fun addMediaItems(musics: List<MusicEntity>)
 
     fun play(mediaItemIndex: Int)
 

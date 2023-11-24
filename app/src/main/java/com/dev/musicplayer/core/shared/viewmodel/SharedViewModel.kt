@@ -1,6 +1,5 @@
 package com.dev.musicplayer.core.shared.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -42,12 +41,10 @@ class SharedViewModel @Inject constructor(
                 isRepeatOneEnabled = isRepeatOneEnabled
             )
 
-            Log.d("SHARED-VIEW-MODEL", "Player state: $playerState")
-
             if (playerState == PlayerState.PLAYING) {
                 viewModelScope.launch {
                     while (true) {
-                        delay(duration = 1.seconds)
+                        delay(1.seconds)
                         musicPlaybackUiState = musicPlaybackUiState.copy(
                             currentPosition = getCurrentMusicPositionUseCase()
                         )

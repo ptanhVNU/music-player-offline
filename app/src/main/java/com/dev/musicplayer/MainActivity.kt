@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
                 Surface() {
                     RequestPermissionAndDisplayContent {
                         MainApp(sharedViewModel)
+
                     }
                 }
             }
@@ -143,7 +144,7 @@ private fun RequestPermissionAndDisplayContent(
                     colors = ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.errorContainer)
                 ) {
                     Text(
-                       text = "Thử lại",
+                       text = "Retry",
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
                 }

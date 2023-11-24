@@ -3,7 +3,7 @@ package com.dev.musicplayer.di
 import com.dev.musicplayer.domain.repositories.MusicRepository
 import com.dev.musicplayer.domain.repositories.PlaylistRepository
 import com.dev.musicplayer.domain.service.PlaybackController
-import com.dev.musicplayer.domain.use_case.AddMediaItemFromStorageUseCase
+import com.dev.musicplayer.domain.use_case.AddMediaItemsUseCase
 import com.dev.musicplayer.domain.use_case.DestroyMediaControllerUseCase
 import com.dev.musicplayer.domain.use_case.GetCurrentMusicPositionUseCase
 import com.dev.musicplayer.domain.use_case.GetMusicsUseCase
@@ -33,16 +33,12 @@ object DomainModule {
         return GetMusicsUseCase(repository)
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideAddMediaItemsUseCase(playbackController: PlaybackController): AddMediaItemsFromLocalDBUseCase {
-//        return AddMediaItemsFromLocalDBUseCase(playbackController)
-//    }
+
 
     @Provides
     @Singleton
-    fun provideAddMediaFromStorageItemsUseCase(playbackController: PlaybackController):AddMediaItemFromStorageUseCase {
-        return  AddMediaItemFromStorageUseCase(playbackController)
+    fun provideAddMediaItemUseCase(playbackController: PlaybackController): AddMediaItemsUseCase {
+        return  AddMediaItemsUseCase(playbackController)
     }
 
     @Provides

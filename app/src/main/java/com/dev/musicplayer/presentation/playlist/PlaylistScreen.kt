@@ -1,6 +1,5 @@
 package com.dev.musicplayer.presentation.playlist
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,8 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.data.local.entities.Playlist
-import com.dev.musicplayer.presentation.home.MusicEvent
-import com.dev.musicplayer.presentation.home.components.MusicMiniPlayerCard
 import com.dev.musicplayer.presentation.playlist.components.PlaylistItemView
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
@@ -54,7 +50,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PlaylistScreen(
     playlist: List<Playlist>,
-    onEvent: (MusicEvent) -> Unit,
+//    onEvent: (MusicEvent) -> Unit,
     musicPlaybackUiState: MusicPlaybackUiState,
     playlistUiState: PlaylistUiState,
     albumViewModel: AlbumViewModel,
@@ -157,22 +153,7 @@ fun PlaylistScreen(
                                 }
                             }
 
-                            with(musicPlaybackUiState) {
-                                Log.d("TAG", "PlaylistScreen: $musicPlaybackUiState")
-//                                if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
-                                    MusicMiniPlayerCard(
-                                        /// TODO: Impl progress bar
-                                        modifier = Modifier
-                                            .padding(10.dp)
-                                            .offset(y = screenHeight - 100.dp),
-                                        music = currentMusic,
-                                        playerState = playerState,
-                                        onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
-                                        onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
-                                        onClick = { onNavigateToMusicPlayer() }
-                                    )
-//                                }
-                            }
+
                         }
                     }
                     else -> {}

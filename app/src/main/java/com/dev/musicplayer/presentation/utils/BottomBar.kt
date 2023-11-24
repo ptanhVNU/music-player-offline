@@ -2,6 +2,8 @@ package com.dev.musicplayer.presentation.utils
 
 import BottomNavItem
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -16,6 +18,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
@@ -52,11 +55,12 @@ fun BottomBar(
 
     AnimatedVisibility(
         visible = bottomBarState,
-//        enter = slideInVertically(initialOffsetY = { -it }),
-//        exit = slideOutVertically(targetOffsetY = { -it }),
+        enter = slideInVertically(initialOffsetY = { -it }),
+        exit = slideOutVertically(targetOffsetY = { -it }),
         content = {
             NavigationBar(
-                modifier = Modifier.height(95.dp)
+                modifier = Modifier.height(95.dp),
+                containerColor = Color.Transparent
             ) {
                 bottomNavItems.forEach { item ->
                     AddItem(

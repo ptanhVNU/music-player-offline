@@ -2,6 +2,7 @@ package com.dev.musicplayer.core.services
 
 import android.content.ContentUris
 import android.content.Context
+import android.database.ContentObserver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
@@ -12,6 +13,12 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.database.getStringOrNull
 import com.dev.musicplayer.core.shared.models.MediaAudioItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import java.io.File
 
 class LocalMediaProvider(
@@ -46,20 +53,19 @@ class LocalMediaProvider(
     private var selectionArg = arrayOf("1")
     private val sortOrder = "${MediaStore.Audio.AudioColumns.DISPLAY_NAME} ASC"
 
-//	fun getMediaVideosFlow(
-//
-//	): Flow<List<MediaAudioItem>> = callbackFlow {
-//		val observer = object : ContentObserver(null) {
-//			override fun onChange(selfChange: Boolean) {
-//				trySend(getMediaSong())
-//			}
-//		}
-//		applicationContext.contentResolver.registerContentObserver(MUSIC_COLLECTION_URI, true, observer)
-//		// initial value
-//		trySend(getMediaSong())
-//		// close
-//		awaitClose { applicationContext.contentResolver.unregisterContentObserver(observer) }
-//	}.flowOn(Dispatchers.IO).distinctUntilChanged()
+    fun getMediaAudiosFlow(): Flow<List<MediaAudioItem>> = callbackFlow {
+        val observer = object : ContentObserver(null) {
+            override fun onChange(selfChange: Boolean) {
+                trySend(getMediaSong())
+            }
+        }
+        applicationContext.contentResolver.registerContentObserver(MUSIC_COLLECTION_URI, true, observer)
+        // initial value
+        trySend(getMediaSong())
+        // close
+        awaitClose { applicationContext.contentResolver.unregisterContentObserver(observer) }
+    }.flowOn(Dispatchers.IO).distinctUntilChanged()
+
 
     fun getMediaSong(
     ): List<MediaAudioItem> {
@@ -113,7 +119,6 @@ class LocalMediaProvider(
     }
 
     companion object {
-
         const val TAG = "Local Media Provider"
 
         val MUSIC_COLLECTION_URI: Uri
@@ -134,5 +139,4 @@ class LocalMediaProvider(
             MediaStore.Audio.Media.DATE_MODIFIED
         )
     }
-
 }

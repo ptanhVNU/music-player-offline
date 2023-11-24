@@ -30,7 +30,7 @@ fun NavGraph(
     sharedViewModel: SharedViewModel,
 ) {
     val musicPlaybackUiState = sharedViewModel.musicPlaybackUiState
-    val homeViewModel = hiltViewModel<HomeViewModel>()
+
 
     NavHost(
         navController = navController,
@@ -41,16 +41,16 @@ fun NavGraph(
             route = Screen.HomeScreen.route
         ) {
 
+            val homeViewModel = hiltViewModel<HomeViewModel>()
 
             HomeScreen(
-                songs = homeViewModel.musicList,
+
                 onEvent = homeViewModel::onEvent,
                 homeUiState = homeViewModel.homeUiState,
                 musicPlaybackUiState = musicPlaybackUiState,
                 onNavigateToMusicPlayer = {
                     navController.navigate(Screen.PlayerScreen.route)
                 },
-
             )
         }
 
@@ -70,7 +70,7 @@ fun NavGraph(
             val playlist by viewModel.playlist.collectAsState(initial = emptyList())
             PlaylistScreen(
                 playlist = playlist,
-                onEvent = homeViewModel::onEvent,
+
                 playlistUiState = viewModel.playlistUiState,
                 albumViewModel = viewModel,
                 navController = navController,
