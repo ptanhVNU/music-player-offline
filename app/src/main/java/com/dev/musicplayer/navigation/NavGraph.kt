@@ -1,3 +1,4 @@
+
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -13,6 +14,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import coil.annotation.ExperimentalCoilApi
 import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
 import com.dev.musicplayer.navigation.Screen
 import com.dev.musicplayer.presentation.home.HomeScreen
@@ -20,9 +22,12 @@ import com.dev.musicplayer.presentation.home.HomeViewModel
 import com.dev.musicplayer.presentation.nowplaying.PlayerScreen
 import com.dev.musicplayer.presentation.nowplaying.PlayerViewModel
 import com.dev.musicplayer.presentation.playlist.AlbumViewModel
-import com.dev.musicplayer.presentation.playlist.listSongOfAlbum.ListSongScreen
 import com.dev.musicplayer.presentation.playlist.PlaylistScreen
+import com.dev.musicplayer.presentation.playlist.listSongOfAlbum.ListSongScreen
+import com.dev.musicplayer.presentation.search.SearchScreen
+import com.dev.musicplayer.presentation.search.SearchViewModel
 
+@OptIn(ExperimentalCoilApi::class)
 @UnstableApi
 @Composable
 fun NavGraph(
@@ -53,8 +58,18 @@ fun NavGraph(
                 },
                 selectMusicFromStorage = {
                     homeViewModel.selectMusicFromStorage(it)
-                }
+                },
+                onSearchClicked = {
+                    navController.navigate(Screen.SearchScreen.route)
+                },
             )
+        }
+
+        composable(
+            route = Screen.SearchScreen.route
+        ) {
+            val viewModel =  hiltViewModel<SearchViewModel>()
+            SearchScreen(navController, viewModel)
         }
 
         composable(

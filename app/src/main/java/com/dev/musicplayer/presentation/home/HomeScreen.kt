@@ -48,7 +48,8 @@ fun HomeScreen(
     homeUiState: HomeUiState,
     musicPlaybackUiState: MusicPlaybackUiState,
     onNavigateToMusicPlayer: () -> Unit,
-    selectMusicFromStorage: (List<Uri>) -> Unit
+    selectMusicFromStorage: (List<Uri>) -> Unit,
+    onSearchClicked: () -> Unit,
 ) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
@@ -88,6 +89,7 @@ fun HomeScreen(
                     IconButton(
                         onClick = {
                             //TODO: Implement search bar
+                            onSearchClicked()
                         },
                     ) {
                         Icon(

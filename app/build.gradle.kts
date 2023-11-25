@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -114,16 +112,6 @@ dependencies {
     // When using Kotlin.
     ksp("androidx.hilt:hilt-compiler:1.1.0")
 
-    val lifecycle_version = "2.6.2"
-    // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
-    // ViewModel utilities for Compose
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version")
-    // Annotation processor
-    //noinspection LifecycleAnnotationProcessorWithJava8
-    ksp("androidx.lifecycle:lifecycle-compiler:$lifecycle_version")
-
     // Load image and caching
     implementation("com.github.bumptech.glide:glide:4.16.0")
     ksp( "com.github.bumptech.glide:ksp:4.16.0" )
@@ -157,6 +145,16 @@ dependencies {
 
     implementation ("androidx.compose.runtime:runtime-livedata:c1.0.0-beta01")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+
+    implementation ("com.jakewharton.timber:timber:4.7.1")
+
+    implementation ("androidx.fragment:fragment-ktx:1.6.2")
+
+    implementation ("androidx.navigation:navigation-fragment-ktx:2.7.5")
+    implementation ("androidx.navigation:navigation-ui-ktx:2.7.5")
+
+    implementation ("androidx.compose.material:material:1.5.4")
+
 
 }
 
