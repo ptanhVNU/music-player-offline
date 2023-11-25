@@ -98,7 +98,7 @@ private fun RequestPermissionAndDisplayContent(
 
     val readVideoPermissionState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         rememberPermissionState(
-            Manifest.permission.READ_MEDIA_VIDEO
+            Manifest.permission.READ_MEDIA_AUDIO
         )
     } else {
         rememberPermissionState(
