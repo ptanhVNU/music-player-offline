@@ -1,9 +1,9 @@
 package com.dev.musicplayer.presentation.home.components
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,22 +11,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.dev.musicplayer.R
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 
@@ -47,30 +45,23 @@ fun SongItem(
 
         horizontalArrangement = Arrangement.SpaceAround,
     ) {
-        if (item.image.isNotEmpty())
+        Log.d("Song item", "SongItem: ${item.image}")
+
             AsyncImage(
                 modifier = Modifier
-                    .size(45.dp)
+                    .size(40.dp)
                     .shadow(
                         elevation = 1.dp,
                         shape = MaterialTheme.shapes.small
                     )
                     .clip(MaterialTheme.shapes.small),
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(item.image)
+                    .data(R.drawable.icon_music)
                     .build(),
                 contentScale = ContentScale.FillBounds,
                 contentDescription = "Music cover"
-            ) else
-            Box(modifier = Modifier.size(50.dp)) {
-                Icon(
-                    imageVector = Icons.Default.MusicNote,
-                    modifier = Modifier
-                        .size(30.dp)
-                        .align(Alignment.Center),
-                    contentDescription = "Music",
-                )
-            }
+            )
+        Spacer(modifier = Modifier.width(15.dp))
         Column(
             modifier = Modifier.fillMaxWidth(0.8f),
 
@@ -80,6 +71,8 @@ fun SongItem(
             Text(
 //                modifier = Modifier.fillMaxWidth(),
                 text = item.title,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
                 style = MusicAppTypography.bodyLarge,
             )
 

@@ -99,7 +99,8 @@ class LocalMediaProvider(
                 }.embeddedPicture
                 val songCover: Bitmap? = if (coverBytes != null)
                     BitmapFactory.decodeByteArray(coverBytes, 0, coverBytes.size) else null
-                Log.d(TAG, "audio path: $absolutePath ")
+//                val image = bitmapToBase64(songCover)
+//                Log.d(TAG, "audio path: $absolutePath ")
 
                 mediaAudioItems.add(
                     MediaAudioItem(
@@ -110,7 +111,7 @@ class LocalMediaProvider(
                         duration = cursor.getLong(durationColumn),
                         uri = uri,
                         size = cursor.getLong(sizeColumn),
-                        artWork = songCover,
+                        image = songCover,
                     )
                 )
             }

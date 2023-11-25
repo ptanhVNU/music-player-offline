@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -41,16 +42,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.data.local.entities.Playlist
+import com.dev.musicplayer.presentation.home.MusicEvent
+import com.dev.musicplayer.presentation.home.components.MusicMiniPlayerCard
 import com.dev.musicplayer.presentation.playlist.components.PlaylistItemView
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
+import com.dev.musicplayer.utils.PlayerState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaylistScreen(
     playlist: List<Playlist>,
-//    onEvent: (MusicEvent) -> Unit,
+    onEvent: (MusicEvent) -> Unit,
     musicPlaybackUiState: MusicPlaybackUiState,
     playlistUiState: PlaylistUiState,
     albumViewModel: AlbumViewModel,
@@ -108,58 +112,78 @@ fun PlaylistScreen(
         },
     ) {
         val scrollState = rememberLazyListState()
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-
-        ) {
-            SortButton(
-                icon = Icons.Default.Sort,
-                onClick = {
-                    activeSort = true;
-                }
-            )
-            Spacer(modifier = Modifier.size(10.dp))
-            with(playlistUiState) {
-                when (loading) {
-                    true -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
+        Box ( modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            ) {
+                SortButton(
+                    icon = Icons.Default.Sort,
+                    onClick = {
+                        activeSort = true;
                     }
-
-                    false -> {
-
-                        Box {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                contentPadding = PaddingValues(bottom = 80.dp),
-                                state = scrollState,
+                )
+                Spacer(modifier = Modifier.size(10.dp))
+                with(playlistUiState) {
+                    when (loading) {
+                        true -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
                             ) {
-                                itemsIndexed(
-                                    items = playlist,
-                                    key = { _, item -> item.hashCode() }
-                                ) { _, item ->
-                                    PlaylistItemView(
-                                        item = item,
-                                        albumViewModel = albumViewModel,
-                                        navController = navController
-                                    )
-                                }
+                                CircularProgressIndicator()
                             }
-
-
                         }
+
+                        false -> {
+
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    contentPadding = PaddingValues(bottom = 80.dp),
+                                    state = scrollState,
+                                ) {
+                                    itemsIndexed(
+                                        items = playlist,
+                                        key = { _, item -> item.hashCode() }
+                                    ) { _, item ->
+                                        PlaylistItemView(
+                                            item = item,
+                                            albumViewModel = albumViewModel,
+                                            navController = navController
+                                        )
+                                    }
+                                }
+
+
+
+
+                            }
+                        }
+                        else -> {}
                     }
-                    else -> {}
+                }
+            }
+
+            with(musicPlaybackUiState) {
+                if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
+                    MusicMiniPlayerCard(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .offset(y = (-80).dp)
+                            .align(Alignment.BottomCenter),
+                        music = currentMusic,
+                        playerState = playerState,
+                        onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
+                        onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
+                        onClick = { onNavigateToMusicPlayer() }
+                    )
                 }
             }
         }
+
 
     }
 

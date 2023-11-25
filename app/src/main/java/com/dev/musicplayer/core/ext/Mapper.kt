@@ -20,5 +20,5 @@ fun MediaItem.toMusicEntity() =
         title = mediaMetadata.title.toString(),
         artist = mediaMetadata.artist.toString(),
         source = mediaId,
-        image = mediaMetadata.artworkUri.toString()
+        image = ""
     )

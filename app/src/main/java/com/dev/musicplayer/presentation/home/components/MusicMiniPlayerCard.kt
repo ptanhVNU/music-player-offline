@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.dev.musicplayer.R
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.utils.PlayerState
 
@@ -57,11 +58,12 @@ fun MusicMiniPlayerCard(
                             .size(45.dp)
                             .clip(MaterialTheme.shapes.small),
                         model = coil.request.ImageRequest.Builder(LocalContext.current)
-                            .data(image)
+                            .data(R.drawable.icon_music)
                             .build(),
                         contentScale = ContentScale.FillBounds,
                         contentDescription = "Music cover"
                     )
+
                     Spacer(modifier = Modifier.width(15.dp))
                     Column {
                         Text(

@@ -11,6 +11,7 @@ data class MediaAudioItem(
     val uri: Uri,
     val size: Long,
     val duration: Long,
-    val artWork: Bitmap?,
+    val image: Bitmap?,
+
 )
 

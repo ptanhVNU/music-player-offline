@@ -2,7 +2,6 @@ package com.dev.musicplayer.core.services
 
 import android.content.ComponentName
 import android.content.Context
-import android.net.Uri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
@@ -72,7 +71,7 @@ class MusicPlaybackController(context: Context) : PlaybackController {
                     MediaMetadata.Builder()
                         .setTitle(it.title)
                         .setArtist(it.artist)
-                        .setArtworkUri(Uri.parse(it.image))
+//                        .setArtworkUri(Uri.parse(it.image))
                         .build()
                 )
                 .build()
