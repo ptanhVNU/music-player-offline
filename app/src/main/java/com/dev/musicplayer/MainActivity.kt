@@ -59,7 +59,6 @@ class MainActivity : ComponentActivity() {
                 Surface() {
                     RequestPermissionAndDisplayContent {
                         MainApp(sharedViewModel)
-
                     }
                 }
             }
