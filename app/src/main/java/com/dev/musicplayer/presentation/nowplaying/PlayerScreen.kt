@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -26,6 +25,7 @@ import com.dev.musicplayer.presentation.nowplaying.components.PlayerButtons
 import com.dev.musicplayer.presentation.nowplaying.components.PlayerSlider
 import com.dev.musicplayer.presentation.nowplaying.components.SongDescription
 import com.dev.musicplayer.presentation.nowplaying.components.TopPlayerScreenBar
+import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.utils.PlayerState
 
 @Composable
@@ -37,7 +37,7 @@ fun PlayerScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Black)
+            .background(color = MusicAppColorScheme.background)
             .padding(horizontal = 10.dp)
     ) {
         TopPlayerScreenBar {

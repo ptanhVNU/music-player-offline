@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material3.DropdownMenu
@@ -59,30 +57,6 @@ fun DropDownMenuButton(
                 text = { Text("Add to Playlist", style = MusicAppTypography.bodySmall,) },
                 onClick = {
                     onAddPlayList()
-                }
-            )
-            DropdownMenuItem(
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete",
-                    )
-                },
-                text = { Text("Delete",  style = MusicAppTypography.bodySmall,) },
-                onClick = {
-                    onDeleteSong()
-                }
-            )
-            DropdownMenuItem(
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Delete",
-                    )
-                },
-                text = { Text("Edit",  style = MusicAppTypography.bodySmall,) },
-                onClick = {
-                    onEditSong()
                 }
             )
         }

@@ -1,5 +1,7 @@
 package com.dev.musicplayer.presentation.home
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -35,7 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
-import com.dev.musicplayer.presentation.home.components.MusicMiniPlayerCard
+import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.presentation.home.components.SongItem
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
@@ -102,7 +104,11 @@ fun HomeScreen(
 
                 loading == false && errorMessage == null -> {
                     if (musics != null) {
-                        Box(modifier = Modifier.pullRefresh(pullRefreshState).fillMaxSize()) {
+                        Box(
+                            modifier = Modifier
+                                .pullRefresh(pullRefreshState)
+                                .fillMaxSize(),
+                        ) {
                             LazyColumn(
                                 state = scrollState,
                                 modifier = Modifier.padding(innerPadding),
@@ -117,9 +123,11 @@ fun HomeScreen(
                                     )
                                 }
                             }
+
                             PullRefreshIndicator(
                                 refreshing = isLoading,
                                 state = pullRefreshState,
+                                scale = true,
                                 modifier = Modifier.align(Alignment.TopCenter),
                                 contentColor = MusicAppColorScheme.primary
                             )
@@ -131,13 +139,15 @@ fun HomeScreen(
                                         modifier = Modifier
                                             .padding(5.dp)
                                             .offset(y = (-80).dp)
-                                            .align(Alignment.BottomCenter),
+                                            .align(Alignment.BottomCenter)
+                                            .background(color = MusicAppColorScheme.secondaryContainer)
+                                            .clickable { onNavigateToMusicPlayer() },
                                         music = currentMusic,
                                         playerState = playerState,
                                         onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
                                         onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
-                                        onClick = { onNavigateToMusicPlayer() }
-                                    )
+
+                                        )
                                 }
                             }
                         }

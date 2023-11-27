@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dev.musicplayer.domain.repositories.MusicRepository
 import com.dev.musicplayer.domain.use_case.AddMediaItemsUseCase
 import com.dev.musicplayer.domain.use_case.GetMusicsUseCase
 import com.dev.musicplayer.domain.use_case.PauseMusicUseCase
@@ -21,6 +22,7 @@ import kotlin.time.Duration.Companion.seconds
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getMusicsUseCase: GetMusicsUseCase,
+    private val musicRepository: MusicRepository,
     private val addMediaItemsUseCase: AddMediaItemsUseCase,
     private val playMusicUseCase: PlayMusicUseCase,
     private val resumeMusicUseCase: ResumeMusicUseCase,
@@ -35,6 +37,11 @@ class HomeViewModel @Inject constructor(
 
     init {
         getMusicData()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        musicRepository.cancelJobs()
     }
 
      fun getMusicData() {

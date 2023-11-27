@@ -77,7 +77,7 @@ fun SongItem(
             )
 
             Text(
-                text = item.artist,
+                 text = if (item.artist .equals("<unknown>") ) "Unknown" else item.artist,
                 style = MusicAppTypography.titleSmall.copy(
                     color = Color.Gray
                 )

@@ -1,5 +1,7 @@
 package com.dev.musicplayer.presentation.playlist
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -36,14 +38,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.presentation.home.MusicEvent
-import com.dev.musicplayer.presentation.home.components.MusicMiniPlayerCard
+import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.presentation.playlist.components.PlaylistItemView
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
@@ -79,8 +80,7 @@ fun PlaylistScreen(
     var activeSort by remember {
         mutableStateOf(false)
     }
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
+
 //    val nestedScrollConnection = remember {
 //        object : NestedScrollConnection {
 //            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
@@ -173,12 +173,14 @@ fun PlaylistScreen(
                         modifier = Modifier
                             .padding(5.dp)
                             .offset(y = (-80).dp)
-                            .align(Alignment.BottomCenter),
+                            .align(Alignment.BottomCenter)
+                            .background(color = MusicAppColorScheme.secondaryContainer)
+                            .clickable { onNavigateToMusicPlayer()  },
                         music = currentMusic,
                         playerState = playerState,
                         onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
                         onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
-                        onClick = { onNavigateToMusicPlayer() }
+
                     )
                 }
             }

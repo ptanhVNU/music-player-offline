@@ -158,6 +158,7 @@ dependencies {
     implementation ("androidx.compose.runtime:runtime-livedata:c1.0.0-beta01")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
+
 }
 
 // Allow references to generated code
