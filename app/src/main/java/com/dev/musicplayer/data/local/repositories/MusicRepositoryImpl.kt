@@ -36,7 +36,7 @@ class MusicRepositoryImpl @Inject constructor(
     override fun getMusicsStorage(): Flow<List<MusicEntity>> {
         return localMediaProvider.getMediaAudiosFlow().map { mediaAudioItems ->
             /// After loading music from the storage device,
-            // save basic information such as URL, title, etc. into the database
+            /// save basic information such as URL, title, etc. into the database
             viewModelScope.launch(Dispatchers.IO) {
                 insertSong(mediaAudioItems)
             }
