@@ -12,8 +12,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 
 @Composable
 fun TopPlayerScreenBar(
@@ -28,7 +28,7 @@ fun TopPlayerScreenBar(
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = "Back Arrow",
-                tint = Color.White,
+                tint = MusicAppColorScheme.onBackground,
             )
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -36,14 +36,14 @@ fun TopPlayerScreenBar(
             Icon(
                 imageVector = Icons.Default.PlaylistAdd,
                 contentDescription = "Add list",
-                tint = Color.White,
+                tint = MusicAppColorScheme.onBackground,
             )
         }
         IconButton(onClick = { /*TODO*/ }) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "More",
-                tint = Color.White,
+                tint = MusicAppColorScheme.onBackground,
             )
         }
     }

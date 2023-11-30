@@ -2,6 +2,8 @@
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,7 +30,8 @@ import com.dev.musicplayer.presentation.search.SearchScreen
 import com.dev.musicplayer.presentation.search.SearchViewModel
 
 
-@OptIn(ExperimentalCoilApi::class)
+@OptIn(ExperimentalMaterialApi::class)
+
 @UnstableApi
 @Composable
 fun NavGraph(
@@ -46,10 +49,15 @@ fun NavGraph(
         composable(
             route = Screen.HomeScreen.route
         ) {
-            val songs by homeViewModel.listSong.collectAsState(initial = emptyList())
+
+
+//            val refreshing by homeViewModel
+            val pullRefreshState = rememberPullRefreshState(
+                refreshing = homeViewModel.homeUiState.loading ?: false,
+                onRefresh = homeViewModel::getMusicData
+            )
 
             HomeScreen(
-                songs = songs,
                 onEvent = homeViewModel::onEvent,
                 homeUiState = homeViewModel.homeUiState,
                 musicPlaybackUiState = musicPlaybackUiState,
@@ -57,13 +65,13 @@ fun NavGraph(
                     navController.navigate(Screen.PlayerScreen.route)
                 },
 
-                selectMusicFromStorage = {
-                    homeViewModel.selectMusicFromStorage(it)
-                },
                 onSearchClicked = {
                     navController.navigate(Screen.SearchScreen.route)
                 },
 
+
+                pullRefreshState = pullRefreshState,
+                isLoading = homeViewModel.homeUiState.loading ?: false
             )
         }
 

@@ -52,13 +52,12 @@ class SharedViewModel @Inject constructor(
                 isShuffleEnabled = isShuffleEnabled,
                 isRepeatOneEnabled = isRepeatOneEnabled
             )
-
-            Log.d("TAG", "setMediaControllerCallback: $playerState")
+            Log.d("Shared View Model", "music playback: $musicPlaybackUiState")
 
             if (playerState == PlayerState.PLAYING) {
                 viewModelScope.launch {
                     while (true) {
-                        delay(duration = 1.seconds)
+                        delay(1.seconds)
                         musicPlaybackUiState = musicPlaybackUiState.copy(
                             currentPosition = getCurrentMusicPositionUseCase()
                         )
