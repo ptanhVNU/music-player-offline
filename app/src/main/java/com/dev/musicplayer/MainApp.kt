@@ -30,7 +30,6 @@ fun MainApp(
         Screen.HomeScreen.route -> {
             bottomBarState.value = true
         }
-
         Screen.PlaylistScreen.route -> {
             bottomBarState.value = true
         }
@@ -53,16 +52,5 @@ fun MainApp(
             sharedViewModel = sharedViewModel,
         )
     }
-
-//    DisposableEffect(navController) {
-//        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-//        }
-//
-//        navController.addOnDestinationChangedListener(listener)
-//
-//        onDispose {
-//            navController.removeOnDestinationChangedListener(listener)
-//        }
-//    }
 }
 

@@ -1,7 +1,9 @@
 package com.dev.musicplayer.di
 
+
 import android.app.Application
 import android.content.Context
+
 import com.dev.musicplayer.core.services.MetaDataReader
 import com.dev.musicplayer.core.services.MetaDataReaderImpl
 import dagger.Module
@@ -18,11 +20,13 @@ import javax.inject.Singleton
     SingletonComponent::class
 )
 object AppModule {
-    @Provides
-    @Singleton
-    fun provideMetaDataReader(app: Application): MetaDataReader {
-        return MetaDataReaderImpl(app)
-    }
+//    @Provides
+
+//    @Singleton
+//    fun provideMetaDataReader(app: Application): MetaDataReader {
+////        return MetaDataReaderImpl(app)
+//
+//    }
 
     @Singleton
     @Provides

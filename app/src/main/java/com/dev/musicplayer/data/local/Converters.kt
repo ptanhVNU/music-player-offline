@@ -1,7 +1,5 @@
 package com.dev.musicplayer.data.local
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.google.common.reflect.TypeToken
@@ -26,13 +24,11 @@ class Converters {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun fromTimestamp(value: Long?): LocalDateTime? =
         if (value != null) LocalDateTime.ofInstant(Instant.ofEpochMilli(value), ZoneOffset.UTC)
         else null
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun dateToTimestamp(date: LocalDateTime?): Long? =
         date?.atZone(ZoneOffset.UTC)?.toInstant()?.toEpochMilli()

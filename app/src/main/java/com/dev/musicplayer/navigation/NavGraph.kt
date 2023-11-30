@@ -27,6 +27,7 @@ import com.dev.musicplayer.presentation.playlist.listSongOfAlbum.ListSongScreen
 import com.dev.musicplayer.presentation.search.SearchScreen
 import com.dev.musicplayer.presentation.search.SearchViewModel
 
+
 @OptIn(ExperimentalCoilApi::class)
 @UnstableApi
 @Composable
@@ -35,6 +36,7 @@ fun NavGraph(
     sharedViewModel: SharedViewModel,
 ) {
     val musicPlaybackUiState = sharedViewModel.musicPlaybackUiState
+    val homeViewModel = hiltViewModel<HomeViewModel>()
 
     NavHost(
         navController = navController,
@@ -44,8 +46,6 @@ fun NavGraph(
         composable(
             route = Screen.HomeScreen.route
         ) {
-
-            val homeViewModel = hiltViewModel<HomeViewModel>()
             val songs by homeViewModel.listSong.collectAsState(initial = emptyList())
 
             HomeScreen(
@@ -56,12 +56,14 @@ fun NavGraph(
                 onNavigateToMusicPlayer = {
                     navController.navigate(Screen.PlayerScreen.route)
                 },
+
                 selectMusicFromStorage = {
                     homeViewModel.selectMusicFromStorage(it)
                 },
                 onSearchClicked = {
                     navController.navigate(Screen.SearchScreen.route)
                 },
+
             )
         }
 
@@ -77,20 +79,25 @@ fun NavGraph(
             arguments = listOf(navArgument("albumId") { type = NavType.LongType })
         ) { backStackEntry ->
             val albumId = backStackEntry.arguments?.getLong("albumId") ?: 0
-            val viewModel =  hiltViewModel<AlbumViewModel>()
+            val viewModel = hiltViewModel<AlbumViewModel>()
             ListSongScreen(navController, albumId, viewModel)
         }
 
         composable(
             route = Screen.PlaylistScreen.route
         ) {
-            val viewModel =  hiltViewModel<AlbumViewModel>()
+            val viewModel = hiltViewModel<AlbumViewModel>()
             val playlist by viewModel.playlist.collectAsState(initial = emptyList())
-            PlaylistScreen(playlist = playlist,
-                onEvent = viewModel::onPlaylistEvent,
+            PlaylistScreen(
+                playlist = playlist,
+                onEvent = homeViewModel::onEvent,
                 playlistUiState = viewModel.playlistUiState,
                 albumViewModel = viewModel,
-                navController = navController
+                navController = navController,
+                musicPlaybackUiState = musicPlaybackUiState,
+                onNavigateToMusicPlayer = {
+                    navController.navigate(Screen.PlayerScreen.route)
+                },
             )
         }
 
@@ -110,7 +117,7 @@ fun NavGraph(
                 )
             }
         ) {
-            val playerViewModel =  hiltViewModel<PlayerViewModel>()
+            val playerViewModel = hiltViewModel<PlayerViewModel>()
 
             PlayerScreen(
                 onEvent = playerViewModel::onEvent,

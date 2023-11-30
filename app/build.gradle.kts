@@ -113,8 +113,7 @@ dependencies {
     ksp("androidx.hilt:hilt-compiler:1.1.0")
 
     // Load image and caching
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    ksp( "com.github.bumptech.glide:ksp:4.16.0" )
+    implementation ("com.github.bumptech.glide:compose:1.0.0-beta01")
     implementation ("com.google.accompanist:accompanist-permissions:0.32.0")
 
     // Coil
@@ -124,6 +123,7 @@ dependencies {
     val media3_version = "1.1.1"
 
     // For media playback using ExoPlayer
+    //noinspection GradleDependency
     implementation("androidx.media3:media3-exoplayer:$media3_version")
     // For building media playback UIs
     implementation("androidx.media3:media3-ui:$media3_version")

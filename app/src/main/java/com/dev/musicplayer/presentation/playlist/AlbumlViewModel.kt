@@ -3,22 +3,17 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.domain.repositories.PlaylistRepository
 import com.dev.musicplayer.domain.use_case.GetPlaylistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -82,12 +77,13 @@ class AlbumViewModel @Inject constructor(
 
     //lắng nghe sự kiện của UI
     fun onPlaylistEvent(event: PlaylistEvent) {
-        when (event) {
+        playlistUiState = when (event) {
             is PlaylistEvent.SelectedPlaylist -> {
-                playlistUiState = playlistUiState.copy(selectedPlaylist = event.selectedPlaylist)
+                playlistUiState.copy(selectedPlaylist = event.selectedPlaylist)
             }
+
             is PlaylistEvent.SwipeTdoDelete -> {
-                playlistUiState = playlistUiState.copy(deletedPlaylist = event.deletedPlaylist)
+                playlistUiState.copy(deletedPlaylist = event.deletedPlaylist)
             }
         }
     }
