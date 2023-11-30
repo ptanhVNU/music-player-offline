@@ -1,6 +1,7 @@
-package com.dev.musicplayer.presentation.home.components
+package com.dev.musicplayer.presentation.utils
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,22 +26,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.dev.musicplayer.data.local.entities.Song
+import com.dev.musicplayer.R
+import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.utils.PlayerState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MusicMiniPlayerCard(
-    modifier: Modifier = Modifier,
-    music: Song?,
+    modifier: Modifier,
+        music: MusicEntity?,
     playerState: PlayerState?,
     onResumeClicked: () -> Unit,
     onPauseClicked: () -> Unit,
-    onClick: () -> Unit
+
 ) {
-    Card(
+    Box(
         modifier = modifier,
-        onClick = onClick
+
     ) {
         Row(
             modifier = Modifier
@@ -51,13 +52,12 @@ fun MusicMiniPlayerCard(
         ) {
             Row(modifier = Modifier.weight(1f)) {
                 music?.run {
-//                   Icon(imageVector = Icons.Default.MusicNote, contentDescription = null)
                     AsyncImage(
                         modifier = Modifier
                             .size(45.dp)
                             .clip(MaterialTheme.shapes.small),
                         model = coil.request.ImageRequest.Builder(LocalContext.current)
-                            .data("https://i1.sndcdn.com/artworks-y4ek09OJcvON38Ys-gs2icQ-t500x500.jpg")
+                            .data(R.drawable.icon_music)
                             .build(),
                         contentScale = ContentScale.FillBounds,
                         contentDescription = "Music cover"
@@ -72,7 +72,7 @@ fun MusicMiniPlayerCard(
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                         Text(
-                            text = artistName,
+                            text = if (artist .equals("<unknown>") ) "Unknown" else artist,
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis

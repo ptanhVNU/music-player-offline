@@ -33,10 +33,12 @@ object DomainModule {
         return GetMusicsUseCase(repository)
     }
 
+
+
     @Provides
     @Singleton
-    fun provideAddMediaItemsUseCase(playbackController: PlaybackController): AddMediaItemsUseCase {
-        return AddMediaItemsUseCase(playbackController)
+    fun provideAddMediaItemUseCase(playbackController: PlaybackController): AddMediaItemsUseCase {
+        return  AddMediaItemsUseCase(playbackController)
     }
 
     @Provides

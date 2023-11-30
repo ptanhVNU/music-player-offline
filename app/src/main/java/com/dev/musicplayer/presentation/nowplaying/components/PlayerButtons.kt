@@ -26,6 +26,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.utils.PlayerState
 
 @Composable
@@ -57,7 +58,7 @@ fun PlayerButtons(
             },
             contentDescription = "Shuffle",
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(Color.White),
+            colorFilter = ColorFilter.tint(MusicAppColorScheme.onBackground),
             modifier = buttonModifier
                 .size(smallSideButtonSize)
                 .offset(y = (5).dp)
@@ -71,7 +72,7 @@ fun PlayerButtons(
             imageVector = Icons.Filled.SkipPrevious,
             contentDescription = "Skip Previous",
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(Color.White),
+            colorFilter = ColorFilter.tint(MusicAppColorScheme.onBackground),
             modifier = buttonModifier
                 .size(sideButtonSize)
                 .clickable {
@@ -87,7 +88,7 @@ fun PlayerButtons(
             },
             contentDescription = "Play or Pause Button",
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(Color.White),
+            colorFilter = ColorFilter.tint(MusicAppColorScheme.onBackground),
             modifier = Modifier
                 .size(playerButtonSize)
                 .offset(y = (-10).dp)
@@ -101,7 +102,7 @@ fun PlayerButtons(
             imageVector = Icons.Filled.SkipNext,
             contentDescription = "Skip Next",
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(Color.White),
+            colorFilter = ColorFilter.tint(MusicAppColorScheme.onBackground),
             modifier = buttonModifier
                 .size(sideButtonSize)
                 .clickable {

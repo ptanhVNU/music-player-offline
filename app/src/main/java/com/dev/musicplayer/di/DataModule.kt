@@ -1,6 +1,7 @@
 package com.dev.musicplayer.di
 
 import android.content.Context
+import com.dev.musicplayer.core.services.LocalMediaProvider
 import com.dev.musicplayer.core.services.MusicPlaybackController
 import com.dev.musicplayer.data.local.repositories.MusicRepositoryImpl
 import com.dev.musicplayer.data.local.repositories.PlaylistRepositoryImpl
@@ -21,22 +22,33 @@ import javax.inject.Singleton
 object DataModule {
     @Provides
     @Singleton
-    fun provideMusicRepository(songStore: SongStore) : MusicRepository {
-        return MusicRepositoryImpl(songStore)
+    fun provideMusicRepository(
+        songStore: SongStore,
+        localMediaProvider: LocalMediaProvider
+    ): MusicRepository {
+        return MusicRepositoryImpl(songStore, localMediaProvider)
     }
 
     @Provides
     @Singleton
-    fun providePlaylistRepository(playListStore: PlaylistStore) : PlaylistRepository {
+    fun provideLocalMediaProvider(@ApplicationContext context: Context): LocalMediaProvider {
+        return LocalMediaProvider(context)
+    }
+
+
+    @Provides
+    @Singleton
+    fun providePlaylistRepository(playListStore: PlaylistStore): PlaylistRepository {
         return PlaylistRepositoryImpl(playListStore)
     }
 
 
     @Provides
     @Singleton
+
     fun provideMusicPlaybackController(
         @ApplicationContext context: Context,
-    ) : PlaybackController {
+    ): PlaybackController {
         return MusicPlaybackController(context)
     }
 }

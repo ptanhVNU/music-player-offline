@@ -1,6 +1,7 @@
 package com.dev.musicplayer.presentation.playlist
 
-import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,17 +38,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.presentation.home.MusicEvent
-import com.dev.musicplayer.presentation.home.components.MusicMiniPlayerCard
+import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.presentation.playlist.components.PlaylistItemView
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
+import com.dev.musicplayer.utils.PlayerState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,8 +80,7 @@ fun PlaylistScreen(
     var activeSort by remember {
         mutableStateOf(false)
     }
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
+
 //    val nestedScrollConnection = remember {
 //        object : NestedScrollConnection {
 //            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
@@ -112,73 +112,80 @@ fun PlaylistScreen(
         },
     ) {
         val scrollState = rememberLazyListState()
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-
-        ) {
-            SortButton(
-                icon = Icons.Default.Sort,
-                onClick = {
-                    activeSort = true;
-                }
-            )
-            Spacer(modifier = Modifier.size(10.dp))
-            with(playlistUiState) {
-                when (loading) {
-                    true -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
+        Box ( modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            ) {
+                SortButton(
+                    icon = Icons.Default.Sort,
+                    onClick = {
+                        activeSort = true;
                     }
-
-                    false -> {
-
-                        Box {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                contentPadding = PaddingValues(bottom = 80.dp),
-                                state = scrollState,
+                )
+                Spacer(modifier = Modifier.size(10.dp))
+                with(playlistUiState) {
+                    when (loading) {
+                        true -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
                             ) {
-                                itemsIndexed(
-                                    items = playlist,
-                                    key = { _, item -> item.hashCode() }
-                                ) { _, item ->
-                                    PlaylistItemView(
-                                        item = item,
-                                        albumViewModel = albumViewModel,
-                                        navController = navController
-                                    )
-                                }
-                            }
-
-                            with(musicPlaybackUiState) {
-                                Log.d("TAG", "PlaylistScreen: $musicPlaybackUiState")
-//                                if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
-                                    MusicMiniPlayerCard(
-                                        /// TODO: Impl progress bar
-                                        modifier = Modifier
-                                            .padding(10.dp)
-                                            .offset(y = screenHeight - 100.dp),
-                                        music = currentMusic,
-                                        playerState = playerState,
-                                        onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
-                                        onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
-                                        onClick = { onNavigateToMusicPlayer() }
-                                    )
-//                                }
+                                CircularProgressIndicator()
                             }
                         }
+
+                        false -> {
+
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    contentPadding = PaddingValues(bottom = 80.dp),
+                                    state = scrollState,
+                                ) {
+                                    itemsIndexed(
+                                        items = playlist,
+                                        key = { _, item -> item.hashCode() }
+                                    ) { _, item ->
+                                        PlaylistItemView(
+                                            item = item,
+                                            albumViewModel = albumViewModel,
+                                            navController = navController
+                                        )
+                                    }
+                                }
+
+
+
+
+                            }
+                        }
+                        else -> {}
                     }
-                    else -> {}
+                }
+            }
+
+            with(musicPlaybackUiState) {
+                if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
+                    MusicMiniPlayerCard(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .offset(y = (-80).dp)
+                            .align(Alignment.BottomCenter)
+                            .background(color = MusicAppColorScheme.secondaryContainer)
+                            .clickable { onNavigateToMusicPlayer()  },
+                        music = currentMusic,
+                        playerState = playerState,
+                        onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
+                        onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
+
+                    )
                 }
             }
         }
+
 
     }
 

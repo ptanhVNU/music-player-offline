@@ -5,9 +5,5 @@ data class MusicEntity(
     val title: String,
     val artist: String,
     val source: String,
-    val image: String?,
-    val isLiked: Boolean? = false,
-    val createdAt: Long? = null,
-) {
-
-}
+    val image: String
+)

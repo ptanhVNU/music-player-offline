@@ -1,85 +1,56 @@
 package com.dev.musicplayer.data.local.repositories
 
-import com.dev.musicplayer.data.local.entities.Song
+import com.dev.musicplayer.core.ext.toMusicEntity
+import com.dev.musicplayer.core.ext.toSongEntity
+import com.dev.musicplayer.core.services.LocalMediaProvider
+import com.dev.musicplayer.core.shared.models.MediaAudioItem
 import com.dev.musicplayer.data.local.store.SongStore
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.domain.repositories.MusicRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class MusicRepositoryImpl @Inject constructor(
-    private val songStore: SongStore
+    private val songStore: SongStore,
+    private val localMediaProvider: LocalMediaProvider,
 ) : MusicRepository {
-    // songs
-    override suspend fun insertSong(title: String, uri: String) = withContext(Dispatchers.IO) {
-        val song = Song(
-            title = title,
-            uri = uri,
-            createdAt = Instant.now().toEpochMilli(),
-        )
-        songStore.insertSong(song)
-    }
+    private val viewModelJob = Job()
+    private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    override fun getAllSongs() = songStore.getAllSongs()
+    /// Convert each MediaAudioItem to a SongEntity and save to ROOM Database
+    override suspend fun insertSong(mediaAudioItems: List<MediaAudioItem>): Unit =
+        withContext(Dispatchers.IO) {
+            mediaAudioItems.map { mediaAudioItem ->
+                songStore.insertSong(mediaAudioItem.toSongEntity())
+            }
+        }
 
-    override suspend fun deleteSong(song: Song) = withContext(
-        Dispatchers.IO
-    ) {
-        songStore.deleteSong(song)
-    }
+    override fun getMusicsStorage(): Flow<List<MusicEntity>> {
+        return localMediaProvider.getMediaAudiosFlow().map { mediaAudioItems ->
+            /// After loading music from the storage device,
+            /// save basic information such as URL, title, etc. into the database
+            viewModelScope.launch(Dispatchers.IO) {
+                insertSong(mediaAudioItems)
+            }
 
-    override suspend fun editSong(song: Song) = withContext(Dispatchers.IO) {
-
-        songStore.editSong(song)
-    }
-
-
-    override fun getSongsOrderedByName() = flow<List<MusicEntity>> {
-        val songs = songStore.getSongsOrderedByName()
-
-        songs.map { songList ->
-            emit(songList.map {
-                it.toEntity()
-            })
+            /// Convert each MediaAudioItem to a MusicEntity and create a list of MusicEntities
+            /// using to presentation
+            mediaAudioItems.map {
+                it.toMusicEntity()
+            }
         }
     }
 
-    override fun getSongsOrderedByCreatedAt() = flow<List<MusicEntity>> {
-        val songs = songStore.getSongsOrderedByCreatedAt()
-
-        songs.map { songList ->
-            emit(songList.map {
-                it.toEntity()
-            })
-        }
+    override fun cancelJobs() {
+        viewModelJob.cancel()
     }
-
-    override fun getLikedSongs() = flow<List<MusicEntity>> {
-
-        val songs = songStore.getLikedSongs()
-
-        songs.map { songList ->
-            emit(songList.map {
-                it.toEntity()
-            })
-        }
-    }
-
 }
 
-fun Song.toEntity(): MusicEntity {
-    return MusicEntity(
-        id = songId.toString(),
-        title = title,
-        artist = artistName,
-        source = uri,
-        image = thumbnail,
-        createdAt = createdAt,
-    )
-}
