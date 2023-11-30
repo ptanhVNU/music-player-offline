@@ -1,7 +1,5 @@
 package com.dev.musicplayer.presentation.home.components
 
-import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,14 +23,16 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.dev.musicplayer.R
+import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.ui.theme.MusicAppTypography
+import com.dev.musicplayer.utils.PlayerState
 
-@SuppressLint("UnrememberedMutableState")
 @Composable
 fun SongItem(
     modifier: Modifier = Modifier,
     item: MusicEntity,
+    musicPlaybackUiState: MusicPlaybackUiState,
     onItemClicked: () -> Unit,
 ) {
     Row(
@@ -45,22 +45,30 @@ fun SongItem(
 
         horizontalArrangement = Arrangement.SpaceAround,
     ) {
-        Log.d("Song item", "SongItem: ${item.image}")
+//        Log.d("Song item", "SongItem: ${item.image}")
+            with(musicPlaybackUiState) {
+                if (playerState == PlayerState.PLAYING) {
 
-            AsyncImage(
-                modifier = Modifier
-                    .size(40.dp)
-                    .shadow(
-                        elevation = 1.dp,
-                        shape = MaterialTheme.shapes.small
+                } else if (playerState == PlayerState.PAUSED) {
+
+                } else{
+                    AsyncImage(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .shadow(
+                                elevation = 1.dp,
+                                shape = MaterialTheme.shapes.small
+                            )
+                            .clip(MaterialTheme.shapes.small),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(R.drawable.icon_music)
+                            .build(),
+                        contentScale = ContentScale.FillBounds,
+                        contentDescription = "Music cover"
                     )
-                    .clip(MaterialTheme.shapes.small),
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(R.drawable.icon_music)
-                    .build(),
-                contentScale = ContentScale.FillBounds,
-                contentDescription = "Music cover"
-            )
+                }
+            }
+
         Spacer(modifier = Modifier.width(15.dp))
         Column(
             modifier = Modifier.fillMaxWidth(0.8f),

@@ -2,8 +2,10 @@ package com.dev.musicplayer.presentation.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -35,10 +37,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
-import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.presentation.home.components.SongItem
+import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 import com.dev.musicplayer.utils.PlayerState
@@ -112,14 +115,30 @@ fun HomeScreen(
                             LazyColumn(
                                 state = scrollState,
                                 modifier = Modifier.padding(innerPadding),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+//                                contentPadding = innerPadding,
                             ) {
                                 items(musics) {
                                     SongItem(
                                         item = it,
+                                        musicPlaybackUiState = musicPlaybackUiState,
                                         onItemClicked = {
                                             onEvent(MusicEvent.OnMusicSelected(it))
                                             onEvent(MusicEvent.PlayMusic)
                                         }
+                                    )
+                                }
+
+                                item {
+                                    Text(
+                                        modifier = Modifier
+                                            .height(180.dp)
+                                            .padding(5.dp)
+                                            .align(Alignment.CenterStart),
+                                        text = "Tổng số bài hát: ${musics.size}",
+                                        textAlign = TextAlign.Center,
+                                        style = MusicAppTypography.headlineMedium,
                                     )
                                 }
                             }
@@ -146,8 +165,7 @@ fun HomeScreen(
                                         playerState = playerState,
                                         onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
                                         onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
-
-                                        )
+                                    )
                                 }
                             }
                         }
