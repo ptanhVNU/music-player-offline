@@ -53,15 +53,22 @@ fun HomeScreen(
     homeUiState: HomeUiState,
     musicPlaybackUiState: MusicPlaybackUiState,
     onNavigateToMusicPlayer: () -> Unit,
+
+
+    onSearchClicked: () -> Unit,
+
     pullRefreshState: PullRefreshState,
     isLoading: Boolean,
-) {
+
+    ) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
 
     val screenHeight = configuration.screenHeightDp.dp
 
+
     val snackBarHostState = remember { SnackbarHostState() }
+
 
     Scaffold(
 
@@ -77,7 +84,10 @@ fun HomeScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = {},
+                        onClick = {
+                            //TODO: Implement search bar
+                            onSearchClicked()
+                        },
                     ) {
                         Icon(
                             modifier = Modifier.size(32.dp),
@@ -112,6 +122,7 @@ fun HomeScreen(
                                 .pullRefresh(pullRefreshState)
                                 .fillMaxSize(),
                         ) {
+
                             LazyColumn(
                                 state = scrollState,
                                 modifier = Modifier.padding(innerPadding),
