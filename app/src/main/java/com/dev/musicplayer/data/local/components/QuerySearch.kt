@@ -1,21 +1,22 @@
 package com.dev.musicplayer.data.local.components
 
-class QuerySearch (
+import com.dev.musicplayer.core.ext.toMusicEntity
+import com.dev.musicplayer.domain.entities.MusicEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
+class QuerySearch(
     private val daoCollection: DaoCollection,
 ) {
-    suspend fun searchSongs(query: String) = daoCollection.songDao.searchSongs(query)
+    /// convert song to music entity
+    suspend fun searchSongs(query: String): List<MusicEntity> = withContext(Dispatchers.IO) {
+        val songs = daoCollection.songDao.searchSongs(query)
 
-//    suspend fun searchAlbums(query: String) = daoCollection.albumDao.searchAlbums(query)
-//
-//    suspend fun searchArtists(query: String) = daoCollection.artistDao.searchArtists(query)
-//
-//    suspend fun searchAlbumArtists(query: String) = daoCollection.albumArtistDao.searchAlbumArtists(query)
-//
-//    suspend fun searchComposers(query: String) = daoCollection.composerDao.searchComposers(query)
-//
-//    suspend fun searchLyricists(query: String) = daoCollection.lyricistDao.searchLyricists(query)
+        songs.map { song ->
+            song.toMusicEntity()
+        }
+    }
 
     suspend fun searchPlaylists(query: String) = daoCollection.playlistDao.searchPlaylists(query)
 
-//    suspend fun searchGenres(query: String) = daoCollection.genreDao.searchGenres(query)
 }

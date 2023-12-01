@@ -1,4 +1,3 @@
-
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -64,12 +63,6 @@ fun NavGraph(
                 onNavigateToMusicPlayer = {
                     navController.navigate(Screen.PlayerScreen.route)
                 },
-
-                onSearchClicked = {
-                    navController.navigate(Screen.SearchScreen.route)
-                },
-
-
                 pullRefreshState = pullRefreshState,
                 isLoading = homeViewModel.homeUiState.loading ?: false
             )
@@ -78,8 +71,16 @@ fun NavGraph(
         composable(
             route = Screen.SearchScreen.route
         ) {
-            val viewModel =  hiltViewModel<SearchViewModel>()
-            SearchScreen(navController, viewModel)
+            val searchViewModel = hiltViewModel<SearchViewModel>()
+
+            SearchScreen(
+                onEvent = homeViewModel::onEvent,
+                musicPlaybackUiState = musicPlaybackUiState,
+                viewModel = searchViewModel,
+                onNavigateToMusicPlayer = {
+                    navController.navigate(Screen.PlayerScreen.route)
+                },
+            )
         }
 
         composable(

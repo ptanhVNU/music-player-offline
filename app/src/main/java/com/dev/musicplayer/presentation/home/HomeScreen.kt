@@ -57,7 +57,6 @@ fun HomeScreen(
     homeUiState: HomeUiState,
     musicPlaybackUiState: MusicPlaybackUiState,
     onNavigateToMusicPlayer: () -> Unit,
-    onSearchClicked: () -> Unit,
     pullRefreshState: PullRefreshState,
     isLoading: Boolean,
 ) {
@@ -76,20 +75,6 @@ fun HomeScreen(
                         fontWeight = FontWeight.Bold,
                         style = MusicAppTypography.headlineMedium,
                     )
-                },
-                actions = {
-                    IconButton(
-                        onClick = {
-                            //TODO: Implement search bar
-                            onSearchClicked()
-                        },
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(32.dp),
-                            imageVector = Icons.Outlined.Search,
-                            contentDescription = "Search music",
-                        )
-                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MusicAppColorScheme.background)
             )
@@ -128,12 +113,15 @@ fun HomeScreen(
                                     music.id
                                 }) { music ->
                                     val isSelected = selectedMusicIndex == musics.indexOf(music)
+
                                     SongItem(
                                         item = music,
                                         isSelected = isSelected,
                                         musicPlaybackUiState = musicPlaybackUiState,
                                         onItemClicked = {
-                                            selectedMusicIndex = if (isSelected) -1 else musics.indexOf(music)
+                                            if (!isSelected) {
+                                                selectedMusicIndex = musics.indexOf(music)
+                                            }
                                             onEvent(MusicEvent.OnMusicSelected(music))
                                             onEvent(MusicEvent.PlayMusic)
                                         }

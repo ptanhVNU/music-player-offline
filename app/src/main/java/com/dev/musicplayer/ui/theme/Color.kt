@@ -19,7 +19,7 @@ val secondaryColor = Color(0xFFC0C6DD)
 val onSecondary = Color(0xFF2A3042)
 val errorColor = Color(0xFFEA6D7E)
 val backgroundColor = Color(0xFF121316)
-val tertiaryColor = Color(0xFFCDEAEA)
+val tertiaryColor = Color(0xFF7DCE7E)
 
 val MusicAppColorScheme = darkColorScheme(
     primary = primaryColor,

@@ -38,7 +38,6 @@ import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 import com.dev.musicplayer.utils.PlayerState
-import timber.log.Timber
 
 @Composable
 fun SongItem(

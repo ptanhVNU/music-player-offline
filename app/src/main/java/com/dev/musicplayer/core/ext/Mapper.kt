@@ -21,6 +21,14 @@ fun MediaAudioItem.toSongEntity() = Song(
     title = name,
 )
 
+fun Song.toMusicEntity() = MusicEntity(
+    id = songId.toString(),
+    title = title,
+    artist = artistName,
+    source = uri,
+    image = ""
+)
+
 
 fun MediaItem.toMusicEntity() =
     MusicEntity(

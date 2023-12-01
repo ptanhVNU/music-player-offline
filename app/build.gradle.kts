@@ -146,9 +146,6 @@ dependencies {
     implementation ("androidx.compose.runtime:runtime-livedata:c1.0.0-beta01")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
-
-    implementation ("com.jakewharton.timber:timber:5.0.1")
-
     implementation ("androidx.fragment:fragment-ktx:1.6.2")
 
     implementation ("androidx.navigation:navigation-fragment-ktx:2.7.5")

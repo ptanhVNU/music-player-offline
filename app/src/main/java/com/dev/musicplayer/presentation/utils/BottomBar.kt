@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.LibraryMusic
 import androidx.compose.material.icons.outlined.MusicNote
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -33,17 +35,18 @@ fun BottomBar(
     navBackStackEntry: NavBackStackEntry?,
     bottomBarState: Boolean,
 ) {
-
-    val configuration = LocalConfiguration.current
-
-    val screenHeight = configuration.screenHeightDp.dp
-
     val bottomNavItems = listOf(
         BottomNavItem(
             title = "Home",
             route = Screen.HomeScreen.route,
             selectedIcon = Icons.Filled.MusicNote,
             unselectedIcon = Icons.Outlined.MusicNote,
+        ),
+        BottomNavItem(
+            title = "Search",
+            route = Screen.SearchScreen.route,
+            selectedIcon = Icons.Filled.Search,
+            unselectedIcon = Icons.Outlined.Search,
         ),
         BottomNavItem(
             title = "Playlist",
@@ -62,7 +65,7 @@ fun BottomBar(
         content = {
             NavigationBar(
                 modifier = Modifier.height(80.dp),
-                containerColor =  MusicAppColorScheme.surfaceTint.copy(alpha = 0.4f)
+                containerColor = MusicAppColorScheme.surfaceTint.copy(alpha = 0.4f)
             ) {
                 bottomNavItems.forEach { item ->
                     AddItem(
