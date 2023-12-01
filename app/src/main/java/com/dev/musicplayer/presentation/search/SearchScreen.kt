@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -19,7 +22,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalCoilApi
 @Composable
 fun SearchScreen(
@@ -36,7 +38,7 @@ fun SearchScreen(
             searchType == SearchType.Songs
         }
     }
-    androidx.compose.material3.Scaffold(
+    Scaffold(
         topBar = {
             SearchBar(
                 query = query,
@@ -64,12 +66,6 @@ fun SearchScreen(
                         showGrid = showGrid,
                         searchType = searchType,
                         onSongClicked = viewModel::handleClick,
-//                                        onAlbumClicked = this@SearchFragment::handleClick,
-//                                        onArtistClicked = this@SearchFragment::handleClick,
-//                                        onAlbumArtistClicked = this@SearchFragment::handleClick,
-//                                        onComposerClicked = this@SearchFragment::handleClick,
-//                                        onLyricistClicked = this@SearchFragment::handleClick,
-//                                        onGenreClicked = this@SearchFragment::handleClick,
                         onPlaylistClicked = viewModel::handleClick,
                     )
                 }

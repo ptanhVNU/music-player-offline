@@ -23,10 +23,10 @@ import com.dev.musicplayer.ui.theme.MusicAppTypography
 
 @Composable
 fun DropDownMenuButton(
-    onDeleteSong: () -> Unit,
+
     onAddPlayList: () -> Unit,
-    onEditSong: () -> Unit,
-) {
+
+    ) {
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
 
@@ -54,7 +54,7 @@ fun DropDownMenuButton(
                         contentDescription = "Add to playlist",
                     )
                 },
-                text = { Text("Add to Playlist", style = MusicAppTypography.bodySmall,) },
+                text = { Text("Add to Playlist", style = MusicAppTypography.bodySmall) },
                 onClick = {
                     onAddPlayList()
                 }

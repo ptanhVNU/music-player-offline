@@ -30,7 +30,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,22 +57,13 @@ fun HomeScreen(
     homeUiState: HomeUiState,
     musicPlaybackUiState: MusicPlaybackUiState,
     onNavigateToMusicPlayer: () -> Unit,
-
-
     onSearchClicked: () -> Unit,
-
     pullRefreshState: PullRefreshState,
     isLoading: Boolean,
-
-    ) {
-    val context = LocalContext.current
-    val configuration = LocalConfiguration.current
-
-    val screenHeight = configuration.screenHeightDp.dp
-
-
+) {
     val snackBarHostState = remember { SnackbarHostState() }
 
+    var selectedMusicIndex by remember { mutableIntStateOf(-1) }
 
     Scaffold(
 
@@ -128,14 +123,18 @@ fun HomeScreen(
                                 modifier = Modifier.padding(innerPadding),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
-//                                contentPadding = innerPadding,
                             ) {
-                                items(musics) {
+                                items(musics, key = { music ->
+                                    music.id
+                                }) { music ->
+                                    val isSelected = selectedMusicIndex == musics.indexOf(music)
                                     SongItem(
-                                        item = it,
+                                        item = music,
+                                        isSelected = isSelected,
                                         musicPlaybackUiState = musicPlaybackUiState,
                                         onItemClicked = {
-                                            onEvent(MusicEvent.OnMusicSelected(it))
+                                            selectedMusicIndex = if (isSelected) -1 else musics.indexOf(music)
+                                            onEvent(MusicEvent.OnMusicSelected(music))
                                             onEvent(MusicEvent.PlayMusic)
                                         }
                                     )
