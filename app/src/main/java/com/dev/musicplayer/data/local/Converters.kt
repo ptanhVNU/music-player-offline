@@ -2,6 +2,8 @@ package com.dev.musicplayer.data.local
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
+import com.dev.musicplayer.data.local.entities.Playlist
+import com.dev.musicplayer.domain.entities.PlaylistEntity
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import java.lang.reflect.Type
@@ -32,4 +34,5 @@ class Converters {
     @TypeConverter
     fun dateToTimestamp(date: LocalDateTime?): Long? =
         date?.atZone(ZoneOffset.UTC)?.toInstant()?.toEpochMilli()
+
 }

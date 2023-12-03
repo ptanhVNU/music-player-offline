@@ -5,7 +5,7 @@ data class PlaylistEntity(
     val title: String,
     val image: String?,
     val songs: List<String>?,
-    val createdAt: Long? = null,
+    val createdAt: Long
 ) {
 
 }

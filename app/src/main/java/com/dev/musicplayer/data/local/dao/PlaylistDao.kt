@@ -3,7 +3,9 @@ package com.dev.musicplayer.data.local.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.data.local.entities.Song
@@ -16,6 +18,9 @@ interface PlaylistDao {
     suspend fun createPlaylist(playlist: Playlist)
     @Query("DELETE from playlist WHERE id = :playlistId")
     suspend fun deletePlaylist(playlistId: Long?)
+
+    @Update
+    suspend fun update(playlist: Playlist)
 
     @Query("SELECT * FROM playlist")
     fun getAllPlaylists(): Flow<List<Playlist>>

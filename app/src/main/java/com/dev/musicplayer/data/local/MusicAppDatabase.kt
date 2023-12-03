@@ -8,6 +8,7 @@ import com.dev.musicplayer.data.local.dao.SongDao
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.data.local.entities.Song
 
+
 @Database(
     entities = [
         Song::class,
@@ -21,3 +22,4 @@ abstract class MusicAppDatabase : RoomDatabase() {
     abstract fun songDao(): SongDao
     abstract fun playlistDao(): PlaylistDao
 }
+

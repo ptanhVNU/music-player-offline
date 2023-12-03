@@ -1,6 +1,12 @@
 package com.dev.musicplayer.domain.repositories
 
+import android.app.Application
+import androidx.room.Room
+import com.dev.musicplayer.data.local.MusicAppDatabase
+import com.dev.musicplayer.data.local.MusicAppDatabase_Impl
+import com.dev.musicplayer.data.local.dao.PlaylistDao
 import com.dev.musicplayer.data.local.entities.Playlist
+import com.dev.musicplayer.domain.entities.PlaylistEntity
 import kotlinx.coroutines.flow.Flow
 
 interface PlaylistRepository {
@@ -11,9 +17,13 @@ interface PlaylistRepository {
 
     suspend fun deletePlaylist(playlist: Playlist)
 
-//    fun getPlaylistsOrderedByName() : Flow<List<PlaylistEntity>>
-//
-//    fun getPlaylistsOrderedByCreatedAt() : Flow<List<PlaylistEntity>>
+    suspend fun update(playlist: Playlist)
+
+    fun getPlaylistsOrderedByName() : Flow<List<Playlist>>
+
+    fun getPlaylistsOrderedByCreatedAt() : Flow<List<Playlist>>
 
     suspend fun getPlaylistById(playlistId : Long): Playlist
+
+
 }

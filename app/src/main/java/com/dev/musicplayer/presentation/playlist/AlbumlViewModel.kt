@@ -1,14 +1,28 @@
 package com.dev.musicplayer.presentation.playlist
+import android.annotation.SuppressLint
+import android.app.Application
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.Room
+import com.dev.musicplayer.core.services.MetaDataReader
+import com.dev.musicplayer.data.local.MusicAppDatabase
 import com.dev.musicplayer.data.local.entities.Playlist
+import com.dev.musicplayer.data.local.entities.Song
+import com.dev.musicplayer.data.local.repositories.PlaylistRepositoryImpl
+import com.dev.musicplayer.domain.entities.PlaylistEntity
 import com.dev.musicplayer.domain.repositories.PlaylistRepository
 import com.dev.musicplayer.domain.use_case.GetPlaylistUseCase
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,11 +32,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AlbumViewModel @Inject constructor(
-    private val playlistRepository: PlaylistRepository,
-    private val getPlaylistUseCase: GetPlaylistUseCase
-) : ViewModel() {
-
-    //lấy trạng thái từ UIState
+    private val playlistRepository: PlaylistRepositoryImpl,
+    private val getPlaylistUseCase: GetPlaylistUseCase,
+    private val metaDataReader: MetaDataReader,
+    private val application: Application
+) :  AndroidViewModel(application) {
     var playlistUiState by mutableStateOf(PlaylistUiState())
         private set
 
@@ -32,8 +46,9 @@ class AlbumViewModel @Inject constructor(
     private val _album = MutableStateFlow<Playlist?>(null)
     val album: StateFlow<Playlist?> = _album.asStateFlow()
 
+    private val _playlistsOrderedByName = MutableLiveData<List<Playlist>>()
+    val playlistsOrderedByName: LiveData<List<Playlist>> = _playlistsOrderedByName
 
-    //Tạo thêm một album mới
     fun createPlaylist(title : String) {
         viewModelScope.launch {
             playlistRepository.createPlaylist(title)
@@ -42,21 +57,57 @@ class AlbumViewModel @Inject constructor(
 
     fun deletePlaylist(playlist: Playlist) {
         viewModelScope.launch {
-            Log.d("Delete", "This is a debug message.")
             playlistRepository.deletePlaylist(playlist)
         }
+    }
+
+    private fun addSongToPlaylist(playlistId: Long, song: Song) {
+        viewModelScope.launch {
+            val playlist = playlistRepository.getPlaylistById(playlistId)
+            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
+            updatedSongs.add(toFormattedString(song))
+            val updatedPlaylist = playlist.copy(songs = updatedSongs)
+            playlistRepository.update(updatedPlaylist)
+        }
+    }
+
+    @SuppressLint("SuspiciousIndentation")
+    fun selectMusicFromStorage(playlistId: Long, uris: List<Uri>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            for (uri: Uri in uris) {
+                application.contentResolver.let { contentResolver ->
+                    val songMetaData = metaDataReader.getMetaDataFromUri(uri, contentResolver)
+                    if (songMetaData != null) {
+                        val song = Song(
+                            uri = songMetaData.uri.toString(),
+                            title = songMetaData.fileName,
+                        )
+                        addSongToPlaylist(playlistId, song)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun toFormattedString(song:Song): String {
+        val gson = Gson()
+        return gson.toJson(song)
+    }
+
+    fun toFormattedSong(string:String): Song {
+        val gson = Gson()
+        return gson.fromJson(string, Song::class.java)
     }
 
     init {
         getPlaylist()
     }
 
-    //lấy danh sách album
-    fun getPlaylist() {
+    private fun getPlaylist() {
         viewModelScope.launch {
             getPlaylistUseCase().catch {
                 playlistUiState = playlistUiState.copy(
-                    loading = false,
+                    loading = true
                 )
             }.collect {
                 _playlist.value  = it
@@ -68,6 +119,18 @@ class AlbumViewModel @Inject constructor(
         }
     }
 
+    fun getPlaylistsOrderedByName() {
+        viewModelScope.launch {
+            try {
+                playlistRepository.getPlaylistsOrderedByName().collect { playlists ->
+                    _playlistsOrderedByName.postValue(playlists)
+                }
+            } catch (e: Exception) {
+                Log.d("Sort", "Lỗi hàm sort")
+            }
+        }
+    }
+
     fun getPlaylistById(playlistId: Long) {
         viewModelScope.launch {
             val result = playlistRepository.getPlaylistById(playlistId)
@@ -75,7 +138,6 @@ class AlbumViewModel @Inject constructor(
         }
     }
 
-    //lắng nghe sự kiện của UI
     fun onPlaylistEvent(event: PlaylistEvent) {
         playlistUiState = when (event) {
             is PlaylistEvent.SelectedPlaylist -> {

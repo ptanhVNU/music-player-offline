@@ -14,11 +14,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.media3.common.util.UnstableApi
+import androidx.room.Room.databaseBuilder
 import com.dev.musicplayer.core.services.MusicPlaybackService
 import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
+import com.dev.musicplayer.data.local.MusicAppDatabase
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 @UnstableApi
@@ -27,7 +30,6 @@ class MainActivity : ComponentActivity() {
     @UnstableApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         enableEdgeToEdge()
 
         setContent {

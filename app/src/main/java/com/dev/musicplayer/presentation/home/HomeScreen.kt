@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -44,6 +46,7 @@ import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.presentation.home.components.MusicMiniPlayerCard
 import com.dev.musicplayer.presentation.home.components.SongItem
+import com.dev.musicplayer.presentation.playlist.gradientBackgroundBrush
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 import com.dev.musicplayer.utils.PlayerState
@@ -135,17 +138,26 @@ fun HomeScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MusicAppColorScheme.background)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) {
         val scrollState = rememberLazyListState()
+        val gradientColorList = listOf(
+            Color(0xFF000000),
+            Color(0xFF6E7B8B)
+        )
 
         with(homeUiState) {
             when (loading) {
                 true -> {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize()
+                            .background(
+                            brush = gradientBackgroundBrush(
+                                isLinearGradient = true,
+                                colors = gradientColorList)
+                        ),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator()
@@ -154,7 +166,13 @@ fun HomeScreen(
 
                 false -> {
 
-                    Box {
+                    Box(
+                        modifier = Modifier.background(
+                            brush = gradientBackgroundBrush(
+                                isLinearGradient = true,
+                                colors = gradientColorList)
+                        )
+                    ) {
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize()

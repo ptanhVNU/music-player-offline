@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 
 @Composable
@@ -37,7 +38,6 @@ fun PlusButton(icon: ImageVector, onClick: () -> Unit) {
 @Composable
 fun SortButton(icon: ImageVector, onClick: () -> Unit) {
     Box(
-
         modifier = Modifier
             .height(25.dp)
             .padding(start = 10.dp)
