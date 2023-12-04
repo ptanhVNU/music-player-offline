@@ -1,6 +1,7 @@
 package com.dev.musicplayer.presentation.playlist
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -9,16 +10,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Room
-import com.dev.musicplayer.core.services.MetaDataReader
-import com.dev.musicplayer.data.local.MusicAppDatabase
+import com.dev.musicplayer.core.services.LocalMediaProvider
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.data.local.repositories.PlaylistRepositoryImpl
-import com.dev.musicplayer.domain.entities.PlaylistEntity
-import com.dev.musicplayer.domain.repositories.PlaylistRepository
 import com.dev.musicplayer.domain.use_case.GetPlaylistUseCase
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,8 +30,8 @@ import javax.inject.Inject
 class AlbumViewModel @Inject constructor(
     private val playlistRepository: PlaylistRepositoryImpl,
     private val getPlaylistUseCase: GetPlaylistUseCase,
-    private val metaDataReader: MetaDataReader,
-    private val application: Application
+    private val application: Application,
+    private val localMediaProvider: LocalMediaProvider
 ) :  AndroidViewModel(application) {
     var playlistUiState by mutableStateOf(PlaylistUiState())
         private set
@@ -71,23 +67,40 @@ class AlbumViewModel @Inject constructor(
         }
     }
 
-    @SuppressLint("SuspiciousIndentation")
     fun selectMusicFromStorage(playlistId: Long, uris: List<Uri>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            for (uri: Uri in uris) {
-                application.contentResolver.let { contentResolver ->
-                    val songMetaData = metaDataReader.getMetaDataFromUri(uri, contentResolver)
-                    if (songMetaData != null) {
-                        val song = Song(
-                            uri = songMetaData.uri.toString(),
-                            title = songMetaData.fileName,
-                        )
-                        addSongToPlaylist(playlistId, song)
-                    }
+        viewModelScope.launch((Dispatchers.IO)) {
+            for(uri: Uri in uris) {
+                val mediaAudioItem = localMediaProvider.getSongItemFromContentUri(uri)
+                Log.d("Tên nhạc", "{$mediaAudioItem}")
+                if (mediaAudioItem != null) {
+                    val song = Song(
+                        uri = mediaAudioItem.uri.toString(),
+                        title = mediaAudioItem.name
+                    )
+                    addSongToPlaylist(playlistId, song)
                 }
             }
         }
     }
+
+//
+
+//    fun selectMusicFromStorage(playlistId: Long, uris: List<Uri>) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            for (uri: Uri in uris) {
+//                application.contentResolver.let { contentResolver ->
+//                    val songMetaData = metaDataReader.getMetaDataFromUri(uri, contentResolver)
+//                    if (songMetaData != null) {
+//                        val song = Song(
+//                            uri = songMetaData.uri.toString(),
+//                            title = songMetaData.fileName,
+//                        )
+//                        addSongToPlaylist(playlistId, song)
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private fun toFormattedString(song:Song): String {
         val gson = Gson()

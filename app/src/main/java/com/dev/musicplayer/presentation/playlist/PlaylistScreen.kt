@@ -1,16 +1,15 @@
 package com.dev.musicplayer.presentation.playlist
 
-import android.app.Application
-import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,8 +30,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -48,17 +45,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
-import com.dev.musicplayer.data.local.MusicAppDatabase
 import com.dev.musicplayer.data.local.entities.Playlist
-import com.dev.musicplayer.domain.entities.PlaylistEntity
 import com.dev.musicplayer.presentation.home.MusicEvent
-import com.dev.musicplayer.presentation.home.components.MusicMiniPlayerCard
 import com.dev.musicplayer.presentation.playlist.components.PlaylistItemView
-import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 import kotlinx.coroutines.launch
 
@@ -139,8 +130,6 @@ fun PlaylistScreen(
             )
             Spacer(modifier = Modifier.size(10.dp))
             with(playlistUiState) {
-                Log.d("Sort", "{$sort}")
-                Log.d("Sort", "{$playlistsByName}")
                 when (loading) {
                     true -> {
                         Box(
@@ -172,23 +161,6 @@ fun PlaylistScreen(
                                             )
                                         }
                                     }
-
-                                    with(musicPlaybackUiState) {
-                                        Log.d("TAG", "PlaylistScreen: $musicPlaybackUiState")
-//                                if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
-                                        MusicMiniPlayerCard(
-                                            /// TODO: Impl progress bar
-                                            modifier = Modifier
-                                                .padding(10.dp)
-                                                .offset(y = screenHeight - 100.dp),
-                                            music = currentMusic,
-                                            playerState = playerState,
-                                            onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
-                                            onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
-                                            onClick = { onNavigateToMusicPlayer() }
-                                        )
-//                                }
-                                    }
                                 }
                             }
                             false -> {
@@ -209,23 +181,6 @@ fun PlaylistScreen(
                                                 navController = navController
                                             )
                                         }
-                                    }
-
-                                    with(musicPlaybackUiState) {
-                                        Log.d("TAG", "PlaylistScreen: $musicPlaybackUiState")
-//                                if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
-                                        MusicMiniPlayerCard(
-                                            /// TODO: Impl progress bar
-                                            modifier = Modifier
-                                                .padding(10.dp)
-                                                .offset(y = screenHeight - 100.dp),
-                                            music = currentMusic,
-                                            playerState = playerState,
-                                            onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
-                                            onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
-                                            onClick = { onNavigateToMusicPlayer() }
-                                        )
-//                                }
                                     }
                                 }
                             }
@@ -300,20 +255,21 @@ fun PlaylistScreen(
                     .padding(16.dp)
             ) {
                 Spacer(modifier = Modifier.height(15.dp))
-                Button(
-                    onClick = {
-                        playlistUiState.sort = false
-                        albumViewModel.getPlaylistsOrderedByName()
-                        scope.launch {
-                            sheetState.hide()
-                        }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                showSortSheet = false
+                Row(
+                    modifier = Modifier
+                        .clickable {
+                            playlistUiState.sort = false
+                            albumViewModel.getPlaylistsOrderedByName()
+                            scope.launch {
+                                sheetState.hide()
+                            }.invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showSortSheet = false
+                                }
                             }
                         }
-                    }
                 ) {
-                    Text("Sort by name")
+                    Text("+ Sort by name")
                 }
             }
         }

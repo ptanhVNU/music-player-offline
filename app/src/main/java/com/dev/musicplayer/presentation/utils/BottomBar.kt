@@ -2,9 +2,10 @@ package com.dev.musicplayer.presentation.utils
 
 import BottomNavItem
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.MusicNote
@@ -16,6 +17,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
@@ -24,7 +26,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.dev.musicplayer.navigation.Screen
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
-import com.dev.musicplayer.ui.theme.onSecondary
 
 @Composable
 fun BottomBar(
@@ -32,6 +33,10 @@ fun BottomBar(
     navBackStackEntry: NavBackStackEntry?,
     bottomBarState: Boolean,
 ) {
+
+    val configuration = LocalConfiguration.current
+
+    val screenHeight = configuration.screenHeightDp.dp
 
     val bottomNavItems = listOf(
         BottomNavItem(
@@ -52,11 +57,12 @@ fun BottomBar(
 
     AnimatedVisibility(
         visible = bottomBarState,
-//        enter = slideInVertically(initialOffsetY = { -it }),
-//        exit = slideOutVertically(targetOffsetY = { -it }),
+        enter = slideInVertically(initialOffsetY = { -it }),
+        exit = slideOutVertically(targetOffsetY = { -it }),
         content = {
             NavigationBar(
-                modifier = Modifier.height(95.dp)
+                modifier = Modifier.height(80.dp),
+                containerColor =  MusicAppColorScheme.surfaceTint.copy(alpha = 0.4f)
             ) {
                 bottomNavItems.forEach { item ->
                     AddItem(
@@ -81,9 +87,8 @@ fun RowScope.AddItem(
     } == true
 
     NavigationBarItem(
-
         selected = isSelected,
-
+        label = {},
         onClick = {
             navController.navigate(item.route) {
                 popUpTo(navController.graph.findStartDestination().id) {
@@ -96,7 +101,7 @@ fun RowScope.AddItem(
 
         icon = {
             Icon(
-                modifier = Modifier.size(25.dp),
+//                modifier = Modifier.size(24.dp),
                 imageVector = if (isSelected) item.selectedIcon else
                     item.unselectedIcon,
                 contentDescription = item.title,
@@ -104,8 +109,8 @@ fun RowScope.AddItem(
         },
 
         colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = MusicAppColorScheme.secondary,
-            indicatorColor = onSecondary,
+            selectedIconColor = MusicAppColorScheme.onSecondaryContainer,
+            indicatorColor = MusicAppColorScheme.secondaryContainer,
         )
 
     )

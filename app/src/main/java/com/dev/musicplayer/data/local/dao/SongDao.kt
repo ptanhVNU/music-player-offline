@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
+import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.data.local.entities.Song
 import kotlinx.coroutines.flow.Flow
 
@@ -33,4 +34,9 @@ interface SongDao {
     @Query("SELECT * FROM song WHERE is_liked = 1")
     fun getLikedSongs(): Flow<List<Song>>
 
+    @Query("SELECT * FROM song WHERE title LIKE '%' || :query || '%'")
+    suspend fun searchSongs(query: String): List<Song>
+
+    @Query("SELECT * FROM playlist WHERE title LIKE '%' || :query || '%'")
+    suspend fun searchPlaylists(query: String): List<Playlist>
 }

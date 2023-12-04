@@ -7,10 +7,11 @@ sealed class Screen(val route: String) {
 
     data object SettingScreen : Screen("setting")
 
+    data object SearchScreen : Screen("search")
+
     object ListSongScreen : Screen("listSong")
 
     data object PlayerScreen: Screen("player")
-
 }
 
 

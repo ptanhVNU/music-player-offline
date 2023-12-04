@@ -1,11 +1,11 @@
-import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,7 +16,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
-import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.navigation.Screen
 import com.dev.musicplayer.presentation.home.HomeScreen
 import com.dev.musicplayer.presentation.home.HomeViewModel
@@ -25,6 +24,11 @@ import com.dev.musicplayer.presentation.nowplaying.PlayerViewModel
 import com.dev.musicplayer.presentation.playlist.AlbumViewModel
 import com.dev.musicplayer.presentation.playlist.PlaylistScreen
 import com.dev.musicplayer.presentation.playlist.listSongOfAlbum.ListSongScreen
+import com.dev.musicplayer.presentation.search.SearchScreen
+import com.dev.musicplayer.presentation.search.SearchViewModel
+
+
+@OptIn(ExperimentalMaterialApi::class)
 
 @UnstableApi
 @Composable
@@ -43,33 +47,37 @@ fun NavGraph(
         composable(
             route = Screen.HomeScreen.route
         ) {
-            val songs by homeViewModel.listSong.collectAsState(initial = emptyList())
+
+
+//            val refreshing by homeViewModel
+            val pullRefreshState = rememberPullRefreshState(
+                refreshing = homeViewModel.homeUiState.loading ?: false,
+                onRefresh = homeViewModel::getMusicData
+            )
 
             HomeScreen(
-                songs = songs,
                 onEvent = homeViewModel::onEvent,
                 homeUiState = homeViewModel.homeUiState,
                 musicPlaybackUiState = musicPlaybackUiState,
                 onNavigateToMusicPlayer = {
                     navController.navigate(Screen.PlayerScreen.route)
                 },
-                selectMusicFromStorage = { uris ->
-                    homeViewModel.selectMusicFromStorage(uris)
-                },
-                pickPhoto = {uri ->
-                    homeViewModel.pickPhoto(uri)
 
+                onSearchClicked = {
+                    navController.navigate(Screen.SearchScreen.route)
                 },
 
-                onDeleteMusic = {
-                    homeViewModel.deleteSong(it)
-                },
-                onEditMusic = {
-                    //TODO: EDIT
-                    homeViewModel.editSong(it)
-                },
 
+                pullRefreshState = pullRefreshState,
+                isLoading = homeViewModel.homeUiState.loading ?: false
             )
+        }
+
+        composable(
+            route = Screen.SearchScreen.route
+        ) {
+            val viewModel =  hiltViewModel<SearchViewModel>()
+            SearchScreen(navController, viewModel)
         }
 
         composable(
