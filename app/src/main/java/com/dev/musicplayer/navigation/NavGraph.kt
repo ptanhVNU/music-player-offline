@@ -74,7 +74,8 @@ fun NavGraph(
             val searchViewModel = hiltViewModel<SearchViewModel>()
 
             SearchScreen(
-                onEvent = homeViewModel::onEvent,
+                // search view model on event
+                onEvent = searchViewModel::onEvent,
                 musicPlaybackUiState = musicPlaybackUiState,
                 viewModel = searchViewModel,
                 onNavigateToMusicPlayer = {

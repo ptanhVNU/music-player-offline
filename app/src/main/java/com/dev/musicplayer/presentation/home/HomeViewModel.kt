@@ -65,6 +65,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+
+
     fun onEvent(event: MusicEvent) {
         when (event) {
             MusicEvent.PlayMusic -> playMusic()

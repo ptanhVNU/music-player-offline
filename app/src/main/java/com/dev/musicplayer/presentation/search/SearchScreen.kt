@@ -52,49 +52,47 @@ fun SearchScreen(
                 onSearchTypeSelect = viewModel::updateType,
                 onClearRequest = viewModel::clearQueryText
             )
-        },
-        content = { innerPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-//                    .padding(start = paddingValues, stop = paddingValues, )
+        }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
 
-            ) {
-                if (searchResult.errorMsg != null) {
+        ) {
+            if (searchResult.errorMsg != null) {
 //                                FullScreenSadMessage(searchResult.errorMsg)
-                } else {
-                    ResultContent(
-                        searchResult = searchResult,
-                        innerPadding = innerPadding,
-                        musicPlaybackUiState = musicPlaybackUiState,
-                        searchType = searchType,
-                        onSongClicked = { music ->
-                            onEvent(MusicEvent.OnMusicSelected(music))
-                            onEvent(MusicEvent.PlayMusic)
-                        },
-                        onPlaylistClicked = {},
+            } else {
+                ResultContent(
+                    searchResult = searchResult,
+                    innerPadding = innerPadding,
+                    musicPlaybackUiState = musicPlaybackUiState,
+                    searchType = searchType,
+                    onSongClicked = { music ->
+                        onEvent(MusicEvent.OnMusicSelected(music))
+                        onEvent(MusicEvent.PlayMusic)
+                    },
+                    onPlaylistClicked = {},
+                )
+            }
+
+            with(musicPlaybackUiState) {
+                if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
+                    MusicMiniPlayerCard(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .offset(y = (-80).dp)
+                            .align(Alignment.BottomCenter)
+                            .background(color = MusicAppColorScheme.secondaryContainer)
+                            .clickable { onNavigateToMusicPlayer() },
+                        music = currentMusic,
+                        playerState = playerState,
+                        onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
+                        onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
                     )
                 }
-
-                with(musicPlaybackUiState) {
-                    if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
-                        MusicMiniPlayerCard(
-                            modifier = Modifier
-                                .padding(5.dp)
-                                .offset(y = (-80).dp)
-                                .align(Alignment.BottomCenter)
-                                .background(color = MusicAppColorScheme.secondaryContainer)
-                                .clickable { onNavigateToMusicPlayer() },
-                            music = currentMusic,
-                            playerState = playerState,
-                            onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
-                            onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
-                        )
-                    }
-                }
-
-
             }
+
+
         }
-    )
+    }
 }

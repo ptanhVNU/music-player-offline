@@ -95,7 +95,7 @@ fun ResultContent(
                             if (!isSelected) {
                                 selectedMusicIndex = searchResult.songs.indexOf(music)
                             }
-//                            onSongClicked(music)
+                            onSongClicked(music)
                         }
                     )
                 }

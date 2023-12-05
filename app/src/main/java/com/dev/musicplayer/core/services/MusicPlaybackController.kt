@@ -76,7 +76,7 @@ class MusicPlaybackController(context: Context) : PlaybackController {
                 )
                 .build()
         }
-        mediaController?.clearMediaItems()
+//        mediaController?.clearMediaItems()
         mediaController?.setMediaItems(mediaItems)
     }
 
