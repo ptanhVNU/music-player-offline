@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.domain.repositories.MusicRepository
 import com.dev.musicplayer.domain.use_case.AddMediaItemsUseCase
 import com.dev.musicplayer.domain.use_case.GetMusicsUseCase
@@ -63,6 +64,14 @@ class HomeViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun addMusicItems(musics:List<MusicEntity>) {
+        viewModelScope.launch {
+
+            addMediaItemsUseCase(musics)
+        }
+
     }
 
 

@@ -60,11 +60,15 @@ fun NavGraph(
                 onEvent = homeViewModel::onEvent,
                 homeUiState = homeViewModel.homeUiState,
                 musicPlaybackUiState = musicPlaybackUiState,
+
                 onNavigateToMusicPlayer = {
                     navController.navigate(Screen.PlayerScreen.route)
                 },
                 pullRefreshState = pullRefreshState,
-                isLoading = homeViewModel.homeUiState.loading ?: false
+                isLoading = homeViewModel.homeUiState.loading ?: false,
+                addMediaItem = {
+                    homeViewModel.addMusicItems(it)
+                }
             )
         }
 
@@ -74,7 +78,6 @@ fun NavGraph(
             val searchViewModel = hiltViewModel<SearchViewModel>()
 
             SearchScreen(
-                // search view model on event
                 onEvent = searchViewModel::onEvent,
                 musicPlaybackUiState = musicPlaybackUiState,
                 viewModel = searchViewModel,

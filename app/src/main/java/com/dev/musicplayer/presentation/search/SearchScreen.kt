@@ -57,7 +57,6 @@ fun SearchScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-
         ) {
             if (searchResult.errorMsg != null) {
 //                                FullScreenSadMessage(searchResult.errorMsg)

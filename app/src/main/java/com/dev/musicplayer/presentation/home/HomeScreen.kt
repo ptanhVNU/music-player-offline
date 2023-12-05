@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
+import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.presentation.home.components.SongItem
 import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
@@ -55,6 +56,7 @@ import com.dev.musicplayer.utils.PlayerState
 fun HomeScreen(
     onEvent: (MusicEvent) -> Unit,
     homeUiState: HomeUiState,
+    addMediaItem: (musics: List<MusicEntity>) -> Unit,
     musicPlaybackUiState: MusicPlaybackUiState,
     onNavigateToMusicPlayer: () -> Unit,
     pullRefreshState: PullRefreshState,
@@ -65,7 +67,6 @@ fun HomeScreen(
     var selectedMusicIndex by remember { mutableIntStateOf(-1) }
 
     Scaffold(
-
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             TopAppBar(
@@ -119,9 +120,12 @@ fun HomeScreen(
                                         isSelected = isSelected,
                                         musicPlaybackUiState = musicPlaybackUiState,
                                         onItemClicked = {
+                                            addMediaItem(musics)
+
                                             if (!isSelected) {
                                                 selectedMusicIndex = musics.indexOf(music)
                                             }
+
                                             onEvent(MusicEvent.OnMusicSelected(music))
                                             onEvent(MusicEvent.PlayMusic)
                                         }

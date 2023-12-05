@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -43,6 +45,7 @@ import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.presentation.home.components.SongItem
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
+import com.dev.musicplayer.ui.theme.MusicAppTypography
 
 @Composable
 fun TextCard(
@@ -74,10 +77,11 @@ fun ResultContent(
     onPlaylistClicked: (Playlist) -> Unit,
 ) {
     var selectedMusicIndex by remember { mutableIntStateOf(-1) }
-
+    val scrollState = rememberLazyListState()
     LazyColumn(
+        state = scrollState,
         modifier = Modifier
-            .fillMaxSize().padding(innerPadding),
+            .padding(innerPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         when (searchType) {
@@ -99,6 +103,17 @@ fun ResultContent(
                         }
                     )
                 }
+
+                item {
+                    Text(
+                        modifier = Modifier
+                            .height(180.dp)
+                            .padding(5.dp),
+                        text = "Tổng số bài hát: ${searchResult.songs.size}",
+                        textAlign = TextAlign.Center,
+                        style = MusicAppTypography.headlineMedium,
+                    )
+                }
             }
 
             SearchType.Playlists -> {
@@ -113,5 +128,7 @@ fun ResultContent(
                 }
             }
         }
+
+
     }
 }

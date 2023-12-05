@@ -49,8 +49,7 @@ class SearchViewModel @Inject constructor(
     private val _searchType = MutableStateFlow(SearchType.Songs)
     val searchType = _searchType.asStateFlow()
 
-    var searchUiState by mutableStateOf(SearchUiState())
-        private set
+    private var searchUiState by mutableStateOf(SearchUiState())
 
     val searchResult = _query
         .combine(searchType) { query, type ->
