@@ -2,8 +2,12 @@ package com.dev.musicplayer.data.local.repositories
 
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.data.local.store.PlaylistStore
+import com.dev.musicplayer.domain.entities.PlaylistEntity
 import com.dev.musicplayer.domain.repositories.PlaylistRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.time.Instant
 import javax.inject.Inject
@@ -25,32 +29,25 @@ class PlaylistRepositoryImpl @Inject constructor(
         playListStore.deletePlaylist(playlist.id)
     }
 
-//    override fun getPlaylistsOrderedByName() = flow<List<PlaylistEntity>> {
-//        val playlists = playListStore.getPlaylistsOrderedByName()
-//
-//        playlists.map { list ->
-//            emit(list.map {
-//                it.toEntity()
-//            })
-//        }
-//    }
+    override fun getPlaylistsOrderedByName() : Flow<List<Playlist>> = playListStore.getPlaylistsOrderedByName()
 
-    override fun getAllPlaylists() = playListStore.getAllPlaylists()
+    override suspend fun update(playlist: Playlist) = withContext(Dispatchers.IO) {
+        playListStore.update(playlist)
+    }
+    override fun getAllPlaylists(): Flow<List<Playlist>> = playListStore.getAllPlaylists()
 
-//    override fun getPlaylistsOrderedByCreatedAt() = flow<List<PlaylistEntity>> {
-//        val playlists = playListStore.getPlaylistsOrderedByCreatedAt()
-//
-//        playlists.map { list ->
-//            emit(list.map {
-//                it.toEntity()
-//            })
-//        }
-//    }
+    override fun getPlaylistsOrderedByCreatedAt() : Flow<List<Playlist>> = playListStore.getPlaylistsOrderedByCreatedAt()
+
 
     override suspend fun getPlaylistById(playlistId: Long) : Playlist {
         return playListStore.getPlaylistById(playlistId)
     }
+
+    override suspend fun getPlaylistByName(title : String): Playlist {
+        return playListStore.getPlaylistByName(title)
+    }
 }
+
 
 //fun Playlist.toEntity(): PlaylistEntity {
 //    return PlaylistEntity (

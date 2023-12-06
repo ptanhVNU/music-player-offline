@@ -32,8 +32,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import androidx.room.Room.databaseBuilder
 import com.dev.musicplayer.core.services.MusicPlaybackService
 import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
+import com.dev.musicplayer.data.local.MusicAppDatabase
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -42,6 +44,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 @UnstableApi
 class MainActivity : ComponentActivity() {
@@ -49,7 +52,6 @@ class MainActivity : ComponentActivity() {
     @UnstableApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         enableEdgeToEdge()
 
         setContent {

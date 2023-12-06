@@ -1,4 +1,3 @@
-
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -16,7 +15,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import coil.annotation.ExperimentalCoilApi
 import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
 import com.dev.musicplayer.navigation.Screen
 import com.dev.musicplayer.presentation.home.HomeScreen
@@ -88,7 +86,16 @@ fun NavGraph(
         ) { backStackEntry ->
             val albumId = backStackEntry.arguments?.getLong("albumId") ?: 0
             val viewModel = hiltViewModel<AlbumViewModel>()
-            ListSongScreen(navController, albumId, viewModel)
+            ListSongScreen(
+                navController,
+                albumId,
+                viewModel,
+                homeUiState = homeViewModel.homeUiState,
+                onEvent = homeViewModel::onEvent,
+                musicPlaybackUiState = musicPlaybackUiState,
+                onNavigateToMusicPlayer = {
+                    navController.navigate(Screen.PlayerScreen.route)
+                })
         }
 
         composable(
@@ -96,6 +103,7 @@ fun NavGraph(
         ) {
             val viewModel = hiltViewModel<AlbumViewModel>()
             val playlist by viewModel.playlist.collectAsState(initial = emptyList())
+            viewModel.playlistUiState.sort = true
             PlaylistScreen(
                 playlist = playlist,
                 onEvent = homeViewModel::onEvent,
@@ -105,7 +113,7 @@ fun NavGraph(
                 musicPlaybackUiState = musicPlaybackUiState,
                 onNavigateToMusicPlayer = {
                     navController.navigate(Screen.PlayerScreen.route)
-                },
+                }
             )
         }
 

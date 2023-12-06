@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.presentation.home.components.SongItem
+import com.dev.musicplayer.presentation.playlist.gradientBackgroundBrush
 import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
@@ -96,17 +97,26 @@ fun HomeScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MusicAppColorScheme.background)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) { innerPadding ->
         val scrollState = rememberLazyListState()
+        val gradientColorList = listOf(
+            Color(0xFF000000),
+            Color(0xFF6E7B8B)
+        )
 
         with(homeUiState) {
             when {
                 loading == true -> {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize()
+                            .background(
+                            brush = gradientBackgroundBrush(
+                                isLinearGradient = true,
+                                colors = gradientColorList)
+                        ),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(
