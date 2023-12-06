@@ -30,6 +30,9 @@ interface PlaylistDao {
     @Query("SELECT * FROM playlist WHERE id = :playlistId")
     suspend fun getPlaylistById(playlistId: Long): Playlist
 
+    @Query("SELECT * FROM playlist WHERE title = :title")
+    suspend fun getPlaylistByName(title : String): Playlist
+
     @Query("SELECT * FROM playlist WHERE title LIKE '%' || :query || '%'")
     suspend fun searchPlaylists(query: String): List<Playlist>
 

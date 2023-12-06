@@ -42,6 +42,10 @@ class PlaylistRepositoryImpl @Inject constructor(
     override suspend fun getPlaylistById(playlistId: Long) : Playlist {
         return playListStore.getPlaylistById(playlistId)
     }
+
+    override suspend fun getPlaylistByName(title : String): Playlist {
+        return playListStore.getPlaylistByName(title)
+    }
 }
 
 

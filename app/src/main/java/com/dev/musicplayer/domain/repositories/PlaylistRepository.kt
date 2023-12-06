@@ -25,5 +25,6 @@ interface PlaylistRepository {
 
     suspend fun getPlaylistById(playlistId : Long): Playlist
 
+    suspend fun getPlaylistByName(title : String): Playlist
 
 }

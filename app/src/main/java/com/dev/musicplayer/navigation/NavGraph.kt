@@ -89,7 +89,13 @@ fun NavGraph(
             ListSongScreen(
                 navController,
                 albumId,
-                viewModel)
+                viewModel,
+                homeUiState = homeViewModel.homeUiState,
+                onEvent = homeViewModel::onEvent,
+                musicPlaybackUiState = musicPlaybackUiState,
+                onNavigateToMusicPlayer = {
+                    navController.navigate(Screen.PlayerScreen.route)
+                })
         }
 
         composable(

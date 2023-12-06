@@ -59,14 +59,16 @@ fun PlaylistItemView(
     var show by remember { mutableStateOf(true) }
     val dismissState = rememberDismissState(
         confirmValueChange = {
-            if (it == DismissValue.DismissedToStart ||
-                it == DismissValue.DismissedToEnd
-            ) {
-                Log.d("Item", "{${item.title}}")
-                albumViewModel.deletePlaylist(item)
-                show = false
-                true
-            } else false
+//            if(item.title != "Favorites") {
+                if ((it == DismissValue.DismissedToStart ||
+                            it == DismissValue.DismissedToEnd)
+                ) {
+                    Log.d("Item", "{${item.title}}")
+                    albumViewModel.deletePlaylist(item)
+                    show = false
+                    true
+                } else false
+//            } else false
         }
     )
     AnimatedVisibility(

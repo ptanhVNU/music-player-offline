@@ -1,8 +1,5 @@
 package com.dev.musicplayer.presentation.playlist
-import android.annotation.SuppressLint
 import android.app.Application
-import android.content.Context
-import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,12 +10,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.dev.musicplayer.core.services.LocalMediaProvider
 import com.dev.musicplayer.data.local.entities.Playlist
-import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.data.local.repositories.PlaylistRepositoryImpl
+import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.domain.use_case.GetPlaylistUseCase
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,6 +38,7 @@ class AlbumViewModel @Inject constructor(
     private val _album = MutableStateFlow<Playlist?>(null)
     val album: StateFlow<Playlist?> = _album.asStateFlow()
 
+
     private val _playlistsOrderedByName = MutableLiveData<List<Playlist>>()
     val playlistsOrderedByName: LiveData<List<Playlist>> = _playlistsOrderedByName
 
@@ -57,7 +54,7 @@ class AlbumViewModel @Inject constructor(
         }
     }
 
-    private fun addSongToPlaylist(playlistId: Long, song: Song) {
+    fun addSongToPlaylist(playlistId: Long, song: MusicEntity) {
         viewModelScope.launch {
             val playlist = playlistRepository.getPlaylistById(playlistId)
             val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
@@ -67,53 +64,20 @@ class AlbumViewModel @Inject constructor(
         }
     }
 
-    fun selectMusicFromStorage(playlistId: Long, uris: List<Uri>) {
-        viewModelScope.launch((Dispatchers.IO)) {
-            for(uri: Uri in uris) {
-                val mediaAudioItem = localMediaProvider.getSongItemFromContentUri(uri)
-                Log.d("Tên nhạc", "{$mediaAudioItem}")
-                if (mediaAudioItem != null) {
-                    val song = Song(
-                        uri = mediaAudioItem.uri.toString(),
-                        title = mediaAudioItem.name
-                    )
-                    addSongToPlaylist(playlistId, song)
-                }
-            }
-        }
-    }
 
-//
-
-//    fun selectMusicFromStorage(playlistId: Long, uris: List<Uri>) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            for (uri: Uri in uris) {
-//                application.contentResolver.let { contentResolver ->
-//                    val songMetaData = metaDataReader.getMetaDataFromUri(uri, contentResolver)
-//                    if (songMetaData != null) {
-//                        val song = Song(
-//                            uri = songMetaData.uri.toString(),
-//                            title = songMetaData.fileName,
-//                        )
-//                        addSongToPlaylist(playlistId, song)
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-    private fun toFormattedString(song:Song): String {
+    private fun toFormattedString(song:MusicEntity): String {
         val gson = Gson()
         return gson.toJson(song)
     }
 
-    fun toFormattedSong(string:String): Song {
+    fun toFormattedMusicEntity(string:String): MusicEntity {
         val gson = Gson()
-        return gson.fromJson(string, Song::class.java)
+        return gson.fromJson(string, MusicEntity::class.java)
     }
 
     init {
         getPlaylist()
+//        createDefaultFavoritePlaylistIfNeeded()
     }
 
     private fun getPlaylist() {
@@ -151,15 +115,12 @@ class AlbumViewModel @Inject constructor(
         }
     }
 
-    fun onPlaylistEvent(event: PlaylistEvent) {
-        playlistUiState = when (event) {
-            is PlaylistEvent.SelectedPlaylist -> {
-                playlistUiState.copy(selectedPlaylist = event.selectedPlaylist)
-            }
+//    private fun getPlaylistByName(title: String) {
+//        viewModelScope.launch {
+//            val result = playlistRepository.getPlaylistByName(title)
+//            _playlistFavorite.value = result
+//        }
+//    }
 
-            is PlaylistEvent.SwipeTdoDelete -> {
-                playlistUiState.copy(deletedPlaylist = event.deletedPlaylist)
-            }
-        }
-    }
 }
+
