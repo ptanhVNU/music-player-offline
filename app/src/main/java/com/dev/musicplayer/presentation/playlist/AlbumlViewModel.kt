@@ -26,8 +26,7 @@ import javax.inject.Inject
 class AlbumViewModel @Inject constructor(
     private val playlistRepository: PlaylistRepositoryImpl,
     private val getPlaylistUseCase: GetPlaylistUseCase,
-    private val application: Application,
-    private val localMediaProvider: LocalMediaProvider
+    private val application: Application
 ) :  AndroidViewModel(application) {
     var playlistUiState by mutableStateOf(PlaylistUiState())
         private set
@@ -77,7 +76,6 @@ class AlbumViewModel @Inject constructor(
 
     init {
         getPlaylist()
-//        createDefaultFavoritePlaylistIfNeeded()
     }
 
     private fun getPlaylist() {
@@ -114,13 +112,6 @@ class AlbumViewModel @Inject constructor(
             _album.value = result
         }
     }
-
-//    private fun getPlaylistByName(title: String) {
-//        viewModelScope.launch {
-//            val result = playlistRepository.getPlaylistByName(title)
-//            _playlistFavorite.value = result
-//        }
-//    }
 
 }
 

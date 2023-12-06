@@ -27,50 +27,6 @@ class LocalMediaProvider(
     fun getSongItemFromContentUri(uri: Uri): MediaAudioItem? {
 
         var displayName: String? = null
-        var mediaAudioItem: MediaAudioItem? = null
-        applicationContext.contentResolver.query(
-            MUSIC_COLLECTION_URI,
-            AUDIO_PROJECTION,
-            selectionClause,
-            selectionArg,
-            sortOrder
-        )?.use { cursor ->
-
-            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
-            val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
-            val artistColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
-            val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
-            val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
-            val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE)
-            val dateModifiedColumn =
-                cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED)
-
-            while (cursor.moveToNext()) {
-                val id = cursor.getLong(idColumn)
-                val absolutePath = cursor.getString(dataColumn)
-                val title = cursor.getString(titleColumn)
-                val artist = cursor.getString(artistColumn)
-                val uri = ContentUris.withAppendedId(MUSIC_COLLECTION_URI, id)
-
-                val coverBytes = MediaMetadataRetriever().apply {
-                    setDataSource(applicationContext, uri)
-                }.embeddedPicture
-                val songCover: Bitmap? = if (coverBytes != null)
-                    BitmapFactory.decodeByteArray(coverBytes, 0, coverBytes.size) else null
-//                val image = bitmapToBase64(songCover)
-//                Log.d(TAG, "audio path: $absolutePath ")
-                mediaAudioItem = MediaAudioItem(
-                    id = id,
-                    name = title,
-                    artist = artist,
-                    absolutePath = absolutePath,
-                    duration = cursor.getLong(durationColumn),
-                    uri = uri,
-                    size = cursor.getLong(sizeColumn),
-                    image = songCover,
-                )
-            }
-        }
 
         if (uri.scheme == "content") {
             Log.d(TAG, "Uri scheme is content")
@@ -86,13 +42,13 @@ class LocalMediaProvider(
 
         return if (displayName != null) {
             Log.d(TAG, "display name is not null")
-            mediaAudioItem
+            getMediaSong().first { displayName == it.name }
         } else {
             Log.d(TAG, "display name is null")
             null
         }
-
     }
+
 
     private var selectionClause: String? = "${MediaStore.Audio.AudioColumns.IS_MUSIC} = ?"
     private var selectionArg = arrayOf("1")
