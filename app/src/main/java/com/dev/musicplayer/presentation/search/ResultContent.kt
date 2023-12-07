@@ -100,7 +100,7 @@ fun ResultContent(
                                 selectedMusicIndex = searchResult.songs.indexOf(music)
                             }
                             onSongClicked(music)
-                        }
+                        },
                     )
                 }
 

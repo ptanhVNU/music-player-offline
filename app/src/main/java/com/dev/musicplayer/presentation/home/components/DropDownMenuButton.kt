@@ -23,17 +23,14 @@ import com.dev.musicplayer.ui.theme.MusicAppTypography
 
 @Composable
 fun DropDownMenuButton(
-
     onAddPlayList: () -> Unit,
+) {
 
-    ) {
-    val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-
             .wrapContentSize(Alignment.TopEnd)
     ) {
         IconButton(onClick = { expanded = !expanded }) {

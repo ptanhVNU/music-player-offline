@@ -39,28 +39,29 @@ fun NavGraph(
 ) {
     val musicPlaybackUiState = sharedViewModel.musicPlaybackUiState
     val homeViewModel = hiltViewModel<HomeViewModel>()
+    val albumViewModel = hiltViewModel<AlbumViewModel>()
 
     NavHost(
         navController = navController,
         startDestination = Screen.HomeScreen.route,
     ) {
-
         composable(
             route = Screen.HomeScreen.route
         ) {
 
 
-//            val refreshing by homeViewModel
             val pullRefreshState = rememberPullRefreshState(
                 refreshing = homeViewModel.homeUiState.loading ?: false,
                 onRefresh = homeViewModel::getMusicData
             )
 
+            val playlists by albumViewModel.playlist.collectAsState(initial = emptyList())
+
             HomeScreen(
                 onEvent = homeViewModel::onEvent,
+                playlists = playlists,
                 homeUiState = homeViewModel.homeUiState,
                 musicPlaybackUiState = musicPlaybackUiState,
-
                 onNavigateToMusicPlayer = {
                     navController.navigate(Screen.PlayerScreen.route)
                 },
@@ -93,19 +94,20 @@ fun NavGraph(
         ) { backStackEntry ->
             val albumId = backStackEntry.arguments?.getLong("albumId") ?: 0
             val viewModel = hiltViewModel<AlbumViewModel>()
+
             ListSongScreen(navController, albumId, viewModel)
         }
 
         composable(
             route = Screen.PlaylistScreen.route
         ) {
-            val viewModel = hiltViewModel<AlbumViewModel>()
-            val playlist by viewModel.playlist.collectAsState(initial = emptyList())
+
+            val playlist by albumViewModel.playlist.collectAsState(initial = emptyList())
             PlaylistScreen(
                 playlist = playlist,
                 onEvent = homeViewModel::onEvent,
-                playlistUiState = viewModel.playlistUiState,
-                albumViewModel = viewModel,
+                playlistUiState = albumViewModel.playlistUiState,
+                albumViewModel = albumViewModel,
                 navController = navController,
                 musicPlaybackUiState = musicPlaybackUiState,
                 onNavigateToMusicPlayer = {

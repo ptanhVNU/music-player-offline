@@ -44,7 +44,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
+import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.domain.entities.MusicEntity
+import com.dev.musicplayer.presentation.home.components.CustomDialog
 import com.dev.musicplayer.presentation.home.components.SongItem
 import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
@@ -55,6 +57,7 @@ import com.dev.musicplayer.utils.PlayerState
 @Composable
 fun HomeScreen(
     onEvent: (MusicEvent) -> Unit,
+    playlists: List<Playlist>,
     homeUiState: HomeUiState,
     addMediaItem: (musics: List<MusicEntity>) -> Unit,
     musicPlaybackUiState: MusicPlaybackUiState,
@@ -65,6 +68,8 @@ fun HomeScreen(
     val snackBarHostState = remember { SnackbarHostState() }
 
     var selectedMusicIndex by remember { mutableIntStateOf(-1) }
+
+    var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
@@ -128,6 +133,9 @@ fun HomeScreen(
 
                                             onEvent(MusicEvent.OnMusicSelected(music))
                                             onEvent(MusicEvent.PlayMusic)
+                                        },
+                                        onAddToPlaylist = {
+                                            showDialog = true
                                         }
                                     )
                                 }
@@ -153,6 +161,13 @@ fun HomeScreen(
                                 contentColor = MusicAppColorScheme.primary
                             )
 
+                            if (showDialog) {
+                                CustomDialog(showDialog = showDialog,
+                                    playlists = playlists,
+                                    onDismissRequest = {
+                                        showDialog = false
+                                    })
+                            }
 
                             with(musicPlaybackUiState) {
                                 if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
