@@ -41,7 +41,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,13 +58,11 @@ import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.presentation.home.HomeUiState
 import com.dev.musicplayer.presentation.home.MusicEvent
-import com.dev.musicplayer.presentation.home.components.SongItem
 import com.dev.musicplayer.presentation.playlist.AlbumViewModel
 import com.dev.musicplayer.presentation.playlist.ReturnButton
 import com.dev.musicplayer.presentation.playlist.SettingButton
 import com.dev.musicplayer.presentation.playlist.StartButton
 import com.dev.musicplayer.presentation.playlist.components.ListSongItem
-import com.dev.musicplayer.presentation.playlist.components.PlaylistItemView
 import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.utils.PlayerState
@@ -126,7 +123,7 @@ fun ListSongScreen(
         val scrollState = rememberLazyListState()
         if(album != null) {
             Column {
-                rvBackGroundAlbum(navController, album!!, context, showSettingSheet) {
+                RVBackGroundAlbum(navController, album!!, context, showSettingSheet) {
                     showSettingSheet = it
                 }
                 Box(
@@ -300,7 +297,7 @@ suspend fun loadBitmapFromUrl(url: String, context: Context): Bitmap? {
 
 
 @Composable
-fun rvBackGroundAlbum(
+fun RVBackGroundAlbum(
     navController: NavController,
     album: Playlist,
     context: Context,

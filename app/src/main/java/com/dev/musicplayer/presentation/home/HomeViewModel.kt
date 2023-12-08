@@ -68,10 +68,8 @@ class HomeViewModel @Inject constructor(
 
     fun addMusicItems(musics:List<MusicEntity>) {
         viewModelScope.launch {
-
             addMediaItemsUseCase(musics)
         }
-
     }
 
 

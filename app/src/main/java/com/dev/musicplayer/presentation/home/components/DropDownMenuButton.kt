@@ -53,6 +53,7 @@ fun DropDownMenuButton(
                 },
                 text = { Text("Add to Playlist", style = MusicAppTypography.bodySmall) },
                 onClick = {
+                    expanded = false
                     onAddPlayList()
                 }
             )

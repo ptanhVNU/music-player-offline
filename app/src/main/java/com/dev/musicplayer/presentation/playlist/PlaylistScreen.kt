@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -51,7 +52,10 @@ import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.presentation.home.MusicEvent
 import com.dev.musicplayer.presentation.playlist.components.PlaylistItemView
+import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
+import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
+import com.dev.musicplayer.utils.PlayerState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -143,7 +147,8 @@ fun PlaylistScreen(
 
                     false -> {
                         when(sort) {
-                            true -> {
+                            null -> {}
+                            else -> {
                                 Box {
                                     LazyColumn(
                                         modifier = Modifier
@@ -162,32 +167,26 @@ fun PlaylistScreen(
                                             )
                                         }
                                     }
-                                }
-                            }
-                            false -> {
-                                Box {
-                                    LazyColumn(
-                                        modifier = Modifier
-                                            .fillMaxSize(),
-                                        contentPadding = PaddingValues(bottom = 80.dp),
-                                        state = scrollState,
-                                    ) {
-                                        itemsIndexed(
-                                            items = playlistsByName,
-                                            key = { _, item -> item.hashCode() }
-                                        ) { _, item ->
-                                            PlaylistItemView(
-                                                item = item,
-                                                albumViewModel = albumViewModel,
-                                                navController = navController
+
+                                    with(musicPlaybackUiState) {
+                                        if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
+                                            MusicMiniPlayerCard(
+                                                modifier = Modifier
+                                                    .padding(5.dp)
+                                                    .offset(y = (-80).dp)
+                                                    .align(Alignment.BottomCenter)
+                                                    .background(color = MusicAppColorScheme.secondaryContainer)
+                                                    .clickable { onNavigateToMusicPlayer() },
+                                                music = currentMusic,
+                                                playerState = playerState,
+                                                onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
+                                                onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
                                             )
                                         }
                                     }
                                 }
                             }
-                            else -> {
 
-                            }
                         }
                     }
                     else -> {}

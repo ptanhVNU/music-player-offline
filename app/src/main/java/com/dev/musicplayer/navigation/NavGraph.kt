@@ -1,3 +1,4 @@
+import android.widget.Toast
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -8,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
@@ -36,6 +38,7 @@ fun NavGraph(
     navController: NavHostController,
     sharedViewModel: SharedViewModel,
 ) {
+    val context = LocalContext.current
     val musicPlaybackUiState = sharedViewModel.musicPlaybackUiState
     val homeViewModel = hiltViewModel<HomeViewModel>()
     val albumViewModel = hiltViewModel<AlbumViewModel>()
@@ -68,6 +71,11 @@ fun NavGraph(
                 isLoading = homeViewModel.homeUiState.loading ?: false,
                 addMediaItem = {
                     homeViewModel.addMusicItems(it)
+                },
+                onAddToPlaylist = { playlist, music ->
+                    albumViewModel.addSongToPlaylist(playlist.id, music)
+
+                    Toast.makeText(context, "Đã thêm thành công vào playlist ${playlist.title}", Toast.LENGTH_LONG).show()
                 }
             )
         }

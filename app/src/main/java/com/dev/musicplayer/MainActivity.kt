@@ -83,7 +83,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-
         sharedViewModel.destroyMediaController()
         stopService(Intent(this, MusicPlaybackService::class.java))
     }
