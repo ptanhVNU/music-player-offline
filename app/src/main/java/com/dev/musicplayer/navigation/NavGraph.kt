@@ -15,7 +15,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import coil.annotation.ExperimentalCoilApi
 import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
 import com.dev.musicplayer.navigation.Screen
 import com.dev.musicplayer.presentation.home.HomeScreen
@@ -29,7 +28,7 @@ import com.dev.musicplayer.presentation.search.SearchScreen
 import com.dev.musicplayer.presentation.search.SearchViewModel
 
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 
 @UnstableApi
 @Composable
@@ -94,15 +93,27 @@ fun NavGraph(
         ) { backStackEntry ->
             val albumId = backStackEntry.arguments?.getLong("albumId") ?: 0
             val viewModel = hiltViewModel<AlbumViewModel>()
+            ListSongScreen(
+                navController,
+                albumId,
+                viewModel,
+                homeUiState = homeViewModel.homeUiState,
+                onEvent = homeViewModel::onEvent,
+                musicPlaybackUiState = musicPlaybackUiState,
+                onNavigateToMusicPlayer = {
+                    navController.navigate(Screen.PlayerScreen.route)
+                })
 
-            ListSongScreen(navController, albumId, viewModel)
         }
 
         composable(
             route = Screen.PlaylistScreen.route
         ) {
 
-            val playlist by albumViewModel.playlist.collectAsState(initial = emptyList())
+            val viewModel = hiltViewModel<AlbumViewModel>()
+            val playlist by viewModel.playlist.collectAsState(initial = emptyList())
+            viewModel.playlistUiState.sort = true
+
             PlaylistScreen(
                 playlist = playlist,
                 onEvent = homeViewModel::onEvent,
@@ -112,7 +123,7 @@ fun NavGraph(
                 musicPlaybackUiState = musicPlaybackUiState,
                 onNavigateToMusicPlayer = {
                     navController.navigate(Screen.PlayerScreen.route)
-                },
+                }
             )
         }
 

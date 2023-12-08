@@ -2,6 +2,7 @@ package com.dev.musicplayer.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import com.dev.musicplayer.data.local.entities.Playlist
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +15,9 @@ interface PlaylistDao {
     @Query("DELETE from playlist WHERE id = :playlistId")
     suspend fun deletePlaylist(playlistId: Long?)
 
+    @Update
+    suspend fun update(playlist: Playlist)
+
     @Query("SELECT * FROM playlist")
     fun getAllPlaylists(): Flow<List<Playlist>>
 
@@ -25,6 +29,9 @@ interface PlaylistDao {
 
     @Query("SELECT * FROM playlist WHERE id = :playlistId")
     suspend fun getPlaylistById(playlistId: Long): Playlist
+
+    @Query("SELECT * FROM playlist WHERE title = :title")
+    suspend fun getPlaylistByName(title : String): Playlist
 
     @Query("SELECT * FROM playlist WHERE title LIKE '%' || :query || '%'")
     suspend fun searchPlaylists(query: String): List<Playlist>

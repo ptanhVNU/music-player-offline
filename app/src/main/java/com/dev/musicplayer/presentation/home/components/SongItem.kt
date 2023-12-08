@@ -67,7 +67,6 @@ fun SongItem(
             }
             .height(75.dp)
             .padding(12.dp),
-
         horizontalArrangement = Arrangement.SpaceAround,
     ) {
         with(musicPlaybackUiState) {
@@ -77,7 +76,8 @@ fun SongItem(
                 } else if (playerState == PlayerState.PAUSED) {
                     WaveAnimation(false)
                 }
-            } else {
+            } else  {
+
                 AsyncImage(
                     modifier = Modifier
                         .size(50.dp)

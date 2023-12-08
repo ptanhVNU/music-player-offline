@@ -48,6 +48,7 @@ import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.presentation.home.components.CustomDialog
 import com.dev.musicplayer.presentation.home.components.SongItem
+import com.dev.musicplayer.presentation.playlist.gradientBackgroundBrush
 import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
@@ -82,11 +83,14 @@ fun HomeScreen(
                         style = MusicAppTypography.headlineMedium,
                     )
                 },
+
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MusicAppColorScheme.background)
+
             )
         }
     ) { innerPadding ->
         val scrollState = rememberLazyListState()
+
 
         with(homeUiState) {
             when {
