@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +59,7 @@ import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.presentation.home.HomeUiState
 import com.dev.musicplayer.presentation.home.MusicEvent
+import com.dev.musicplayer.presentation.home.components.SongItem
 import com.dev.musicplayer.presentation.playlist.AlbumViewModel
 import com.dev.musicplayer.presentation.playlist.ReturnButton
 import com.dev.musicplayer.presentation.playlist.SettingButton
@@ -114,6 +116,7 @@ fun ListSongScreen(
 
     val musicListToShow: List<MusicEntity> = musicEntities ?: listOf()
 
+    var selectedMusicIndex by remember { mutableIntStateOf(-1) }
 
     Box(
         modifier = Modifier
@@ -134,16 +137,22 @@ fun ListSongScreen(
                         contentPadding = PaddingValues(bottom = 80.dp),
                         state = scrollState,
                     ) {
-                        items(musicListToShow) { musicEntity ->
-//                            SongItem(
-//                                item = musicEntity,
-//                                musicPlaybackUiState = musicPlaybackUiState,
-//                                onItemClicked = {
-//                                    onEvent(MusicEvent.OnMusicSelected(musicEntity))
-//                                    onEvent(MusicEvent.PlayMusic)
-//                                },
-//                                onAddToPlaylist = null,
-//                            )
+                        items(musicListToShow) { music ->
+                            val isSelected = selectedMusicIndex == musics.indexOf(music)
+                            SongItem(
+                                item = music,
+                                musicPlaybackUiState = musicPlaybackUiState,
+                                onItemClicked = {
+                                    if (!isSelected) {
+                                        selectedMusicIndex = musics.indexOf(music)
+                                    }
+                                    onEvent(MusicEvent.OnMusicSelected(music))
+                                    onEvent(MusicEvent.PlayMusic)
+                                },
+                                isInPlaylist = true,
+                                isSelected = isSelected,
+
+                            )
                         }
                     }
                 }

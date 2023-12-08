@@ -54,6 +54,7 @@ import com.dev.musicplayer.utils.PlayerState
 fun SongItem(
     modifier: Modifier = Modifier,
     isSelected: Boolean,
+    isInPlaylist: Boolean = false,
     item: MusicEntity,
     musicPlaybackUiState: MusicPlaybackUiState,
     onItemClicked: () -> Unit,
@@ -76,7 +77,7 @@ fun SongItem(
                 } else if (playerState == PlayerState.PAUSED) {
                     WaveAnimation(false)
                 }
-            } else  {
+            } else {
 
                 AsyncImage(
                     modifier = Modifier
@@ -96,6 +97,7 @@ fun SongItem(
         }
 
         Spacer(modifier = Modifier.width(15.dp))
+
         Column(
             modifier = Modifier.fillMaxWidth(0.8f),
 
@@ -120,12 +122,16 @@ fun SongItem(
                 )
             )
         }
-
         Spacer(modifier = Modifier.width(8.dp))
 
-        DropDownMenuButton(
-            onAddPlayList = onAddToPlaylist ?: {},
-        )
+
+        if (!isInPlaylist) {
+
+
+            DropDownMenuButton(
+                onAddPlayList = onAddToPlaylist ?: {},
+            )
+        }
     }
 }
 

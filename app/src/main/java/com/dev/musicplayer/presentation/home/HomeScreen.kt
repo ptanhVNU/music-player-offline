@@ -68,7 +68,6 @@ fun HomeScreen(
 
     var selectedMusic by remember { mutableStateOf<MusicEntity?>(null) }
 
-
     val sheetState = rememberModalBottomSheetState()
 
     var isSheetOpen by rememberSaveable {

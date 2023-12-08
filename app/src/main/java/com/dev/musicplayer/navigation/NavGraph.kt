@@ -75,7 +75,7 @@ fun NavGraph(
                 onAddToPlaylist = { playlist, music ->
                     albumViewModel.addSongToPlaylist(playlist.id, music)
 
-                    Toast.makeText(context, "Đã thêm thành công vào playlist ${playlist.title}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Đã thêm thành công vào playlist ${playlist.title}", Toast.LENGTH_SHORT).show()
                 }
             )
         }
