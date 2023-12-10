@@ -5,6 +5,12 @@
       <entry key="App">
         <State />
       </entry>
+      <entry key="GroundAlbumPreview">
+        <State />
+      </entry>
+      <entry key="ListSongScreenPreview">
+        <State />
+      </entry>
     </value>
   </component>
 </project>

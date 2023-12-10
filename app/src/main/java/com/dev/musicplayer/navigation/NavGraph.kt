@@ -25,7 +25,7 @@ import com.dev.musicplayer.presentation.nowplaying.PlayerScreen
 import com.dev.musicplayer.presentation.nowplaying.PlayerViewModel
 import com.dev.musicplayer.presentation.playlist.AlbumViewModel
 import com.dev.musicplayer.presentation.playlist.PlaylistScreen
-import com.dev.musicplayer.presentation.playlist.listSongOfAlbum.ListSongScreen
+import com.dev.musicplayer.presentation.playlist.components.ListSongScreen
 import com.dev.musicplayer.presentation.search.SearchScreen
 import com.dev.musicplayer.presentation.search.SearchViewModel
 

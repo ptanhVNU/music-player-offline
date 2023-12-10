@@ -133,10 +133,10 @@ fun RemoveAlbumButton(icon: ImageVector, onClick: () -> Unit) {
 
 
 @Composable
-fun ReturnButton(icon: ImageVector, onClick: () -> Unit) {
+fun ReturnButton(icon: ImageVector, onClick: () -> Unit, modifier: Modifier,) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.size(50.dp)
+        modifier = modifier,
     ) {
         Icon(
             imageVector = icon,
@@ -149,7 +149,7 @@ fun ReturnButton(icon: ImageVector, onClick: () -> Unit) {
 fun StartButton(icon: ImageVector, onClick: () -> Unit) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.size(50.dp).background(Color.White, shape = CircleShape)
+        modifier = Modifier.size(40.dp)
     ) {
         Icon(
             imageVector = icon,
@@ -160,10 +160,10 @@ fun StartButton(icon: ImageVector, onClick: () -> Unit) {
 }
 
 @Composable
-fun SettingButton(icon: ImageVector, onClick: () -> Unit) {
+fun SettingButton(icon: ImageVector, onClick: () -> Unit, modifier: Modifier,) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.size(50.dp)
+        modifier = modifier
     ) {
         Icon(
             imageVector = icon,

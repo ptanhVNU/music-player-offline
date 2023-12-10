@@ -96,37 +96,31 @@ fun PlaylistContent(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .height(75.dp)
             .background(Color.Transparent)
-            .padding(start = 5.dp, end = 5.dp, top = 5.dp, bottom = 5.dp)
+            .padding(10.dp)
             .clickable(onClick = onClick)
-            .clip(shape = RoundedCornerShape(20.dp))
     ) {
-        Row(
+        AsyncImage(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(all = 5.dp)
-        ) {
-            AsyncImage(
-                modifier = Modifier
-                    .size(50.dp),
-                model =  "https://i1.sndcdn.com/artworks-y4ek09OJcvON38Ys-gs2icQ-t500x500.jpg",
-                contentDescription = "Title Album"
+                .size(50.dp),
+            model =  "https://i1.sndcdn.com/artworks-y4ek09OJcvON38Ys-gs2icQ-t500x500.jpg",
+            contentDescription = "Title Album"
+        )
+        Spacer(modifier = Modifier.width(20.dp))
+        Column {
+            Text(
+                text = album.title,
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
             )
-            Spacer(modifier = Modifier.width(20.dp))
-            Column {
-                Text(
-                    text = album.title,
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = "${album.songs?.size ?: 0} songs",
-                    color = Color.LightGray,
-                    fontSize = 12.sp,
-                )
-            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "${album.songs?.size ?: 0} songs",
+                color = Color.LightGray,
+                fontSize = 12.sp,
+            )
         }
     }
 }

@@ -67,9 +67,9 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun ChangeSystemBarsTheme(lightTheme: Boolean) {
-        val barColor = MusicAppColorScheme.background.toArgb()
+        val barColor = Color.Transparent.toArgb()
         val navBarColor = Color.Transparent.toArgb()
-        LaunchedEffect(lightTheme) {
+        LaunchedEffect(!lightTheme) {
             enableEdgeToEdge(
                 statusBarStyle = SystemBarStyle.dark(
                     barColor,

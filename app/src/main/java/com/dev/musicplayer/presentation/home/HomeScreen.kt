@@ -118,7 +118,6 @@ fun HomeScreen(
                             LazyColumn(
                                 state = scrollState,
                                 modifier = Modifier.padding(innerPadding),
-                                verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 items(musics, key = { music ->
