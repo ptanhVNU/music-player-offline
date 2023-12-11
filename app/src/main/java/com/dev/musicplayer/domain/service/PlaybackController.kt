@@ -25,6 +25,8 @@ interface PlaybackController {
 
     fun seekTo(position: Long)
 
+    fun clear()
+
     fun skipNext()
 
     fun skipPrevious()

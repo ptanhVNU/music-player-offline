@@ -37,6 +37,4 @@ interface SongDao {
     @Query("SELECT * FROM song WHERE title LIKE '%' || :query || '%'")
     suspend fun searchSongs(query: String): List<Song>
 
-    @Query("SELECT * FROM playlist WHERE title LIKE '%' || :query || '%'")
-    suspend fun searchPlaylists(query: String): List<Playlist>
 }

@@ -3,6 +3,7 @@ package com.dev.musicplayer.presentation.playlist
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,7 +54,10 @@ import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.presentation.home.MusicEvent
 import com.dev.musicplayer.presentation.playlist.components.PlaylistItemView
+import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
+import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
+import com.dev.musicplayer.utils.PlayerState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,7 +87,9 @@ fun PlaylistScreen(
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    val playlistsByName: List<Playlist> by albumViewModel.playlistsOrderedByName.observeAsState(initial = emptyList())
+    val playlistsByName: List<Playlist> by albumViewModel.playlistsOrderedByName.observeAsState(
+        initial = emptyList()
+    )
 
     Scaffold(
         topBar = {
@@ -102,95 +110,118 @@ fun PlaylistScreen(
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Black
+                    containerColor = MusicAppColorScheme.background
                 )
             )
         },
-    ) {
+    ) { innerPadding ->
         val scrollState = rememberLazyListState()
         val gradientColorList = listOf(
             Color(0xFF000000),
             Color(0xFF6E7B8B)
         )
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .background(
-                    brush = gradientBackgroundBrush(
-                        isLinearGradient = true,
-                        colors = gradientColorList)
-                )
-
+                .fillMaxSize(),
         ) {
-            SortButton(
-                icon = Icons.Default.Sort,
-                onClick = {
-                    showSortSheet = true;
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+//                                .background(
+//                                    brush = gradientBackgroundBrush(
+//                                        isLinearGradient = true,
+//                                        colors = gradientColorList
+//                                    )
+//                                )
+            ) {
+                SortButton(
+                    icon = Icons.Default.Sort,
+                    onClick = {
+                        showSortSheet = true;
+                    }
+                )
+                Spacer(modifier = Modifier.size(10.dp))
+                with(playlistUiState) {
+                    when (loading) {
+                        true -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+
+                        false -> {
+                            when (sort) {
+                                true -> {
+                                    Box {
+                                        LazyColumn(
+                                            modifier = Modifier
+                                                .fillMaxSize(),
+                                            contentPadding = PaddingValues(bottom = 80.dp),
+                                            state = scrollState,
+                                        ) {
+                                            itemsIndexed(
+                                                items = playlist,
+                                                key = { _, item -> item.hashCode() }
+                                            ) { _, item ->
+                                                PlaylistItemView(
+                                                    item = item,
+                                                    albumViewModel = albumViewModel,
+                                                    navController = navController
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                                false -> {
+                                    Box {
+                                        LazyColumn(
+                                            modifier = Modifier
+                                                .fillMaxSize(),
+                                            contentPadding = PaddingValues(bottom = 80.dp),
+                                            state = scrollState,
+                                        ) {
+                                            itemsIndexed(
+                                                items = playlistsByName,
+                                                key = { _, item -> item.hashCode() }
+                                            ) { _, item ->
+                                                PlaylistItemView(
+                                                    item = item,
+                                                    albumViewModel = albumViewModel,
+                                                    navController = navController
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                                else -> {
+
+                                }
+                            }
+                        }
+
+                        else -> {}
+                    }
                 }
-            )
-            Spacer(modifier = Modifier.size(10.dp))
-            with(playlistUiState) {
-                when (loading) {
-                    true -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
+            }
 
-                    false -> {
-                        when(sort) {
-                            true -> {
-                                Box {
-                                    LazyColumn(
-                                        modifier = Modifier
-                                            .fillMaxSize(),
-                                        contentPadding = PaddingValues(bottom = 80.dp),
-                                        state = scrollState,
-                                    ) {
-                                        itemsIndexed(
-                                            items = playlist,
-                                            key = { _, item -> item.hashCode() }
-                                        ) { _, item ->
-                                            PlaylistItemView(
-                                                item = item,
-                                                albumViewModel = albumViewModel,
-                                                navController = navController
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                            false -> {
-                                Box {
-                                    LazyColumn(
-                                        modifier = Modifier
-                                            .fillMaxSize(),
-                                        contentPadding = PaddingValues(bottom = 80.dp),
-                                        state = scrollState,
-                                    ) {
-                                        itemsIndexed(
-                                            items = playlistsByName,
-                                            key = { _, item -> item.hashCode() }
-                                        ) { _, item ->
-                                            PlaylistItemView(
-                                                item = item,
-                                                albumViewModel = albumViewModel,
-                                                navController = navController
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                            else -> {
-
-                            }
-                        }
-                    }
-                    else -> {}
+            with(musicPlaybackUiState) {
+                if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
+                    MusicMiniPlayerCard(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .offset(y = (-80).dp)
+                            .align(Alignment.BottomCenter)
+                            .background(color = MusicAppColorScheme.secondaryContainer)
+                            .clickable { onNavigateToMusicPlayer() },
+                        music = currentMusic,
+                        playerState = playerState,
+                        onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
+                        onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
+                    )
                 }
             }
         }
@@ -279,10 +310,10 @@ fun PlaylistScreen(
 
 @Composable
 fun gradientBackgroundBrush(
-    isLinearGradient : Boolean,
+    isLinearGradient: Boolean,
     colors: List<Color>
 ): Brush {
-    val endOffset = if(isLinearGradient) {
+    val endOffset = if (isLinearGradient) {
         Offset(0f, Float.POSITIVE_INFINITY)
     } else {
         Offset(Float.POSITIVE_INFINITY, 0f)
@@ -293,6 +324,8 @@ fun gradientBackgroundBrush(
         end = endOffset
     )
 }
+
+
 
 
 

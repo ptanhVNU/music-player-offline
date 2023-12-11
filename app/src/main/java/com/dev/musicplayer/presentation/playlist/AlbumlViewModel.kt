@@ -14,6 +14,7 @@ import com.dev.musicplayer.data.local.repositories.PlaylistRepositoryImpl
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.domain.use_case.GetPlaylistUseCase
 import com.dev.musicplayer.presentation.playlist.listSongOfAlbum.ListSongUiState
+import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,17 +36,8 @@ class AlbumViewModel @Inject constructor(
     var playlistUiState by mutableStateOf(PlaylistUiState())
         private set
 
-    var listSongUiState by mutableStateOf(ListSongUiState())
-
     private var _playlist: MutableStateFlow<List<Playlist>> = MutableStateFlow(arrayListOf())
     val playlist: StateFlow<List<Playlist>> = _playlist.asStateFlow()
-
-    private var _song: MutableStateFlow<List<MusicEntity>> = MutableStateFlow(arrayListOf())
-    val song: StateFlow<List<MusicEntity>> = _song.asStateFlow()
-
-    private val _album = MutableStateFlow<Playlist?>(null)
-    val album: StateFlow<Playlist?> = _album.asStateFlow()
-
 
     private val _playlistsOrderedByName = MutableLiveData<List<Playlist>>()
     val playlistsOrderedByName: LiveData<List<Playlist>> = _playlistsOrderedByName
@@ -60,26 +54,18 @@ class AlbumViewModel @Inject constructor(
         }
     }
 
-    fun addSongToPlaylist(playlistId: Long, song: MusicEntity) {
-        viewModelScope.launch {
-            val playlist = playlistRepository.getPlaylistById(playlistId)
-            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
-            updatedSongs.add(toFormattedString(song))
-            val updatedPlaylist = playlist.copy(songs = updatedSongs)
-            playlistRepository.update(updatedPlaylist)
-        }
-    }
 
+//    private fun toFormattedMusicEntity1(strings: List<String>): List<MusicEntity> {
+//        val gson = Gson()
+//        val listStringType = object : TypeToken<List<String>>() {}.type
+//        val listString: List<String> = gson.fromJson(strings, listStringType)
+//
+//        for (string in listString) {
+//            val musicEntity = gson.fromJson(string, MusicEntity::class.java)
+//            println("Artist: ${musicEntity.artist}, Title: ${musicEntity.title}, ID: ${musicEntity.id}")
+//        }
+//    }
 
-    private fun toFormattedString(song:MusicEntity): String {
-        val gson = Gson()
-        return gson.toJson(song)
-    }
-
-    fun toFormattedMusicEntity(string:String): MusicEntity {
-        val gson = Gson()
-        return gson.fromJson(string, MusicEntity::class.java)
-    }
 
     init {
         getPlaylist()
@@ -101,6 +87,32 @@ class AlbumViewModel @Inject constructor(
         }
     }
 
+    fun addSongToPlaylist(playlistId: Long, song: MusicEntity) {
+        viewModelScope.launch {
+            val playlist = playlistRepository.getPlaylistById(playlistId)
+            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
+            updatedSongs.add(toFormattedString(song))
+            val updatedPlaylist = playlist.copy(songs = updatedSongs)
+            playlistRepository.update(updatedPlaylist)
+        }
+    }
+
+    fun addSongsToPlaylist(playlistId: Long, songs: List<MusicEntity>) {
+        viewModelScope.launch {
+            val playlist = playlistRepository.getPlaylistById(playlistId)
+            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
+            updatedSongs.addAll(songs.map { toFormattedString(it) })
+            val updatedPlaylist = playlist.copy(songs = updatedSongs)
+            playlistRepository.update(updatedPlaylist)
+        }
+    }
+
+    private fun toFormattedString(song:MusicEntity): String {
+        val gson = Gson()
+        println("Formatted JSON String: ${gson.toJson(song)}")
+        return gson.toJson(song)
+    }
+
     fun getPlaylistsOrderedByName() {
         viewModelScope.launch {
             try {
@@ -112,25 +124,6 @@ class AlbumViewModel @Inject constructor(
             }
         }
     }
-
-    fun getPlaylistById(playlistId: Long) {
-        viewModelScope.launch {
-            val result = playlistRepository.getPlaylistById(playlistId)
-            _album.value = result
-        }
-    }
-
-    fun getSong(playlistId: Long) {
-        viewModelScope.launch {
-            val resultFlow = playlistRepository.getSongsOfPlaylist(playlistId)
-            resultFlow.collect { songsList ->
-                val musicEntityList = songsList.mapNotNull { toFormattedMusicEntity(it) }
-                _song.value = musicEntityList
-                listSongUiState = listSongUiState.copy(
-                    loading = false
-                )
-            }
-        }
-    }
 }
+
 
