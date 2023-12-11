@@ -11,6 +11,7 @@ class SongStore @Inject constructor(
 
     suspend fun deleteSong(song: Song) = songDao.deleteSong(song)
 
+
     suspend fun editSong(song: Song) = songDao.editSong(song)
     fun getAllSongs() = songDao.getAllSongs()
 

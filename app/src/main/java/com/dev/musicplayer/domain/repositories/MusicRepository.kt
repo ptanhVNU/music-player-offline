@@ -9,5 +9,6 @@ interface MusicRepository {
 
     fun getMusicsStorage(): Flow<List<MusicEntity>>
 
+
     fun cancelJobs()
 }

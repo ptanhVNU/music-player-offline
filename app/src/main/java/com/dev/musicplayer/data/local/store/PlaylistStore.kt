@@ -22,6 +22,7 @@ class PlaylistStore @Inject constructor(
 
     suspend fun getPlaylistById(playlistId: Long) = playlistDao.getPlaylistById(playlistId)
 
+
     suspend fun getSongsOfPlaylist(playlistId: Long) = playlistDao.getSongsOfPlaylist(playlistId)
 
     suspend fun update(playlist: Playlist) = playlistDao.update(playlist)

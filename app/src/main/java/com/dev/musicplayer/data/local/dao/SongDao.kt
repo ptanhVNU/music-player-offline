@@ -34,6 +34,7 @@ interface SongDao {
     @Query("SELECT * FROM song WHERE is_liked = 1")
     fun getLikedSongs(): Flow<List<Song>>
 
+
     @Query("SELECT * FROM song WHERE title LIKE '%' || :query || '%'")
     suspend fun searchSongs(query: String): List<Song>
 

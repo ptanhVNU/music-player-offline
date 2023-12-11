@@ -50,6 +50,7 @@ import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 import com.dev.musicplayer.utils.PlayerState
 
+
 @Composable
 fun SongItem(
     modifier: Modifier = Modifier,

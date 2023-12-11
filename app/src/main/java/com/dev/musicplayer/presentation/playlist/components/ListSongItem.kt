@@ -48,6 +48,7 @@ fun ListSongItem(
                     contentDescription = null,
                     tint = Color.White
                 )
+
                 Spacer(modifier = Modifier.width(10.dp))
                 Column {
                     Text(
