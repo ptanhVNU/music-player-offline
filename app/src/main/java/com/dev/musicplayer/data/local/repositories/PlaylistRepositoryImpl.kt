@@ -36,6 +36,9 @@ class PlaylistRepositoryImpl @Inject constructor(
     }
     override fun getAllPlaylists(): Flow<List<Playlist>> = playListStore.getAllPlaylists()
 
+    override suspend fun getSongsOfPlaylist(playlistId: Long): Flow<List<String>> = playListStore.getSongsOfPlaylist(playlistId)
+
+
     override fun getPlaylistsOrderedByCreatedAt() : Flow<List<Playlist>> = playListStore.getPlaylistsOrderedByCreatedAt()
 
 

@@ -13,7 +13,9 @@ import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.data.local.repositories.PlaylistRepositoryImpl
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.domain.use_case.GetPlaylistUseCase
+import com.dev.musicplayer.presentation.playlist.listSongOfAlbum.ListSongUiState
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,8 +33,13 @@ class AlbumViewModel @Inject constructor(
     var playlistUiState by mutableStateOf(PlaylistUiState())
         private set
 
+    var listSongUiState by mutableStateOf(ListSongUiState())
+
     private var _playlist: MutableStateFlow<List<Playlist>> = MutableStateFlow(arrayListOf())
     val playlist: StateFlow<List<Playlist>> = _playlist.asStateFlow()
+
+    private var _song: MutableStateFlow<List<MusicEntity>> = MutableStateFlow(arrayListOf())
+    val song: StateFlow<List<MusicEntity>> = _song.asStateFlow()
 
     private val _album = MutableStateFlow<Playlist?>(null)
     val album: StateFlow<Playlist?> = _album.asStateFlow()
@@ -113,5 +120,17 @@ class AlbumViewModel @Inject constructor(
         }
     }
 
+    fun getSong(playlistId: Long) {
+        viewModelScope.launch {
+            val resultFlow = playlistRepository.getSongsOfPlaylist(playlistId)
+            resultFlow.collect { songsList ->
+                val musicEntityList = songsList.mapNotNull { toFormattedMusicEntity(it) }
+                _song.value = musicEntityList
+                listSongUiState = listSongUiState.copy(
+                    loading = false
+                )
+            }
+        }
+    }
 }
 

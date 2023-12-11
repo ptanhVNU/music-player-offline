@@ -21,6 +21,8 @@ interface PlaylistRepository {
 
     fun getPlaylistsOrderedByName() : Flow<List<Playlist>>
 
+    suspend fun getSongsOfPlaylist(playlistId: Long): Flow<List<String>>
+
     fun getPlaylistsOrderedByCreatedAt() : Flow<List<Playlist>>
 
     suspend fun getPlaylistById(playlistId : Long): Playlist

@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -87,6 +88,7 @@ fun ListSongScreen(
     albumID:Long,
     viewModel: AlbumViewModel = hiltViewModel(),
     homeUiState: HomeUiState,
+    listSongUiState: ListSongUiState,
     onEvent: (MusicEvent) -> Unit,
     musicPlaybackUiState: MusicPlaybackUiState,
     onNavigateToMusicPlayer: () -> Unit
@@ -94,6 +96,8 @@ fun ListSongScreen(
     val context = LocalContext.current
 
     viewModel.getPlaylistById(albumID)
+//    viewModel.getSong(albumID)
+
     val album: Playlist? by viewModel.album.collectAsState()
 
     var showDialog by remember { mutableStateOf(false) }
@@ -111,6 +115,7 @@ fun ListSongScreen(
             addAll(musics.map { MusicItem(it) })
         }
     }
+
     val musicEntities: List<MusicEntity>? = album?.songs?.let { songs ->
         songs.map { viewModel.toFormattedMusicEntity(it) }
     }
@@ -129,23 +134,40 @@ fun ListSongScreen(
                 rvBackGroundAlbum(navController, album!!, context, showSettingSheet) {
                     showSettingSheet = it
                 }
-                Box(
-                ) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentPadding = PaddingValues(bottom = 80.dp),
-                        state = scrollState,
-                    ) {
-                        items(musicListToShow) { musicEntity ->
-                            SongItem(
-                                item = musicEntity,
-                                musicPlaybackUiState = musicPlaybackUiState,
-                                onItemClicked = {
-                                    onEvent(MusicEvent.OnMusicSelected(musicEntity))
-                                    onEvent(MusicEvent.PlayMusic)
+                with(listSongUiState) {
+                    when(loading) {
+                        true -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                        false -> {
+                            Box(
+                            ) {
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    contentPadding = PaddingValues(bottom = 80.dp),
+                                    state = scrollState,
+                                ) {
+                                    items(musicListToShow) { musicEntity ->
+                                        SongItem(
+                                            item = musicEntity,
+                                            musicPlaybackUiState = musicPlaybackUiState,
+                                            onItemClicked = {
+                                                onEvent(MusicEvent.OnMusicSelected(musicEntity))
+                                                onEvent(MusicEvent.PlayMusic)
+                                            }
+                                        )
+                                    }
                                 }
-                            )
+                            }
+                        }
+                        else -> {
+
                         }
                     }
                 }
@@ -268,7 +290,6 @@ fun ListSongScreen(
                                 clickedItems.map {
                                     viewModel.addSongToPlaylist(albumID, it.item)
                                 }
-                                Log.d("Test", "{${album?.songs}")
                                 musicItems.forEach { it.isClicked = false }
                             },
                             modifier = Modifier.align(Alignment.BottomCenter)

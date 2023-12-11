@@ -86,11 +86,13 @@ fun NavGraph(
         ) { backStackEntry ->
             val albumId = backStackEntry.arguments?.getLong("albumId") ?: 0
             val viewModel = hiltViewModel<AlbumViewModel>()
+            val listSongViewModel = hiltViewModel<AlbumViewModel>()
             ListSongScreen(
                 navController,
                 albumId,
                 viewModel,
                 homeUiState = homeViewModel.homeUiState,
+                listSongUiState = listSongViewModel.listSongUiState,
                 onEvent = homeViewModel::onEvent,
                 musicPlaybackUiState = musicPlaybackUiState,
                 onNavigateToMusicPlayer = {
