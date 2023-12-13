@@ -23,9 +23,9 @@ import com.dev.musicplayer.presentation.home.HomeScreen
 import com.dev.musicplayer.presentation.home.HomeViewModel
 import com.dev.musicplayer.presentation.nowplaying.PlayerScreen
 import com.dev.musicplayer.presentation.nowplaying.PlayerViewModel
-import com.dev.musicplayer.presentation.playlist.AlbumViewModel
+import com.dev.musicplayer.presentation.playlist.PlaylistViewModel
 import com.dev.musicplayer.presentation.playlist.PlaylistScreen
-import com.dev.musicplayer.presentation.playlist.components.ListSongScreen
+import com.dev.musicplayer.presentation.playlist.SongsPlaylistScreen
 import com.dev.musicplayer.presentation.search.SearchScreen
 import com.dev.musicplayer.presentation.search.SearchViewModel
 
@@ -40,8 +40,11 @@ fun NavGraph(
 ) {
     val context = LocalContext.current
     val musicPlaybackUiState = sharedViewModel.musicPlaybackUiState
+
     val homeViewModel = hiltViewModel<HomeViewModel>()
-    val albumViewModel = hiltViewModel<AlbumViewModel>()
+    val playlistViewModel = hiltViewModel<PlaylistViewModel>()
+
+
 
     NavHost(
         navController = navController,
@@ -50,14 +53,15 @@ fun NavGraph(
         composable(
             route = Screen.HomeScreen.route
         ) {
-
+//            val homeViewModel = hiltViewModel<HomeViewModel>()
+//            val playlistViewModel = hiltViewModel<PlaylistViewModel>()
 
             val pullRefreshState = rememberPullRefreshState(
                 refreshing = homeViewModel.homeUiState.loading ?: false,
                 onRefresh = homeViewModel::getMusicData
             )
 
-            val playlists by albumViewModel.playlist.collectAsState(initial = emptyList())
+            val playlists by playlistViewModel.allPlaylists.collectAsState(initial = emptyList())
 
             HomeScreen(
                 onEvent = homeViewModel::onEvent,
@@ -73,9 +77,13 @@ fun NavGraph(
                     homeViewModel.addMusicItems(it)
                 },
                 onAddToPlaylist = { playlist, music ->
-                    albumViewModel.addSongToPlaylist(playlist.id, music)
+                    playlistViewModel.addSongToPlaylist(playlist.id, music)
 
-                    Toast.makeText(context, "Đã thêm thành công vào playlist ${playlist.title}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Đã thêm thành công vào playlist ${playlist.title}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             )
         }
@@ -92,6 +100,9 @@ fun NavGraph(
                 onNavigateToMusicPlayer = {
                     navController.navigate(Screen.PlayerScreen.route)
                 },
+                onPlaylistClicked = {
+                    navController.navigate("listSong/${it.id}")
+                }
             )
         }
 
@@ -99,18 +110,37 @@ fun NavGraph(
             route = "listSong/{albumId}",
             arguments = listOf(navArgument("albumId") { type = NavType.LongType })
         ) { backStackEntry ->
-            val albumId = backStackEntry.arguments?.getLong("albumId") ?: 0
-            val viewModel = hiltViewModel<AlbumViewModel>()
-            ListSongScreen(
-                navController,
-                albumId,
-                viewModel,
-                homeUiState = homeViewModel.homeUiState,
-                onEvent = homeViewModel::onEvent,
-                musicPlaybackUiState = musicPlaybackUiState,
-                onNavigateToMusicPlayer = {
-                    navController.navigate(Screen.PlayerScreen.route)
-                })
+            val albumId = backStackEntry.arguments?.getLong("albumId") ?: -1
+
+
+
+            val songsInPlaylist = playlistViewModel.getSongsByPlaylistId(albumId)
+
+            val playlist by playlistViewModel.playlist.collectAsState()
+            val allSongs by homeViewModel.songs.collectAsState()
+
+            playlist?.let {
+                SongsPlaylistScreen(
+                    onBackButtonClicked = {
+                        navController.popBackStack()
+                    },
+                    onPlayMusicButtonClicked = {
+                        playlistViewModel.addMusicItems(songsInPlaylist)
+
+                        playlistViewModel.initiatePlaybackFromBeginning()
+                    },
+                    onNavigateToMusicPlayer = {
+                        navController.navigate(Screen.PlayerScreen.route)
+                    },
+                    playlist = it,
+                    allSongs = allSongs,
+                    songsInPlaylist = songsInPlaylist,
+                    viewModel = playlistViewModel,
+                    onEvent = playlistViewModel::onEvent,
+                    musicPlaybackUiState = musicPlaybackUiState,
+                )
+            }
+
 
         }
 
@@ -118,15 +148,15 @@ fun NavGraph(
             route = Screen.PlaylistScreen.route
         ) {
 
-            val viewModel = hiltViewModel<AlbumViewModel>()
-            val playlist by viewModel.playlist.collectAsState(initial = emptyList())
-            viewModel.playlistUiState.sort = true
+//            val playlistViewModel = hiltViewModel<PlaylistViewModel>()
+            val playlist by playlistViewModel.allPlaylists.collectAsState(initial = emptyList())
+            playlistViewModel.playlistUiState.sort = true
 
             PlaylistScreen(
                 playlist = playlist,
-                onEvent = homeViewModel::onEvent,
-                playlistUiState = albumViewModel.playlistUiState,
-                albumViewModel = albumViewModel,
+                onEvent = playlistViewModel::onEvent,
+                playlistUiState = playlistViewModel.playlistUiState,
+                playlistViewModel = playlistViewModel,
                 navController = navController,
                 musicPlaybackUiState = musicPlaybackUiState,
                 onNavigateToMusicPlayer = {

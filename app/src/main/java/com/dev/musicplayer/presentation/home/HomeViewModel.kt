@@ -15,6 +15,9 @@ import com.dev.musicplayer.domain.use_case.PlayMusicUseCase
 import com.dev.musicplayer.domain.use_case.ResumeMusicUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,7 +48,11 @@ class HomeViewModel @Inject constructor(
         musicRepository.cancelJobs()
     }
 
-     fun getMusicData() {
+
+    private val _songs = MutableStateFlow<List<MusicEntity>>(emptyList())
+    val songs: StateFlow<List<MusicEntity>> = _songs.asStateFlow()
+
+    fun getMusicData() {
         homeUiState = homeUiState.copy(loading = true)
         viewModelScope.launch {
             delay(1.seconds)
@@ -57,7 +64,7 @@ class HomeViewModel @Inject constructor(
             }.collect {
 
                 addMediaItemsUseCase(it)
-
+                _songs.value = it
                 homeUiState = homeUiState.copy(
                     loading = false,
                     musics = it
@@ -66,12 +73,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun addMusicItems(musics:List<MusicEntity>) {
+    fun addMusicItems(musics: List<MusicEntity>) {
         viewModelScope.launch {
             addMediaItemsUseCase(musics)
         }
     }
-
 
 
     fun onEvent(event: MusicEvent) {

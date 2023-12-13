@@ -27,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
+import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.presentation.home.MusicEvent
 import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
@@ -36,6 +37,7 @@ import com.dev.musicplayer.utils.PlayerState
 fun SearchScreen(
     viewModel: SearchViewModel,
     onEvent: (MusicEvent) -> Unit,
+    onPlaylistClicked: (playlist: Playlist) -> Unit,
     onNavigateToMusicPlayer: () -> Unit,
     musicPlaybackUiState: MusicPlaybackUiState,
 ) {
@@ -70,7 +72,7 @@ fun SearchScreen(
                         onEvent(MusicEvent.OnMusicSelected(music))
                         onEvent(MusicEvent.PlayMusic)
                     },
-                    onPlaylistClicked = {},
+                    onPlaylistClicked = onPlaylistClicked,
                 )
             }
 

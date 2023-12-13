@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Base64.DEFAULT
 import com.bumptech.glide.Glide
+import com.dev.musicplayer.domain.entities.MusicEntity
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.nio.ByteBuffer
@@ -62,4 +64,14 @@ suspend fun loadBitmapFromUrl(url: String, context: Context): Bitmap? {
             null
         }
     }
+}
+
+fun toFormattedString(song: MusicEntity): String {
+    val gson = Gson()
+    return gson.toJson(song)
+}
+
+fun toFormattedMusicEntity(string:String): MusicEntity {
+    val gson = Gson()
+    return gson.fromJson(string, MusicEntity::class.java)
 }

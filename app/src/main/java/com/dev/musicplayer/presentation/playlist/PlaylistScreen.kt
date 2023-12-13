@@ -1,12 +1,9 @@
 package com.dev.musicplayer.presentation.playlist
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Sort
-import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,6 +50,8 @@ import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.presentation.home.MusicEvent
 import com.dev.musicplayer.presentation.playlist.components.PlaylistItemView
+import com.dev.musicplayer.presentation.playlist.components.PlusButton
+import com.dev.musicplayer.presentation.playlist.components.SortButton
 import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
@@ -67,7 +65,7 @@ fun PlaylistScreen(
     onEvent: (MusicEvent) -> Unit,
     musicPlaybackUiState: MusicPlaybackUiState,
     playlistUiState: PlaylistUiState,
-    albumViewModel: AlbumViewModel,
+    playlistViewModel: PlaylistViewModel,
     navController: NavController,
     onNavigateToMusicPlayer: () -> Unit
 ) {
@@ -87,7 +85,7 @@ fun PlaylistScreen(
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    val playlistsByName: List<Playlist> by albumViewModel.playlistsOrderedByName.observeAsState(
+    val playlistsByName: List<Playlist> by playlistViewModel.playlistsOrderedByName.observeAsState(
         initial = emptyList()
     )
 
@@ -168,7 +166,7 @@ fun PlaylistScreen(
                                         ) { _, item ->
                                             PlaylistItemView(
                                                 item = item,
-                                                albumViewModel = albumViewModel,
+                                                playlistViewModel = playlistViewModel,
                                                 navController = navController
                                             )
                                         }
@@ -232,7 +230,7 @@ fun PlaylistScreen(
                 Spacer(modifier = Modifier.height(15.dp))
                 Button(
                     onClick = {
-                        albumViewModel.createPlaylist(textAdd)
+                        playlistViewModel.createPlaylist(textAdd)
                         textAdd = ""
                         scope.launch {
                             sheetState.hide()
@@ -266,7 +264,7 @@ fun PlaylistScreen(
                     modifier = Modifier
                         .clickable {
                             playlistUiState.sort = false
-                            albumViewModel.getPlaylistsOrderedByName()
+                            playlistViewModel.getPlaylistsOrderedByName()
                             scope.launch {
                                 sheetState.hide()
                             }.invokeOnCompletion {

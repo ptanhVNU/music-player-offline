@@ -101,7 +101,7 @@ fun SongItem(
         Column(
             modifier = Modifier.fillMaxWidth(0.8f),
 
-            verticalArrangement = Arrangement.SpaceBetween,
+//            verticalArrangement = Arrangement.SpaceBetween,
 
             ) {
             Text(
@@ -110,7 +110,7 @@ fun SongItem(
                 maxLines = 1,
                 style = MusicAppTypography.bodyLarge
                     .copy(
-                        color = if (isSelected) Color(0xFF7DCE7E) else MusicAppColorScheme.onBackground,
+                        color = if (isSelected) MusicAppColorScheme.tertiary else MusicAppColorScheme.onBackground,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.W400
                     ),
             )
@@ -126,8 +126,6 @@ fun SongItem(
 
 
         if (!isInPlaylist) {
-
-
             DropDownMenuButton(
                 onAddPlayList = onAddToPlaylist ?: {},
             )

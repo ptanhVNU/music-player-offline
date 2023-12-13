@@ -1,6 +1,5 @@
 package com.dev.musicplayer.presentation.playlist.components
 
-import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,17 +25,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.palette.graphics.Palette
 import coil.compose.AsyncImage
 import com.dev.musicplayer.core.ext.loadBitmapFromUrl
 import com.dev.musicplayer.data.local.entities.Playlist
-import com.dev.musicplayer.presentation.playlist.ReturnButton
-import com.dev.musicplayer.presentation.playlist.SettingButton
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -48,11 +42,11 @@ import kotlinx.coroutines.withContext
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun DisplayBackgroundAlbum(
-    navController: NavController,
-    album: Playlist,
-    context: Context,
+    onBackButtonClicked: ()-> Unit,
+    playlist: Playlist,
     setShowSettingSheet: (Boolean) -> Unit
 ) {
+    val context = LocalContext.current
 
     val url = "https://i1.sndcdn.com/artworks-y4ek09OJcvON38Ys-gs2icQ-t500x500.jpg"
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
@@ -94,9 +88,9 @@ fun DisplayBackgroundAlbum(
                             endY = 800f, // Adjust the endY value as needed for the gradient length
                         )
                     )
-                    .height(380.dp)
+                    .height(350.dp)
                     .padding(
-                        start = 10.dp, top = 5.dp, bottom = 0.dp, end = 10.dp
+                        start = 10.dp, top = 5.dp,
                     )
                     .fillMaxWidth()
             ) {
@@ -109,14 +103,12 @@ fun DisplayBackgroundAlbum(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        ReturnButton(
+                        BackButton(
                             icon = Icons.Default.ArrowBackIos,
                             modifier = Modifier
                                 .size(60.dp)
                                 .align(Alignment.CenterVertically),
-                            onClick = {
-                                navController.popBackStack()
-                            }
+                            onClick = onBackButtonClicked,
                         )
 
                         SettingButton(
@@ -137,7 +129,7 @@ fun DisplayBackgroundAlbum(
                     )
 
                     Text(
-                        text = album.title,
+                        text = playlist.title,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(vertical = 20.dp),
@@ -154,18 +146,3 @@ fun DisplayBackgroundAlbum(
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun GroundAlbumPreview() {
-    val album = Playlist(1, "Sample Album")
-    val context = LocalContext.current
-    val navController = rememberNavController()
-
-    DisplayBackgroundAlbum(
-        navController = navController,
-        album = album,
-        context = context,
-        setShowSettingSheet = {}
-    )
-}
