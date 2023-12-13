@@ -1,6 +1,7 @@
 package com.dev.musicplayer.presentation.playlist.listSongOfAlbum
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -65,7 +67,10 @@ class ListSongViewModel @Inject constructor(
     private fun getSong(playlistId: Long) {
         viewModelScope.launch {
 //            try {
-                val resultFlow = playlistRepository.getSongsOfPlaylist(playlistId)
+//            val resultFlow = playlistRepository.getSongsOfPlaylist(playlistId).toList()
+//            resultFlow.map {
+//                println("$it")
+//            }
 //                val musicEntitiesFlow: Flow<List<MusicEntity>> = resultFlow.map { listOfJsonStrings ->
 //                    val music = mutableListOf<MusicEntity>()
 //                    listOfJsonStrings.forEach { jsonString ->

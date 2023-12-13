@@ -10,6 +10,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.dev.musicplayer.core.services.LocalMediaProvider
 import com.dev.musicplayer.data.local.entities.Playlist
+import com.dev.musicplayer.data.local.entities.Song
+import com.dev.musicplayer.data.local.repositories.MusicRepositoryImpl
 import com.dev.musicplayer.data.local.repositories.PlaylistRepositoryImpl
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.domain.use_case.GetPlaylistUseCase
@@ -18,18 +20,21 @@ import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AlbumViewModel @Inject constructor(
     private val playlistRepository: PlaylistRepositoryImpl,
+    private val musicRepositoryImpl: MusicRepositoryImpl,
     private val getPlaylistUseCase: GetPlaylistUseCase,
     private val application: Application
 ) :  AndroidViewModel(application) {
@@ -87,6 +92,27 @@ class AlbumViewModel @Inject constructor(
         }
     }
 
+    private fun getLikedSongs() {
+        viewModelScope.launch {
+            val songsList = musicRepositoryImpl.getLikedSongs().toList()
+            songsList.map { song ->
+                val musicEntityList = song.map { item ->
+                    item.thumbnail?.let {
+                        MusicEntity(
+                            id = item.songId.toString(),
+                            title = item.title,
+                            artist = item.artistName,
+                            source = item.uri,
+                            image = it
+                        )
+                    }
+                }
+                addSongsToFavoritePlaylist(musicEntityList)
+            }
+            Log.d("test", "truy ván thành công")
+        }
+    }
+
     fun addSongToPlaylist(playlistId: Long, song: MusicEntity) {
         viewModelScope.launch {
             val playlist = playlistRepository.getPlaylistById(playlistId)
@@ -107,9 +133,19 @@ class AlbumViewModel @Inject constructor(
         }
     }
 
+    private fun addSongsToFavoritePlaylist(songs: List<MusicEntity?>) {
+        viewModelScope.launch {
+            val playlist = playlistRepository.getPlaylistByName("Favorites")
+            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
+            val songStrings = songs.filterNotNull().map { toFormattedString(it) }
+            updatedSongs.addAll(songStrings)
+            val updatedPlaylist = playlist.copy(songs = updatedSongs)
+            playlistRepository.update(updatedPlaylist)
+        }
+    }
+
     private fun toFormattedString(song:MusicEntity): String {
         val gson = Gson()
-        println("Formatted JSON String: ${gson.toJson(song)}")
         return gson.toJson(song)
     }
 
@@ -122,6 +158,18 @@ class AlbumViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.d("Sort", "Lỗi hàm sort")
+            }
+        }
+    }
+
+    fun createFavoritePlaylist() {
+        val playlistFlow: Flow<List<Playlist>> = playlistRepository.getAllPlaylists()
+        viewModelScope.launch {
+            playlistFlow.collect { playlists ->
+                if (playlists.isEmpty()) {
+                    playlistRepository.createPlaylist(title = "Favorites")
+                    getLikedSongs()
+                }
             }
         }
     }

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface PlaylistDao {
 
     @Upsert
-    suspend fun createPlaylist(playlist: Playlist)
+    fun createPlaylist(playlist: Playlist)
     @Query("DELETE from playlist WHERE id = :playlistId")
     suspend fun deletePlaylist(playlistId: Long?)
 

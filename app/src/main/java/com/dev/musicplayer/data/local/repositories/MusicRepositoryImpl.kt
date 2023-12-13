@@ -4,6 +4,7 @@ import com.dev.musicplayer.core.ext.toMusicEntity
 import com.dev.musicplayer.core.ext.toSongEntity
 import com.dev.musicplayer.core.services.LocalMediaProvider
 import com.dev.musicplayer.core.shared.models.MediaAudioItem
+import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.data.local.store.SongStore
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.domain.repositories.MusicRepository
@@ -52,5 +53,8 @@ class MusicRepositoryImpl @Inject constructor(
     override fun cancelJobs() {
         viewModelJob.cancel()
     }
+
+    override fun getLikedSongs() : Flow<List<Song>> = songStore.getLikedSongs()
+
 }
 

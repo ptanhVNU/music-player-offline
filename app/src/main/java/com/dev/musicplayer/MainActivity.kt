@@ -31,9 +31,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
+import androidx.room.Room
+import com.dev.musicplayer.core.common.DB_NAME
 import com.dev.musicplayer.core.services.MusicPlaybackService
 import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
+import com.dev.musicplayer.data.local.MusicAppDatabase
+import com.dev.musicplayer.data.local.entities.Playlist
+import com.dev.musicplayer.presentation.home.HomeViewModel
+import com.dev.musicplayer.presentation.playlist.AlbumViewModel
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -41,16 +48,19 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
 
 
 @AndroidEntryPoint
 @UnstableApi
 class MainActivity : ComponentActivity() {
     private val sharedViewModel: SharedViewModel by viewModels()
+
     @UnstableApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
 
         setContent {
             MusicAppTheme {
@@ -58,12 +68,21 @@ class MainActivity : ComponentActivity() {
 
                 Surface() {
                     RequestPermissionAndDisplayContent {
+                        createDefaultPlaylist()
                         MainApp(sharedViewModel)
                     }
                 }
             }
         }
     }
+
+    @Composable
+    fun createDefaultPlaylist() {
+        val albumViewModel = hiltViewModel<AlbumViewModel>()
+        albumViewModel.createFavoritePlaylist()
+    }
+
+
 
     @Composable
     private fun ChangeSystemBarsTheme(lightTheme: Boolean) {
