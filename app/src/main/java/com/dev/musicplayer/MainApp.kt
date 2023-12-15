@@ -33,6 +33,9 @@ fun MainApp(
         Screen.PlaylistScreen.route -> {
             bottomBarState.value = true
         }
+        Screen.SearchScreen.route -> {
+            bottomBarState.value = true
+        }
         else -> {
             bottomBarState.value = false
         }

@@ -32,10 +32,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import androidx.room.Room.databaseBuilder
 import com.dev.musicplayer.core.services.MusicPlaybackService
 import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
-import com.dev.musicplayer.data.local.MusicAppDatabase
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -69,9 +67,9 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun ChangeSystemBarsTheme(lightTheme: Boolean) {
-        val barColor = MusicAppColorScheme.background.toArgb()
+        val barColor = Color.Transparent.toArgb()
         val navBarColor = Color.Transparent.toArgb()
-        LaunchedEffect(lightTheme) {
+        LaunchedEffect(!lightTheme) {
             enableEdgeToEdge(
                 statusBarStyle = SystemBarStyle.dark(
                     barColor,
@@ -85,7 +83,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-
         sharedViewModel.destroyMediaController()
         stopService(Intent(this, MusicPlaybackService::class.java))
     }
@@ -97,7 +94,7 @@ private fun RequestPermissionAndDisplayContent(
     appContent: @Composable () -> Unit,
 ) {
 
-    val readVideoPermissionState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    val readAudioPermissionState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         rememberPermissionState(
             Manifest.permission.READ_MEDIA_AUDIO
         )
@@ -108,16 +105,16 @@ private fun RequestPermissionAndDisplayContent(
     }
 
     fun requestPermissions(){
-        readVideoPermissionState.launchPermissionRequest()
+        readAudioPermissionState.launchPermissionRequest()
     }
 
     LaunchedEffect(key1 = Unit){
-        if(!readVideoPermissionState.status.isGranted){
+        if(!readAudioPermissionState.status.isGranted){
             requestPermissions()
         }
     }
 
-    if (readVideoPermissionState.status.isGranted) {
+    if (readAudioPermissionState.status.isGranted) {
 
         appContent()
 
@@ -138,7 +135,7 @@ private fun RequestPermissionAndDisplayContent(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.error
             )
-            if(readVideoPermissionState.status.shouldShowRationale){
+            if(readAudioPermissionState.status.shouldShowRationale){
                 Spacer(modifier = Modifier.size(8.dp))
                 OutlinedButton(
                     onClick = { requestPermissions() },

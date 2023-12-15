@@ -70,7 +70,7 @@ dependencies {
     implementation("com.android.volley:volley:1.2.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation("androidx.datastore:datastore-core-android:1.1.0-alpha06")
+    implementation("androidx.datastore:datastore-core-android:1.1.0-alpha07")
     implementation("org.chromium.net:cronet-embedded:113.5672.61")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -97,10 +97,8 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.8.1")
 
 
-
-
     implementation("androidx.room:room-runtime:2.6.0")
-    kapt("androidx.room:room-compiler:2.6.0")
+    ksp("androidx.room:room-compiler:2.6.0")
 //    // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:2.6.0")
     implementation ("com.google.code.gson:gson:2.10.1")
@@ -148,9 +146,6 @@ dependencies {
     implementation ("androidx.compose.runtime:runtime-livedata:c1.0.0-beta01")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
-
-    implementation ("com.jakewharton.timber:timber:4.7.1")
-
     implementation ("androidx.fragment:fragment-ktx:1.6.2")
 
     implementation ("androidx.navigation:navigation-fragment-ktx:2.7.5")
@@ -158,7 +153,7 @@ dependencies {
 
     implementation ("androidx.compose.material:material:1.5.4")
 
-
+    implementation("com.airbnb.android:lottie-compose:6.1.0")
 }
 
 // Allow references to generated code

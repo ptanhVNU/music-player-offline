@@ -16,10 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Card
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissState
 import androidx.compose.material3.DismissValue
@@ -35,9 +33,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,15 +40,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.dev.musicplayer.data.local.entities.Playlist
-import com.dev.musicplayer.presentation.playlist.AlbumViewModel
+import com.dev.musicplayer.presentation.playlist.PlaylistViewModel
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
-import java.util.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaylistItemView(
     item: Playlist,
-    albumViewModel: AlbumViewModel,
+    playlistViewModel: PlaylistViewModel,
     navController: NavController
 ) {
     var show by remember { mutableStateOf(true) }
@@ -64,7 +58,7 @@ fun PlaylistItemView(
                             it == DismissValue.DismissedToEnd)
                 ) {
                     Log.d("Item", "{${item.title}}")
-                    albumViewModel.deletePlaylist(item)
+                    playlistViewModel.deletePlaylist(item)
                     show = false
                     true
                 } else false
@@ -96,37 +90,31 @@ fun PlaylistContent(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .height(75.dp)
             .background(Color.Transparent)
-            .padding(start = 5.dp, end = 5.dp, top = 5.dp, bottom = 5.dp)
+            .padding(10.dp)
             .clickable(onClick = onClick)
-            .clip(shape = RoundedCornerShape(20.dp))
     ) {
-        Row(
+        AsyncImage(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(all = 5.dp)
-        ) {
-            AsyncImage(
-                modifier = Modifier
-                    .size(50.dp),
-                model =  "https://i1.sndcdn.com/artworks-y4ek09OJcvON38Ys-gs2icQ-t500x500.jpg",
-                contentDescription = "Title Album"
+                .size(50.dp),
+            model =  "https://i1.sndcdn.com/artworks-y4ek09OJcvON38Ys-gs2icQ-t500x500.jpg",
+            contentDescription = "Title Album"
+        )
+        Spacer(modifier = Modifier.width(20.dp))
+        Column {
+            Text(
+                text = album.title,
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
             )
-            Spacer(modifier = Modifier.width(20.dp))
-            Column {
-                Text(
-                    text = album.title,
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = "${album.songs?.size ?: 0} songs",
-                    color = Color.LightGray,
-                    fontSize = 12.sp,
-                )
-            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "${album.songs?.size ?: 0} songs",
+                color = Color.LightGray,
+                fontSize = 12.sp,
+            )
         }
     }
 }
@@ -135,9 +123,8 @@ fun PlaylistContent(
 @Composable
 fun DismissBackground(dismissState: DismissState) {
     val color = when (dismissState.dismissDirection) {
-        DismissDirection.StartToEnd -> Color.Transparent
-        DismissDirection.EndToStart -> Color.Transparent
-        null -> Color.Transparent
+        DismissDirection.EndToStart -> MusicAppColorScheme.error
+        else -> Color.Transparent
     }
     val direction = dismissState.dismissDirection
 
@@ -149,10 +136,6 @@ fun DismissBackground(dismissState: DismissState) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        if (direction == DismissDirection.StartToEnd) Icon(
-            Icons.Default.Delete,
-            contentDescription = "delete"
-        )
         Spacer(modifier = Modifier)
         if (direction == DismissDirection.EndToStart) Icon(
             Icons.Default.Delete,

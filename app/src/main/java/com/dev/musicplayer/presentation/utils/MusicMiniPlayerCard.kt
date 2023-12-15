@@ -1,5 +1,6 @@
 package com.dev.musicplayer.presentation.utils
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,34 +17,43 @@ import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.dev.musicplayer.R
+import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.domain.entities.MusicEntity
+import com.dev.musicplayer.presentation.nowplaying.MusicPlayerEvent
 import com.dev.musicplayer.utils.PlayerState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MusicMiniPlayerCard(
     modifier: Modifier,
-        music: MusicEntity?,
+    music: MusicEntity?,
     playerState: PlayerState?,
+    musicPlaybackUiState: MusicPlaybackUiState,
+//    onEvent: (MusicPlayerEvent) -> Unit,
     onResumeClicked: () -> Unit,
     onPauseClicked: () -> Unit,
 
-) {
+    ) {
     Box(
         modifier = modifier,
 
-    ) {
+        ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -72,7 +82,7 @@ fun MusicMiniPlayerCard(
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                         Text(
-                            text = if (artist .equals("<unknown>") ) "Unknown" else artist,
+                            text = if (artist.equals("<unknown>")) "Unknown" else artist,
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -99,5 +109,23 @@ fun MusicMiniPlayerCard(
                 )
             }
         }
+//
+//        CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+//            Slider(
+//
+//                value = musicPlaybackUiState.currentPosition.toFloat(),
+//                valueRange = 0f..musicPlaybackUiState.totalDuration.toFloat(),
+//                onValueChange = {
+////                    onEvent(MusicPlayerEvent.SeekMusicPosition(it.toLong()))
+//                },
+//                colors = SliderDefaults.colors(
+//                    activeTickColor = Color.Transparent,
+//                    inactiveTickColor = Color.Transparent,
+//                    inactiveTrackColor = Color.LightGray,
+//                    activeTrackColor = Color.Black,
+//                    thumbColor = Color.Black
+//                )
+//            )
+//        }
     }
 }

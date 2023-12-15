@@ -1,5 +1,6 @@
 package com.dev.musicplayer.presentation.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,40 +9,45 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
+import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
+import com.dev.musicplayer.data.local.entities.Playlist
+import com.dev.musicplayer.domain.entities.MusicEntity
+import com.dev.musicplayer.presentation.home.components.PlaylistBottomSheet
 import com.dev.musicplayer.presentation.home.components.SongItem
-import com.dev.musicplayer.presentation.playlist.gradientBackgroundBrush
+import com.dev.musicplayer.presentation.playlist.PlaylistViewModel
+import com.dev.musicplayer.presentation.search.SearchViewModel
 import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
@@ -51,28 +57,29 @@ import com.dev.musicplayer.utils.PlayerState
 @Composable
 fun HomeScreen(
     onEvent: (MusicEvent) -> Unit,
+    playlists: List<Playlist>,
     homeUiState: HomeUiState,
+    homeViewModel: HomeViewModel,
+    playlistViewModel: PlaylistViewModel,
+    searchViewModel: SearchViewModel,
+    addMediaItem: (musics: List<MusicEntity>) -> Unit,
+    onAddToPlaylist: (playlist: Playlist, song: MusicEntity) -> Unit,
     musicPlaybackUiState: MusicPlaybackUiState,
     onNavigateToMusicPlayer: () -> Unit,
-
-
-    onSearchClicked: () -> Unit,
-
     pullRefreshState: PullRefreshState,
     isLoading: Boolean,
-
-    ) {
-    val context = LocalContext.current
-    val configuration = LocalConfiguration.current
-
-    val screenHeight = configuration.screenHeightDp.dp
-
-
+) {
     val snackBarHostState = remember { SnackbarHostState() }
 
+    val selectedSong by homeViewModel.selectedSong.collectAsState()
+
+    val sheetState = rememberModalBottomSheetState()
+
+    var isSheetOpen by rememberSaveable {
+        mutableStateOf(false)
+    }
 
     Scaffold(
-
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             TopAppBar(
@@ -83,40 +90,20 @@ fun HomeScreen(
                         style = MusicAppTypography.headlineMedium,
                     )
                 },
-                actions = {
-                    IconButton(
-                        onClick = {
-                            //TODO: Implement search bar
-                            onSearchClicked()
-                        },
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(32.dp),
-                            imageVector = Icons.Outlined.Search,
-                            contentDescription = "Search music",
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MusicAppColorScheme.background)
+
             )
         }
     ) { innerPadding ->
         val scrollState = rememberLazyListState()
-        val gradientColorList = listOf(
-            Color(0xFF000000),
-            Color(0xFF6E7B8B)
-        )
+
 
         with(homeUiState) {
             when {
                 loading == true -> {
                     Box(
-                        modifier = Modifier.fillMaxSize()
-                            .background(
-                            brush = gradientBackgroundBrush(
-                                isLinearGradient = true,
-                                colors = gradientColorList)
-                        ),
+                        modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(
@@ -136,17 +123,29 @@ fun HomeScreen(
                             LazyColumn(
                                 state = scrollState,
                                 modifier = Modifier.padding(innerPadding),
-                                verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
-//                                contentPadding = innerPadding,
                             ) {
-                                items(musics) {
+                                items(musics, key = { music ->
+                                    music.id
+                                }) { music ->
                                     SongItem(
-                                        item = it,
+                                        item = music,
+                                        isSelected = music == selectedSong,
                                         musicPlaybackUiState = musicPlaybackUiState,
                                         onItemClicked = {
-                                            onEvent(MusicEvent.OnMusicSelected(it))
+                                            addMediaItem(musics)
+
+                                            onEvent(MusicEvent.OnMusicSelected(music))
                                             onEvent(MusicEvent.PlayMusic)
+
+                                            homeViewModel.setSelectedSong(music)
+                                            playlistViewModel.setSelectedSong(null)
+                                            searchViewModel.setSelectedSong(null)
+                                        },
+                                        onAddToPlaylist = {
+                                            Log.d("TAG", "HomeScreen song: ${music.id} ")
+                                            homeViewModel.setSelectedSong(music)
+                                            isSheetOpen = true
                                         }
                                     )
                                 }
@@ -173,6 +172,20 @@ fun HomeScreen(
                             )
 
 
+                            if (isSheetOpen) {
+                                PlaylistBottomSheet(
+                                    playlists = playlists,
+                                    onDismissRequest = { isSheetOpen = false },
+                                    bottomSheetState = sheetState,
+                                    onClicked = {
+                                        Log.d("TAG", "HomeScreen: playlist id ${it.id}")
+                                        onAddToPlaylist(it, selectedSong!!)
+                                        isSheetOpen = false
+
+                                    }
+                                )
+                            }
+
                             with(musicPlaybackUiState) {
                                 if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
                                     MusicMiniPlayerCard(
@@ -186,7 +199,9 @@ fun HomeScreen(
                                         playerState = playerState,
                                         onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
                                         onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
-                                    )
+                                        musicPlaybackUiState = musicPlaybackUiState,
+
+                                        )
                                 }
                             }
                         }

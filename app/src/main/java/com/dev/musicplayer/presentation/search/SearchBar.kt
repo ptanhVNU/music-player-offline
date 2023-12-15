@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -20,29 +21,46 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.dev.musicplayer.ui.theme.MusicAppColorScheme
+import com.dev.musicplayer.ui.theme.MusicAppTypography
+
+@Composable
+@Preview
+fun SearchBarPreview() {
+    SearchBar(
+        query = "",
+        onQueryChange = {},
+        currentType = SearchType.Playlists,
+        onSearchTypeSelect = {}
+    ) {
+
+    }
+}
+
 
 @Composable
 fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    onBackArrowPressed: () -> Unit,
+
     currentType: SearchType,
     onSearchTypeSelect: (SearchType) -> Unit,
     onClearRequest: () -> Unit,
 ) {
     Column(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
+            .background(MusicAppColorScheme.background)
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal))
     ) {
-        val containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
         TextField(
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = containerColor,
-                unfocusedContainerColor = containerColor,
-                disabledContainerColor = containerColor,
+                focusedContainerColor = MusicAppColorScheme.surface,
+                unfocusedContainerColor = MusicAppColorScheme.surface,
+                disabledContainerColor = MusicAppColorScheme.surface,
+                cursorColor = MusicAppColorScheme.secondary,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
@@ -50,27 +68,12 @@ fun SearchBar(
             ),
             value = query,
             onValueChange = onQueryChange,
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.ArrowBack,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .padding(9.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = rememberRipple(
-                                bounded = false,
-                                radius = 25.dp,
-                            ),
-                            onClick = onBackArrowPressed
-                        ),
-                )
-            },
+
             trailingIcon = {
                 Icon(
                     imageVector = if (query.isEmpty()) Icons.Outlined.Search else Icons.Outlined.Close,
                     contentDescription = null,
+                    tint =  MusicAppColorScheme.onSurface,
                     modifier = Modifier
                         .size(48.dp)
                         .padding(9.dp)
@@ -86,14 +89,14 @@ fun SearchBar(
             },
             placeholder = {
                 Text(
-                    text = "Search for songs, albums, artists, playlists...",
-                    style = MaterialTheme.typography.titleMedium,
+                    text = "Search for songs, playlists, ...",
+                    style = MusicAppTypography.titleMedium.copy(color = Color.Gray),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             },
             singleLine = true,
-            textStyle = MaterialTheme.typography.titleMedium,
+            textStyle =  MusicAppTypography.titleMedium,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         )
         SearchTypeSelector(

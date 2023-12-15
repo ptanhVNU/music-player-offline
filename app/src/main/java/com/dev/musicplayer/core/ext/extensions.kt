@@ -1,9 +1,15 @@
 package com.dev.musicplayer.core.ext
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Base64.DEFAULT
+import com.bumptech.glide.Glide
+import com.dev.musicplayer.domain.entities.MusicEntity
+import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.nio.ByteBuffer
 
 fun Long.toTime(): String {
@@ -43,4 +49,29 @@ fun base64ToBitmap(base64String: String): Bitmap {
         byteArray,
         0, byteArray.size
     )
+}
+
+suspend fun loadBitmapFromUrl(url: String, context: Context): Bitmap? {
+    return withContext(Dispatchers.IO) {
+        try {
+            Glide.with(context)
+                .asBitmap()
+                .load(url)
+                .submit()
+                .get()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+}
+
+fun toFormattedString(song: MusicEntity): String {
+    val gson = Gson()
+    return gson.toJson(song)
+}
+
+fun toFormattedMusicEntity(string:String): MusicEntity {
+    val gson = Gson()
+    return gson.fromJson(string, MusicEntity::class.java)
 }

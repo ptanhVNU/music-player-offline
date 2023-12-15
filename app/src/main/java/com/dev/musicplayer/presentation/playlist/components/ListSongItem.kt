@@ -38,9 +38,7 @@ fun ListSongItem(
         Spacer(modifier = Modifier.width(15.dp))
         Column(
             modifier = Modifier.fillMaxWidth(0.8f),
-
             verticalArrangement = Arrangement.SpaceBetween,
-
             ) {
             Row{
                 Icon(

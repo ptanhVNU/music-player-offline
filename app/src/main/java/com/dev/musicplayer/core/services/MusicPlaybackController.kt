@@ -76,7 +76,7 @@ class MusicPlaybackController(context: Context) : PlaybackController {
                 )
                 .build()
         }
-        mediaController?.clearMediaItems()
+//        mediaController?.clearMediaItems()
         mediaController?.setMediaItems(mediaItems)
     }
 
@@ -101,6 +101,10 @@ class MusicPlaybackController(context: Context) : PlaybackController {
         mediaController?.seekTo(position)
     }
 
+    override fun clear() {
+        mediaController?.clearMediaItems()
+    }
+
     override fun skipNext() {
         mediaController?.seekToNext()
     }
@@ -120,6 +124,8 @@ class MusicPlaybackController(context: Context) : PlaybackController {
             Player.REPEAT_MODE_OFF
         }
     }
+
+
 
     override fun getCurrentPosition() = mediaController?.currentPosition ?: 0L
 

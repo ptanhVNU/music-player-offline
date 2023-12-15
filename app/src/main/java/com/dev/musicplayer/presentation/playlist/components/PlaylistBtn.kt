@@ -1,6 +1,5 @@
-package com.dev.musicplayer.presentation.playlist
+package com.dev.musicplayer.presentation.playlist.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -19,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 
 @Composable
@@ -133,10 +130,10 @@ fun RemoveAlbumButton(icon: ImageVector, onClick: () -> Unit) {
 
 
 @Composable
-fun ReturnButton(icon: ImageVector, onClick: () -> Unit) {
+fun BackButton(icon: ImageVector, onClick: () -> Unit, modifier: Modifier,) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.size(50.dp)
+        modifier = modifier,
     ) {
         Icon(
             imageVector = icon,
@@ -149,7 +146,7 @@ fun ReturnButton(icon: ImageVector, onClick: () -> Unit) {
 fun StartButton(icon: ImageVector, onClick: () -> Unit) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.size(50.dp).background(Color.White, shape = CircleShape)
+        modifier = Modifier.size(40.dp)
     ) {
         Icon(
             imageVector = icon,
@@ -160,10 +157,10 @@ fun StartButton(icon: ImageVector, onClick: () -> Unit) {
 }
 
 @Composable
-fun SettingButton(icon: ImageVector, onClick: () -> Unit) {
+fun SettingButton(icon: ImageVector, onClick: () -> Unit, modifier: Modifier,) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.size(50.dp)
+        modifier = modifier
     ) {
         Icon(
             imageVector = icon,
