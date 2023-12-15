@@ -74,9 +74,7 @@ fun DisplayBackgroundAlbum(
                 Color(imageBackgroundColor).copy(0.8f),
                 Color(imageBackgroundColor).copy(alpha = 0.6f),
                 Color(imageBackgroundColor).copy(alpha = 0.3f),
-//                MusicAppColorScheme.background.copy(alpha = 0.5f),
                 MusicAppColorScheme.background.copy(alpha = 0.7f),
-//                MusicAppColorScheme.background.copy(alpha = 0.9f),
             )
 
             Box(
@@ -111,13 +109,13 @@ fun DisplayBackgroundAlbum(
                             onClick = onBackButtonClicked,
                         )
 
-                        SettingButton(
-                            icon = Icons.Default.MoreHoriz,
-                            onClick = {
-                                setShowSettingSheet(true)
-                            },
-                            modifier = Modifier.size(60.dp)
-                        )
+//                        SettingButton(
+//                            icon = Icons.Default.MoreHoriz,
+//                            onClick = {
+//                                setShowSettingSheet(true)
+//                            },
+//                            modifier = Modifier.size(60.dp)
+//                        )
                     }
 
                     AsyncImage(

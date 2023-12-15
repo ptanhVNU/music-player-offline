@@ -60,6 +60,8 @@ fun SongItem(
     onItemClicked: () -> Unit,
     onAddToPlaylist: (() -> Unit)? = null,
 ) {
+
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -78,7 +80,6 @@ fun SongItem(
                     WaveAnimation(false)
                 }
             } else {
-
                 AsyncImage(
                     modifier = Modifier
                         .size(50.dp)
@@ -100,10 +101,7 @@ fun SongItem(
 
         Column(
             modifier = Modifier.fillMaxWidth(0.8f),
-
-//            verticalArrangement = Arrangement.SpaceBetween,
-
-            ) {
+        ) {
             Text(
                 text = item.title,
                 overflow = TextOverflow.Ellipsis,
@@ -129,6 +127,8 @@ fun SongItem(
             DropDownMenuButton(
                 onAddPlayList = onAddToPlaylist ?: {},
             )
+        } else {
+            Spacer(modifier = Modifier.width(40.dp))
         }
     }
 }

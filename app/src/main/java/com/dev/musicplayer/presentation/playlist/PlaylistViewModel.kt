@@ -49,11 +49,17 @@ class PlaylistViewModel @Inject constructor(
     private val _playlist = MutableStateFlow<Playlist?>(null)
     val playlist: StateFlow<Playlist?> = _playlist.asStateFlow()
 
-
     private val _playlistsOrderedByName = MutableLiveData<List<Playlist>>()
     val playlistsOrderedByName: LiveData<List<Playlist>> = _playlistsOrderedByName
 
     private var songsPlaylistUiState by mutableStateOf(SongsPlaylistUiState())
+
+    private val _selectedSong = MutableStateFlow<MusicEntity?>(null)
+    val selectedSong: StateFlow<MusicEntity?> = _selectedSong.asStateFlow()
+
+    fun setSelectedSong(song: MusicEntity?) {
+        _selectedSong.value = song
+    }
 
     companion object {
         const val TAG = "Playlist VIEW MODEL"

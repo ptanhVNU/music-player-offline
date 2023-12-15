@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -72,11 +73,13 @@ fun ResultContent(
     searchResult: SearchResult,
     searchType: SearchType,
     innerPadding: PaddingValues,
+    searchViewModel: SearchViewModel,
     musicPlaybackUiState: MusicPlaybackUiState,
     onSongClicked: (MusicEntity) -> Unit,
     onPlaylistClicked: (Playlist) -> Unit,
 ) {
-    var selectedMusicIndex by remember { mutableIntStateOf(-1) }
+    val selectedSong by searchViewModel.selectedSong.collectAsState()
+
     val scrollState = rememberLazyListState()
     LazyColumn(
         state = scrollState,
@@ -90,30 +93,28 @@ fun ResultContent(
                     items = searchResult.songs,
                     key = { it.id }
                 ) { music ->
-                    val isSelected = selectedMusicIndex == searchResult.songs.indexOf(music)
+
                     SongItem(
-                        isSelected = isSelected,
+                        isSelected = music == selectedSong,
                         item = music,
                         musicPlaybackUiState = musicPlaybackUiState,
                         onItemClicked = {
-                            if (!isSelected) {
-                                selectedMusicIndex = searchResult.songs.indexOf(music)
-                            }
+
                             onSongClicked(music)
                         },
                     )
                 }
-
-                item {
-                    Text(
-                        modifier = Modifier
-                            .height(180.dp)
-                            .padding(5.dp),
-                        text = "Tổng số bài hát: ${searchResult.songs.size}",
-                        textAlign = TextAlign.Center,
-                        style = MusicAppTypography.headlineMedium,
-                    )
-                }
+                if (searchResult.songs.isNotEmpty())
+                    item {
+                        Text(
+                            modifier = Modifier
+                                .height(180.dp)
+                                .padding(5.dp),
+                            text = "Tổng số bài hát: ${searchResult.songs.size}",
+                            textAlign = TextAlign.Center,
+                            style = MusicAppTypography.headlineMedium,
+                        )
+                    }
             }
 
             SearchType.Playlists -> {

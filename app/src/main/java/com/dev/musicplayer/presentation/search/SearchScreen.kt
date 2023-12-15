@@ -28,7 +28,9 @@ import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.data.local.entities.Playlist
+import com.dev.musicplayer.presentation.home.HomeViewModel
 import com.dev.musicplayer.presentation.home.MusicEvent
+import com.dev.musicplayer.presentation.playlist.PlaylistViewModel
 import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.utils.PlayerState
@@ -36,6 +38,8 @@ import com.dev.musicplayer.utils.PlayerState
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
+    homeViewModel: HomeViewModel,
+    playlistViewModel: PlaylistViewModel,
     onEvent: (MusicEvent) -> Unit,
     onPlaylistClicked: (playlist: Playlist) -> Unit,
     onNavigateToMusicPlayer: () -> Unit,
@@ -69,9 +73,15 @@ fun SearchScreen(
                     musicPlaybackUiState = musicPlaybackUiState,
                     searchType = searchType,
                     onSongClicked = { music ->
+                        viewModel.setSelectedSong(music)
+
                         onEvent(MusicEvent.OnMusicSelected(music))
                         onEvent(MusicEvent.PlayMusic)
+
+                        homeViewModel.setSelectedSong(null)
+                        playlistViewModel.setSelectedSong(null)
                     },
+                    searchViewModel = viewModel,
                     onPlaylistClicked = onPlaylistClicked,
                 )
             }
@@ -89,6 +99,7 @@ fun SearchScreen(
                         playerState = playerState,
                         onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
                         onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
+                        musicPlaybackUiState = musicPlaybackUiState
                     )
                 }
             }

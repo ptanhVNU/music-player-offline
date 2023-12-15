@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.data.local.DataStoreManager
+import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.domain.use_case.DestroyMediaControllerUseCase
 import com.dev.musicplayer.domain.use_case.GetCurrentMusicPositionUseCase
 import com.dev.musicplayer.domain.use_case.SetMediaControllerCallbackUseCase
@@ -18,6 +19,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -65,6 +67,8 @@ class SharedViewModel @Inject constructor(
             }
         }
     }
+
+
 
     fun destroyMediaController() {
         destroyMediaControllerUseCase()

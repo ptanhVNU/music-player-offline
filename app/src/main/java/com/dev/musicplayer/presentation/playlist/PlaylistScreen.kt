@@ -194,6 +194,7 @@ fun PlaylistScreen(
                         playerState = playerState,
                         onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
                         onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
+                        musicPlaybackUiState = musicPlaybackUiState
                     )
                 }
             }

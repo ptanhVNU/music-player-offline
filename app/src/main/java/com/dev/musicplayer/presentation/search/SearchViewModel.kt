@@ -24,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -110,6 +111,13 @@ class SearchViewModel @Inject constructor(
                 searchUiState = searchUiState.copy(selectedMusic = event.selectedMusic)
             }
         }
+    }
+
+    private val _selectedSong = MutableStateFlow<MusicEntity?>(null)
+    val selectedSong: StateFlow<MusicEntity?> = _selectedSong.asStateFlow()
+
+    fun setSelectedSong(song: MusicEntity?) {
+        _selectedSong.value = song
     }
 
     private fun playMusic() {

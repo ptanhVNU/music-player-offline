@@ -52,10 +52,17 @@ class HomeViewModel @Inject constructor(
     private val _songs = MutableStateFlow<List<MusicEntity>>(emptyList())
     val songs: StateFlow<List<MusicEntity>> = _songs.asStateFlow()
 
+    private val _selectedSong = MutableStateFlow<MusicEntity?>(null)
+    val selectedSong: StateFlow<MusicEntity?> = _selectedSong.asStateFlow()
+
+    fun setSelectedSong(song: MusicEntity?) {
+        _selectedSong.value = song
+    }
+
     fun getMusicData() {
         homeUiState = homeUiState.copy(loading = true)
         viewModelScope.launch {
-            delay(1.seconds)
+            delay(500)
             getMusicsUseCase().catch {
                 homeUiState = homeUiState.copy(
                     loading = false,

@@ -27,6 +27,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -40,10 +41,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
+import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.presentation.home.components.PlaylistBottomSheet
 import com.dev.musicplayer.presentation.home.components.SongItem
+import com.dev.musicplayer.presentation.playlist.PlaylistViewModel
+import com.dev.musicplayer.presentation.search.SearchViewModel
 import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
@@ -55,8 +59,11 @@ fun HomeScreen(
     onEvent: (MusicEvent) -> Unit,
     playlists: List<Playlist>,
     homeUiState: HomeUiState,
+    homeViewModel: HomeViewModel,
+    playlistViewModel: PlaylistViewModel,
+    searchViewModel: SearchViewModel,
     addMediaItem: (musics: List<MusicEntity>) -> Unit,
-    onAddToPlaylist: (playlist : Playlist, song: MusicEntity) -> Unit,
+    onAddToPlaylist: (playlist: Playlist, song: MusicEntity) -> Unit,
     musicPlaybackUiState: MusicPlaybackUiState,
     onNavigateToMusicPlayer: () -> Unit,
     pullRefreshState: PullRefreshState,
@@ -64,9 +71,7 @@ fun HomeScreen(
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
 
-    var selectedMusicIndex by remember { mutableIntStateOf(-1) }
-
-    var selectedMusic by remember { mutableStateOf<MusicEntity?>(null) }
+    val selectedSong by homeViewModel.selectedSong.collectAsState()
 
     val sheetState = rememberModalBottomSheetState()
 
@@ -123,25 +128,23 @@ fun HomeScreen(
                                 items(musics, key = { music ->
                                     music.id
                                 }) { music ->
-                                    val isSelected = selectedMusicIndex == musics.indexOf(music)
-
                                     SongItem(
                                         item = music,
-                                        isSelected = isSelected,
+                                        isSelected = music == selectedSong,
                                         musicPlaybackUiState = musicPlaybackUiState,
                                         onItemClicked = {
                                             addMediaItem(musics)
 
-                                            if (!isSelected) {
-                                                selectedMusicIndex = musics.indexOf(music)
-                                            }
-
                                             onEvent(MusicEvent.OnMusicSelected(music))
                                             onEvent(MusicEvent.PlayMusic)
+
+                                            homeViewModel.setSelectedSong(music)
+                                            playlistViewModel.setSelectedSong(null)
+                                            searchViewModel.setSelectedSong(null)
                                         },
                                         onAddToPlaylist = {
                                             Log.d("TAG", "HomeScreen song: ${music.id} ")
-                                            selectedMusic = music
+                                            homeViewModel.setSelectedSong(music)
                                             isSheetOpen = true
                                         }
                                     )
@@ -176,7 +179,7 @@ fun HomeScreen(
                                     bottomSheetState = sheetState,
                                     onClicked = {
                                         Log.d("TAG", "HomeScreen: playlist id ${it.id}")
-                                        onAddToPlaylist(it, selectedMusic!!)
+                                        onAddToPlaylist(it, selectedSong!!)
                                         isSheetOpen = false
 
                                     }
@@ -196,7 +199,9 @@ fun HomeScreen(
                                         playerState = playerState,
                                         onResumeClicked = { onEvent(MusicEvent.ResumeMusic) },
                                         onPauseClicked = { onEvent(MusicEvent.PauseMusic) },
-                                    )
+                                        musicPlaybackUiState = musicPlaybackUiState,
+
+                                        )
                                 }
                             }
                         }
