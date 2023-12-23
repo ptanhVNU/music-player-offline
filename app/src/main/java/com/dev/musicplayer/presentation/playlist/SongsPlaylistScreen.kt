@@ -129,7 +129,8 @@ fun SongsPlaylistScreen(
                    )
 
                     FilledTonalButton(
-                        onClick = onPlayMusicButtonClicked,
+                        onClick = onPlayMusicButtonClicked ,
+                        enabled = songsInPlaylist.isNotEmpty(),
                     ) {
                         Text(
                             "PHÁT NHẠC",
