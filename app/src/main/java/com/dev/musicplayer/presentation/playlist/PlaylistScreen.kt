@@ -87,9 +87,9 @@ fun PlaylistScreen(
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    val playlistsByName: List<Playlist> by albumViewModel.playlistsOrderedByName.observeAsState(
-        initial = emptyList()
-    )
+//    val playlistsByName: List<Playlist> by albumViewModel.playlistsOrderedByName.observeAsState(
+//        initial = emptyList()
+//    )
 
     Scaffold(
         topBar = {
@@ -154,55 +154,26 @@ fun PlaylistScreen(
                         }
 
                         false -> {
-                            when (sort) {
-                                true -> {
-                                    Box {
-                                        LazyColumn(
-                                            modifier = Modifier
-                                                .fillMaxSize(),
-                                            contentPadding = PaddingValues(bottom = 80.dp),
-                                            state = scrollState,
-                                        ) {
-                                            itemsIndexed(
-                                                items = playlist,
-                                                key = { _, item -> item.hashCode() }
-                                            ) { _, item ->
-                                                PlaylistItemView(
-                                                    item = item,
-                                                    albumViewModel = albumViewModel,
-                                                    navController = navController
-                                                )
-                                            }
-                                        }
+                            Box {
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    contentPadding = PaddingValues(bottom = 80.dp),
+                                    state = scrollState,
+                                ) {
+                                    itemsIndexed(
+                                        items = playlist,
+                                        key = { _, item -> item.hashCode() }
+                                    ) { _, item ->
+                                        PlaylistItemView(
+                                            item = item,
+                                            albumViewModel = albumViewModel,
+                                            navController = navController
+                                        )
                                     }
-                                }
-                                false -> {
-                                    Box {
-                                        LazyColumn(
-                                            modifier = Modifier
-                                                .fillMaxSize(),
-                                            contentPadding = PaddingValues(bottom = 80.dp),
-                                            state = scrollState,
-                                        ) {
-                                            itemsIndexed(
-                                                items = playlistsByName,
-                                                key = { _, item -> item.hashCode() }
-                                            ) { _, item ->
-                                                PlaylistItemView(
-                                                    item = item,
-                                                    albumViewModel = albumViewModel,
-                                                    navController = navController
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                                else -> {
-
                                 }
                             }
                         }
-
                         else -> {}
                     }
                 }
