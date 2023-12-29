@@ -9,14 +9,5 @@ class SongStore @Inject constructor(
 ) {
     suspend fun insertSong(song: Song) = songDao.insertSong(song)
 
-    suspend fun deleteSong(song: Song) = songDao.deleteSong(song)
-
-    suspend fun editSong(song: Song) = songDao.editSong(song)
-    fun getAllSongs() = songDao.getAllSongs()
-
-    fun getSongsOrderedByName() = songDao.getSongsOrderedByName()
-
-    fun getSongsOrderedByCreatedAt() = songDao.getSongsOrderedByCreatedAt()
-
-    fun getLikedSongs() = songDao.getLikedSongs()
+    suspend fun getSongById(songId: Long) : Song? = songDao.getSongById(songId)
 }

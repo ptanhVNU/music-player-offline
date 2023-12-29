@@ -9,5 +9,11 @@ interface MusicRepository {
 
     fun getMusicsStorage(): Flow<List<MusicEntity>>
 
+    suspend fun addMusicToPlaylist(songId: Long, playlistId: Long)
+
+    suspend fun deleteMusicFromPlaylist(songId: Long, playlistId: Long)
+
+    suspend fun getMusicsInPlaylist(playlistId: Long) : List<MusicEntity>
+
     fun cancelJobs()
 }

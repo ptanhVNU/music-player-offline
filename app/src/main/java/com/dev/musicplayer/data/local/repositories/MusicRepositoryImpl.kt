@@ -4,6 +4,9 @@ import com.dev.musicplayer.core.ext.toMusicEntity
 import com.dev.musicplayer.core.ext.toSongEntity
 import com.dev.musicplayer.core.services.LocalMediaProvider
 import com.dev.musicplayer.core.shared.models.MediaAudioItem
+import com.dev.musicplayer.data.local.entities.Song
+import com.dev.musicplayer.data.local.entities.SongPlaylists
+import com.dev.musicplayer.data.local.store.SongPlaylistStore
 import com.dev.musicplayer.data.local.store.SongStore
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.domain.repositories.MusicRepository
@@ -20,6 +23,7 @@ import javax.inject.Singleton
 @Singleton
 class MusicRepositoryImpl @Inject constructor(
     private val songStore: SongStore,
+    private val songPlaylistStore: SongPlaylistStore,
     private val localMediaProvider: LocalMediaProvider,
 ) : MusicRepository {
     private val viewModelJob = Job()
@@ -48,6 +52,34 @@ class MusicRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun addMusicToPlaylist(songId: Long, playlistId: Long) {
+        val songPlaylist = SongPlaylists(songId = songId, playlistId = playlistId)
+
+        songPlaylistStore.insertSongPlaylist(songPlaylist)
+    }
+
+    override suspend fun deleteMusicFromPlaylist(songId: Long, playlistId: Long) {
+        val songPlaylist = songPlaylistStore.getSongPlaylistBySongIdPlaylistId(songId, playlistId)
+
+        if (songPlaylist != null)
+            songPlaylistStore.deleteSongPlaylist(songPlaylist)
+    }
+
+    override suspend fun getMusicsInPlaylist(playlistId: Long): List<MusicEntity> {
+        val songPlaylists = songPlaylistStore.getSongPlaylistsByPlaylistId(playlistId)
+        val songs = mutableListOf<Song>()
+
+        if (songPlaylists == null) return emptyList<MusicEntity>()
+
+        for (songPlaylist in songPlaylists) {
+            val song = songStore.getSongById(songPlaylist.songId)
+            songs.add(song!!)
+        }
+
+        return songs.map { it.toMusicEntity() }
+    }
+
 
     override fun cancelJobs() {
         viewModelJob.cancel()
