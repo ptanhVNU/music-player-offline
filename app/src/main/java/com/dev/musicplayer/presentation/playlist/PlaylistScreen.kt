@@ -148,28 +148,23 @@ fun PlaylistScreen(
                         }
 
                         false -> {
-                            when (sort) {
-                                null -> {}
-                                else -> {
-                                    LazyColumn(
-                                        state = scrollState,
-//                                        modifier = Modifier.padding(innerPadding),
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        itemsIndexed(
-                                            items = playlist,
-                                            key = { _, item -> item.hashCode() }
-                                        ) { _, item ->
-                                            PlaylistItemView(
-                                                item = item,
-                                                playlistViewModel = playlistViewModel,
-                                                navController = navController
-                                            )
-                                        }
-                                    }
-                                }
 
+                            LazyColumn(
+                                state = scrollState,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                itemsIndexed(
+                                    items = playlist,
+                                    key = { _, item -> item.hashCode() }
+                                ) { _, item ->
+                                    PlaylistItemView(
+                                        item = item,
+                                        playlistViewModel = playlistViewModel,
+                                        navController = navController
+                                    )
+                                }
                             }
+
                         }
 
                         else -> {}

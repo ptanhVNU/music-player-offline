@@ -39,34 +39,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.data.local.entities.Song
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.presentation.home.components.SongItem
+import com.dev.musicplayer.presentation.playlist.PlaylistViewModel
+import com.dev.musicplayer.presentation.playlist.components.PlaylistContent
+import com.dev.musicplayer.presentation.playlist.components.PlaylistItemView
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 
-@Composable
-fun TextCard(
-    text: String,
-    onClick: () -> Unit,
-) {
-    Text(
-        text = text,
-        maxLines = 1,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 10.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .clickable(onClick = onClick)
-            .background(MusicAppColorScheme.secondaryContainer)
-            .padding(12.dp),
-        style = MaterialTheme.typography.titleLarge,
-        overflow = TextOverflow.Ellipsis
-    )
-}
 
 @Composable
 fun ResultContent(
@@ -122,9 +107,11 @@ fun ResultContent(
                     items = searchResult.playlists,
                     key = { it.id }
                 ) { playlist ->
-                    TextCard(
-                        text = playlist.title,
-                        onClick = { onPlaylistClicked(playlist) },
+                    PlaylistContent(
+                        album = playlist,
+                        onClick = {
+                            onPlaylistClicked(playlist)
+                        },
                     )
                 }
             }
