@@ -14,6 +14,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,25 +40,50 @@ class MusicRepositoryImpl @Inject constructor(
         }
 
     override fun getMusicsStorage(): Flow<List<MusicEntity>> {
-        return localMediaProvider.getMediaAudiosFlow().map { mediaAudioItems ->
-            /// After loading music from the storage device,
-            /// save basic information such as URL, title, etc. into the database
+
+        return flow {
+            val mediaAudioItems = localMediaProvider.getMediaAudiosFlow().first()
+
             viewModelScope.launch(Dispatchers.IO) {
                 insertSong(mediaAudioItems)
             }
 
-            /// Convert each MediaAudioItem to a MusicEntity and create a list of MusicEntities
-            /// using to presentation
-            mediaAudioItems.map {
-                it.toMusicEntity()
-            }
+            val allSongs = songStore.getAllSongs().map { songs ->
+                songs.map { it.toMusicEntity() }
+            }.first()
+
+            emit(allSongs)
         }
+        // Load music from storage device
+
+//        return localMediaProvider.getMediaAudiosFlow().map { mediaAudioItems ->
+//            /// After loading music from the storage device,
+//            /// save basic information such as URL, title, etc. into the database
+//
+//            viewModelScope.launch(Dispatchers.IO) {
+//                insertSong(mediaAudioItems)
+//            }
+//
+//
+//            /// Convert each MediaAudioItem to a MusicEntity and create a list of MusicEntities
+//            /// using to presentation
+////            mediaAudioItems.map {
+////                it.toMusicEntity()
+////            }
+//            songStore.getAllSongs().map {
+//                songs -> songs.map { it.toMusicEntity() }
+//            }
+//        }
     }
 
     override suspend fun addMusicToPlaylist(songId: Long, playlistId: Long) {
         val songPlaylist = SongPlaylists(songId = songId, playlistId = playlistId)
 
-        songPlaylistStore.insertSongPlaylist(songPlaylist)
+        viewModelScope.launch(Dispatchers.IO) {
+            songPlaylistStore.insertSongPlaylist(songPlaylist)
+        }
+
+
     }
 
     override suspend fun deleteMusicFromPlaylist(songId: Long, playlistId: Long) {
@@ -66,7 +93,7 @@ class MusicRepositoryImpl @Inject constructor(
             songPlaylistStore.deleteSongPlaylist(songPlaylist)
     }
 
-    override suspend fun getMusicsInPlaylist(playlistId: Long): List<MusicEntity> {
+    override suspend fun getSongsByPlaylistId(playlistId: Long): List<MusicEntity> {
         val songPlaylists = songPlaylistStore.getSongPlaylistsByPlaylistId(playlistId)
         val songs = mutableListOf<Song>()
 

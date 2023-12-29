@@ -148,8 +148,6 @@ fun HomeScreen(
                                         },
                                         onAddToPlaylist = {
                                             Log.d("TAG", "HomeScreen song: ${music.id} ")
-//                                            homeViewModel.setSelectedSong(music)
-//                                            selectedSongToAddPlaylist = music
                                             selectedSongToAddPlaylist = music
                                             isSheetOpen = true
                                         }
@@ -188,7 +186,6 @@ fun HomeScreen(
                                         Log.d("TAG", "HomeScreen: playlist id ${it.id}")
                                         onAddToPlaylist(it, selectedSongToAddPlaylist!!)
                                         isSheetOpen = false
-
                                     }
                                 )
                             }

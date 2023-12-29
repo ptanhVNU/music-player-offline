@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dev.musicplayer.core.ext.toFormattedMusicEntity
+import com.dev.musicplayer.core.ext.toFormattedString
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.data.local.repositories.MusicRepositoryImpl
 import com.dev.musicplayer.data.local.repositories.PlaylistRepositoryImpl
@@ -19,11 +20,13 @@ import com.dev.musicplayer.domain.use_case.PlayMusicUseCase
 import com.dev.musicplayer.domain.use_case.ResumeMusicUseCase
 import com.dev.musicplayer.presentation.home.MusicEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import java.util.logging.Logger
 import javax.inject.Inject
 
 @HiltViewModel
@@ -74,16 +77,17 @@ class PlaylistViewModel @Inject constructor(
     }
 
     fun addSongToPlaylist(playlistId: Long, song: MusicEntity) {
-//        viewModelScope.launch {
-//
-//            musicRepository.addMusicToPlaylist(song.id.toLong() ,playlistId)
-//
-////            val playlist = playlistRepository.getPlaylistById(playlistId)
-////            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
-////            updatedSongs.add(toFormattedString(song))
-////            val updatedPlaylist = playlist.copy(songs = updatedSongs)
-////            playlistRepository.update(updatedPlaylist)
-//        }
+        Log.d(TAG, "song id: ${song.id.toLong()}")
+        viewModelScope.launch {
+            musicRepository.addMusicToPlaylist(song.id.toLong(),playlistId)
+
+            /// use to show num of songs
+            val playlist = playlistRepository.getPlaylistById(playlistId)
+            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
+            updatedSongs.add(toFormattedString(song))
+            val updatedPlaylist = playlist.copy(songs = updatedSongs)
+            playlistRepository.update(updatedPlaylist)
+        }
     }
 
 
@@ -129,19 +133,31 @@ class PlaylistViewModel @Inject constructor(
     val songs: StateFlow<List<MusicEntity>> = _songs.asStateFlow()
 
     fun getSongsByPlaylistId(playlistId: Long): List<MusicEntity> {
+        songsPlaylistUiState = songsPlaylistUiState.copy(
+            loading = true,
+        )
+
         viewModelScope.launch {
+            delay(100)
             _playlist.value = playlistRepository.getPlaylistById(playlistId)
-            if (playlist.value != null) {
-                _songs.value = playlist.value?.songs?.map {
-                    toFormattedMusicEntity(it)
-                } ?: emptyList()
+            _songs.value = musicRepository.getSongsByPlaylistId(playlistId)
 
-                songsPlaylistUiState = songsPlaylistUiState.copy(
-                    loading = false,
-                    musics = _songs.value
-                )
+            songsPlaylistUiState = songsPlaylistUiState.copy(
+                loading = false,
+                musics = songs.value
+            )
 
-            }
+//            if (playlist.value != null) {
+//                _songs.value = playlist.value?.songs?.map {
+//                    toFormattedMusicEntity(it)
+//                } ?: emptyList()
+//
+//                songsPlaylistUiState = songsPlaylistUiState.copy(
+//                    loading = false,
+//                    musics = _songs.value
+//                )
+//
+//            }
         }
 
         return _songs.value
@@ -188,12 +204,26 @@ class PlaylistViewModel @Inject constructor(
         }
     }
 
+
+
     private fun resumeMusic() {
         resumeMusicUseCase()
     }
 
     private fun pauseMusic() {
         pauseMusicUseCase()
+    }
+
+    fun deleteSongFromPlaylist(songId: Long, playlistId: Long) {
+        viewModelScope.launch {
+            musicRepository.deleteMusicFromPlaylist(songId, playlistId)
+
+            val playlist = playlistRepository.getPlaylistById(playlistId)
+            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
+            updatedSongs.removeAt(0)
+            val updatedPlaylist = playlist.copy(songs = updatedSongs)
+            playlistRepository.update(updatedPlaylist)
+        }
     }
 
     override fun onCleared() {

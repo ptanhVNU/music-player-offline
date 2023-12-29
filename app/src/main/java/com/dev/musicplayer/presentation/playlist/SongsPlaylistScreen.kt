@@ -1,6 +1,5 @@
 package com.dev.musicplayer.presentation.playlist
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -12,17 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -33,7 +27,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,21 +34,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
-import com.dev.musicplayer.core.shared.viewmodel.SharedViewModel
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.presentation.home.HomeViewModel
 import com.dev.musicplayer.presentation.home.MusicEvent
 import com.dev.musicplayer.presentation.home.components.SongItem
 import com.dev.musicplayer.presentation.playlist.components.DisplayBackgroundAlbum
-import com.dev.musicplayer.presentation.playlist.components.ListSongItem
 import com.dev.musicplayer.presentation.search.SearchViewModel
 import com.dev.musicplayer.presentation.utils.MusicMiniPlayerCard
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
@@ -78,7 +67,7 @@ fun SongsPlaylistScreen(
     playlist: Playlist,
     allSongs: List<MusicEntity>,
     songsInPlaylist: List<MusicEntity>,
-    viewModel: PlaylistViewModel,
+    playlistViewModel: PlaylistViewModel,
     homeViewModel: HomeViewModel,
     searchViewModel: SearchViewModel,
     onEvent: (MusicEvent) -> Unit,
@@ -101,7 +90,7 @@ fun SongsPlaylistScreen(
 
     var selectedSongs by remember { mutableStateOf<MutableSet<MusicEntity>>(mutableSetOf()) }
 
-    val selectedSong by viewModel.selectedSong.collectAsState()
+    val selectedSong by playlistViewModel.selectedSong.collectAsState()
 
     Scaffold { innerPadding ->
         Box(
@@ -148,17 +137,20 @@ fun SongsPlaylistScreen(
                         item = music,
                         musicPlaybackUiState = musicPlaybackUiState,
                         onItemClicked = {
-                            viewModel.addMusicItems(songsInPlaylist)
+                            playlistViewModel.addMusicItems(songsInPlaylist)
 
                             onEvent(MusicEvent.OnMusicSelected(music))
                             onEvent(MusicEvent.PlayMusic)
 
-                            viewModel.setSelectedSong(music)
+                            playlistViewModel.setSelectedSong(music)
                             homeViewModel.setSelectedSong(null)
                             searchViewModel.setSelectedSong(null)
                         },
                         isInPlaylist = true,
                         isSelected = music == selectedSong,
+                        onDeleteClicked = {
+                            playlistViewModel.deleteSongFromPlaylist(music.id.toLong(), playlist.id)
+                        }
                     )
                 }
 
