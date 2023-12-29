@@ -4,14 +4,12 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dev.musicplayer.core.ext.toFormattedMusicEntity
-import com.dev.musicplayer.core.ext.toFormattedString
 import com.dev.musicplayer.data.local.entities.Playlist
-import com.dev.musicplayer.data.local.entities.Song
+import com.dev.musicplayer.data.local.repositories.MusicRepositoryImpl
 import com.dev.musicplayer.data.local.repositories.PlaylistRepositoryImpl
 import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.domain.use_case.AddMediaItemsUseCase
@@ -19,11 +17,8 @@ import com.dev.musicplayer.domain.use_case.GetPlaylistUseCase
 import com.dev.musicplayer.domain.use_case.PauseMusicUseCase
 import com.dev.musicplayer.domain.use_case.PlayMusicUseCase
 import com.dev.musicplayer.domain.use_case.ResumeMusicUseCase
-import com.dev.musicplayer.presentation.home.HomeViewModel
 import com.dev.musicplayer.presentation.home.MusicEvent
-import com.dev.musicplayer.presentation.search.SearchUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,6 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PlaylistViewModel @Inject constructor(
     private val playlistRepository: PlaylistRepositoryImpl,
+    private val musicRepository: MusicRepositoryImpl,
     private val getPlaylistUseCase: GetPlaylistUseCase,
     private val addMediaItemsUseCase: AddMediaItemsUseCase,
     private val playMusicUseCase: PlayMusicUseCase,
@@ -49,8 +45,8 @@ class PlaylistViewModel @Inject constructor(
     private val _playlist = MutableStateFlow<Playlist?>(null)
     val playlist: StateFlow<Playlist?> = _playlist.asStateFlow()
 
-    private val _playlistsOrderedByName = MutableLiveData<List<Playlist>>()
-    val playlistsOrderedByName: LiveData<List<Playlist>> = _playlistsOrderedByName
+//    private val _playlistsOrderedByName = MutableLiveData<List<Playlist>>()
+//    val playlistsOrderedByName: LiveData<List<Playlist>> = _playlistsOrderedByName
 
     private var songsPlaylistUiState by mutableStateOf(SongsPlaylistUiState())
 
@@ -78,13 +74,16 @@ class PlaylistViewModel @Inject constructor(
     }
 
     fun addSongToPlaylist(playlistId: Long, song: MusicEntity) {
-        viewModelScope.launch {
-            val playlist = playlistRepository.getPlaylistById(playlistId)
-            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
-            updatedSongs.add(toFormattedString(song))
-            val updatedPlaylist = playlist.copy(songs = updatedSongs)
-            playlistRepository.update(updatedPlaylist)
-        }
+//        viewModelScope.launch {
+//
+//            musicRepository.addMusicToPlaylist(song.id.toLong() ,playlistId)
+//
+////            val playlist = playlistRepository.getPlaylistById(playlistId)
+////            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
+////            updatedSongs.add(toFormattedString(song))
+////            val updatedPlaylist = playlist.copy(songs = updatedSongs)
+////            playlistRepository.update(updatedPlaylist)
+//        }
     }
 
 
@@ -108,38 +107,34 @@ class PlaylistViewModel @Inject constructor(
         }
     }
 
-    fun getPlaylistsOrderedByName() {
-        viewModelScope.launch {
-            try {
-                playlistRepository.getPlaylistsOrderedByName().collect { playlists ->
-                    _playlistsOrderedByName.postValue(playlists)
-                }
-            } catch (e: Exception) {
-                Log.d("Sort", "Lỗi hàm sort")
-            }
-        }
-    }
+//    fun getPlaylistsOrderedByName() {
+//        viewModelScope.launch {
+//            try {
+//                playlistRepository.getPlaylistsOrderedByName().collect { playlists ->
+//                    _playlistsOrderedByName.postValue(playlists)
+//                }
+//            } catch (e: Exception) {
+//                Log.d("Sort", "Lỗi hàm sort")
+//            }
+//        }
+//    }
 
-    fun getPlaylistById(playlistId: Long) {
-        viewModelScope.launch {
-            _playlist.value = playlistRepository.getPlaylistById(playlistId)
-        }
-    }
+//    fun getPlaylistById(playlistId: Long) {
+//        viewModelScope.launch {
+//            _playlist.value = playlistRepository.getPlaylistById(playlistId)
+//        }
+//    }
 
     private val _songs = MutableStateFlow<List<MusicEntity>>(emptyList())
     val songs: StateFlow<List<MusicEntity>> = _songs.asStateFlow()
 
     fun getSongsByPlaylistId(playlistId: Long): List<MusicEntity> {
-
         viewModelScope.launch {
             _playlist.value = playlistRepository.getPlaylistById(playlistId)
             if (playlist.value != null) {
-
-
                 _songs.value = playlist.value?.songs?.map {
                     toFormattedMusicEntity(it)
                 } ?: emptyList()
-
 
                 songsPlaylistUiState = songsPlaylistUiState.copy(
                     loading = false,
