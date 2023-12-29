@@ -51,10 +51,10 @@ fun DropDownMenuButton(
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.PlaylistAdd,
-                            contentDescription = "Add to playlist",
+                            contentDescription = "Thêm vào playlist",
                         )
                     },
-                    text = { Text("Add to Playlist", style = MusicAppTypography.bodySmall) },
+                    text = { Text("Thêm vào Playlist", style = MusicAppTypography.bodySmall) },
                     onClick = {
                         expanded = false
                         onAddPlayList()
@@ -70,10 +70,10 @@ fun DropDownMenuButton(
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete from playlist",
+                            contentDescription = "Xoá khỏi playlist",
                         )
                     },
-                    text = { Text("Delete from playlist", style = MusicAppTypography.bodySmall) },
+                    text = { Text("Xoá khỏi playlist", style = MusicAppTypography.bodySmall) },
                     onClick = {
                         expanded = false
                         if (onDeleteClicked != null) {

@@ -27,6 +27,8 @@ import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.dev.musicplayer.data.local.entities.Playlist
+import com.dev.musicplayer.domain.entities.MusicEntity
 import com.dev.musicplayer.presentation.playlist.PlaylistViewModel
 import com.dev.musicplayer.ui.theme.MusicAppColorScheme
 
@@ -50,18 +53,21 @@ fun PlaylistItemView(
     playlistViewModel: PlaylistViewModel,
     navController: NavController
 ) {
+    val numOfSongs: State<List<MusicEntity>> =
+        playlistViewModel.songs.collectAsState(emptyList<MusicEntity>())
+
     var show by remember { mutableStateOf(true) }
     val dismissState = rememberDismissState(
         confirmValueChange = {
 //            if(item.title != "Favorites") {
-                if ((it == DismissValue.DismissedToStart ||
-                            it == DismissValue.DismissedToEnd)
-                ) {
-                    Log.d("Item", "{${item.title}}")
-                    playlistViewModel.deletePlaylist(item)
-                    show = false
-                    true
-                } else false
+            if ((it == DismissValue.DismissedToStart ||
+                        it == DismissValue.DismissedToEnd)
+            ) {
+                Log.d("Item", "{${item.title}}")
+                playlistViewModel.deletePlaylist(item)
+                show = false
+                true
+            } else false
 //            } else false
         }
     )
@@ -76,7 +82,11 @@ fun PlaylistItemView(
                 DismissBackground(dismissState)
             },
             dismissContent = {
-                PlaylistContent(item, onClick = { navController.navigate("listSong/${item.id}") })
+                PlaylistContent(
+                    item,
+                    onClick = { navController.navigate("listSong/${item.id}") },
+                    numOfSongs.value.size,
+                )
             }
         )
     }
@@ -86,6 +96,7 @@ fun PlaylistItemView(
 fun PlaylistContent(
     album: Playlist,
     onClick: () -> Unit,
+    numOfSongs: Int? = null,
 ) {
     Row(
         modifier = Modifier
@@ -98,7 +109,7 @@ fun PlaylistContent(
         AsyncImage(
             modifier = Modifier
                 .size(50.dp),
-            model =  "https://i1.sndcdn.com/artworks-y4ek09OJcvON38Ys-gs2icQ-t500x500.jpg",
+            model = "https://i1.sndcdn.com/artworks-y4ek09OJcvON38Ys-gs2icQ-t500x500.jpg",
             contentDescription = "Title Album"
         )
         Spacer(modifier = Modifier.width(20.dp))
@@ -110,11 +121,12 @@ fun PlaylistContent(
                 fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "${album.songs?.size ?: 0} songs",
-                color = Color.LightGray,
-                fontSize = 12.sp,
-            )
+            if (numOfSongs != null)
+                Text(
+                    text = "$numOfSongs bài",
+                    color = Color.LightGray,
+                    fontSize = 12.sp,
+                )
         }
     }
 }

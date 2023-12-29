@@ -112,6 +112,7 @@ fun ResultContent(
                         onClick = {
                             onPlaylistClicked(playlist)
                         },
+
                     )
                 }
             }

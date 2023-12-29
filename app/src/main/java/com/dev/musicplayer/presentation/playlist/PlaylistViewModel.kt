@@ -82,11 +82,11 @@ class PlaylistViewModel @Inject constructor(
             musicRepository.addMusicToPlaylist(song.id.toLong(),playlistId)
 
             /// use to show num of songs
-            val playlist = playlistRepository.getPlaylistById(playlistId)
-            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
-            updatedSongs.add(toFormattedString(song))
-            val updatedPlaylist = playlist.copy(songs = updatedSongs)
-            playlistRepository.update(updatedPlaylist)
+//            val playlist = playlistRepository.getPlaylistById(playlistId)
+//            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
+//            updatedSongs.add(toFormattedString(song))
+//            val updatedPlaylist = playlist.copy(songs = updatedSongs)
+//            playlistRepository.update(updatedPlaylist)
         }
     }
 
@@ -218,11 +218,11 @@ class PlaylistViewModel @Inject constructor(
         viewModelScope.launch {
             musicRepository.deleteMusicFromPlaylist(songId, playlistId)
 
-            val playlist = playlistRepository.getPlaylistById(playlistId)
-            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
-            updatedSongs.removeAt(0)
-            val updatedPlaylist = playlist.copy(songs = updatedSongs)
-            playlistRepository.update(updatedPlaylist)
+//            val playlist = playlistRepository.getPlaylistById(playlistId)
+//            val updatedSongs = playlist.songs?.toMutableList() ?: mutableListOf()
+//            updatedSongs.removeAt(0)
+//            val updatedPlaylist = playlist.copy(songs = updatedSongs)
+//            playlistRepository.update(updatedPlaylist)
         }
     }
 

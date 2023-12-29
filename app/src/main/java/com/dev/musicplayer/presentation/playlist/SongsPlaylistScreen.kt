@@ -109,16 +109,16 @@ fun SongsPlaylistScreen(
             ) {
 
                 item {
-                   DisplayBackgroundAlbum(
-                       onBackButtonClicked = onBackButtonClicked,
-                       playlist = playlist,
-                       setShowSettingSheet = {
-                           showSettingSheet = it
-                       }
-                   )
+                    DisplayBackgroundAlbum(
+                        onBackButtonClicked = onBackButtonClicked,
+                        playlist = playlist,
+                        setShowSettingSheet = {
+                            showSettingSheet = it
+                        }
+                    )
 
                     FilledTonalButton(
-                        onClick = onPlayMusicButtonClicked ,
+                        onClick = onPlayMusicButtonClicked,
                         enabled = songsInPlaylist.isNotEmpty(),
                     ) {
                         Text(
@@ -153,18 +153,18 @@ fun SongsPlaylistScreen(
                         }
                     )
                 }
-
-                item {
-                    Text(
-                        modifier = Modifier
-                            .height(180.dp)
-                            .padding(5.dp)
-                            .align(Alignment.CenterStart),
-                        text = "Tổng số bài hát: ${songsInPlaylist.size}",
-                        textAlign = TextAlign.Center,
-                        style = MusicAppTypography.headlineMedium,
-                    )
-                }
+                if (songsInPlaylist.isNotEmpty())
+                    item {
+                        Text(
+                            modifier = Modifier
+                                .height(180.dp)
+                                .padding(5.dp)
+                                .align(Alignment.CenterStart),
+                            text = "Tổng số bài hát: ${songsInPlaylist.size}",
+                            textAlign = TextAlign.Center,
+                            style = MusicAppTypography.headlineMedium,
+                        )
+                    }
 
             }
 
@@ -214,8 +214,6 @@ fun SongsPlaylistScreen(
                     }
                 }
             }
-
-
 
 
             /// convert to modal bottom sheet
@@ -294,7 +292,7 @@ fun SettingOptionItem(text: String, onClicked: () -> Unit) {
             .height(50.dp)
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
-        ) {
+    ) {
         Icon(imageVector = Icons.Default.Add, contentDescription = "Add songs to playlist")
         Spacer(modifier = Modifier.width(8.dp))
         Text(
