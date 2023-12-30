@@ -84,10 +84,6 @@ fun PlaylistScreen(
     }
 
     val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
-    val playlistsByName: List<Playlist> by playlistViewModel.playlistsOrderedByName.observeAsState(
-        initial = emptyList()
-    )
 
     Scaffold(
         topBar = {
@@ -133,12 +129,12 @@ fun PlaylistScreen(
 //                                    )
 //                                )
             ) {
-                SortButton(
-                    icon = Icons.Default.Sort,
-                    onClick = {
-                        showSortSheet = true;
-                    }
-                )
+//                SortButton(
+//                    icon = Icons.Default.Sort,
+//                    onClick = {
+//                        showSortSheet = true;
+//                    }
+//                )
                 Spacer(modifier = Modifier.size(10.dp))
                 with(playlistUiState) {
                     when (loading) {
@@ -152,28 +148,23 @@ fun PlaylistScreen(
                         }
 
                         false -> {
-                            when (sort) {
-                                null -> {}
-                                else -> {
-                                    LazyColumn(
-                                        state = scrollState,
-//                                        modifier = Modifier.padding(innerPadding),
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        itemsIndexed(
-                                            items = playlist,
-                                            key = { _, item -> item.hashCode() }
-                                        ) { _, item ->
-                                            PlaylistItemView(
-                                                item = item,
-                                                playlistViewModel = playlistViewModel,
-                                                navController = navController
-                                            )
-                                        }
-                                    }
-                                }
 
+                            LazyColumn(
+                                state = scrollState,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                itemsIndexed(
+                                    items = playlist,
+                                    key = { _, item -> item.hashCode() }
+                                ) { _, item ->
+                                    PlaylistItemView(
+                                        item = item,
+                                        playlistViewModel = playlistViewModel,
+                                        navController = navController
+                                    )
+                                }
                             }
+
                         }
 
                         else -> {}
@@ -248,38 +239,38 @@ fun PlaylistScreen(
         }
     }
 
-    if (showSortSheet) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                showSortSheet = false
-            },
-            sheetState = sheetState
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Spacer(modifier = Modifier.height(15.dp))
-                Row(
-                    modifier = Modifier
-                        .clickable {
-                            playlistUiState.sort = false
-                            playlistViewModel.getPlaylistsOrderedByName()
-                            scope.launch {
-                                sheetState.hide()
-                            }.invokeOnCompletion {
-                                if (!sheetState.isVisible) {
-                                    showSortSheet = false
-                                }
-                            }
-                        }
-                ) {
-                    Text("+ Sort by name")
-                }
-            }
-        }
-    }
+//    if (showSortSheet) {
+//        ModalBottomSheet(
+//            onDismissRequest = {
+//                showSortSheet = false
+//            },
+//            sheetState = sheetState
+//        ) {
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp)
+//            ) {
+//                Spacer(modifier = Modifier.height(15.dp))
+//                Row(
+//                    modifier = Modifier
+//                        .clickable {
+//                            playlistUiState.sort = false
+//                            playlistViewModel.getPlaylistsOrderedByName()
+//                            scope.launch {
+//                                sheetState.hide()
+//                            }.invokeOnCompletion {
+//                                if (!sheetState.isVisible) {
+//                                    showSortSheet = false
+//                                }
+//                            }
+//                        }
+//                ) {
+//                    Text("+ Sort by name")
+//                }
+//            }
+//        }
+//    }
 }
 
 @Composable

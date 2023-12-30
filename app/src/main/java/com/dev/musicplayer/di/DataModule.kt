@@ -6,6 +6,7 @@ import com.dev.musicplayer.core.services.MusicPlaybackController
 import com.dev.musicplayer.data.local.repositories.MusicRepositoryImpl
 import com.dev.musicplayer.data.local.repositories.PlaylistRepositoryImpl
 import com.dev.musicplayer.data.local.store.PlaylistStore
+import com.dev.musicplayer.data.local.store.SongPlaylistStore
 import com.dev.musicplayer.data.local.store.SongStore
 import com.dev.musicplayer.domain.repositories.MusicRepository
 import com.dev.musicplayer.domain.repositories.PlaylistRepository
@@ -24,9 +25,14 @@ object DataModule {
     @Singleton
     fun provideMusicRepository(
         songStore: SongStore,
-        localMediaProvider: LocalMediaProvider
+        localMediaProvider: LocalMediaProvider,
+        songPlaylistStore: SongPlaylistStore,
     ): MusicRepository {
-        return MusicRepositoryImpl(songStore, localMediaProvider)
+        return MusicRepositoryImpl(
+            songStore = songStore,
+            localMediaProvider = localMediaProvider,
+            songPlaylistStore = songPlaylistStore
+        )
     }
 
     @Provides

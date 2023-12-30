@@ -80,7 +80,7 @@ fun NavGraph(
 
                     Toast.makeText(
                         context,
-                        "Đã thêm thành công vào playlist ${playlist.title}",
+                        "Đã thêm thành công vào ${playlist.title}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -90,8 +90,6 @@ fun NavGraph(
         composable(
             route = Screen.SearchScreen.route
         ) {
-
-
             SearchScreen(
                 onEvent = searchViewModel::onEvent,
                 musicPlaybackUiState = musicPlaybackUiState,
@@ -136,7 +134,7 @@ fun NavGraph(
                     playlist = it,
                     allSongs = allSongs,
                     songsInPlaylist = songsInPlaylist,
-                    viewModel = playlistViewModel,
+                    playlistViewModel = playlistViewModel,
                     homeViewModel = homeViewModel,
                     searchViewModel = searchViewModel,
                     onEvent = playlistViewModel::onEvent,

@@ -79,6 +79,10 @@ fun HomeScreen(
         mutableStateOf(false)
     }
 
+    var selectedSongToAddPlaylist by remember {
+        mutableStateOf<MusicEntity?>(null)
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
@@ -144,23 +148,24 @@ fun HomeScreen(
                                         },
                                         onAddToPlaylist = {
                                             Log.d("TAG", "HomeScreen song: ${music.id} ")
-                                            homeViewModel.setSelectedSong(music)
+                                            selectedSongToAddPlaylist = music
                                             isSheetOpen = true
                                         }
                                     )
                                 }
+                                if (musics.isNotEmpty())
+                                    item {
+                                        Text(
+                                            modifier = Modifier
+                                                .height(180.dp)
+                                                .padding(5.dp)
+                                                .align(Alignment.CenterStart),
+                                            text = "Tổng số bài hát: ${musics.size}",
+                                            textAlign = TextAlign.Center,
+                                            style = MusicAppTypography.headlineMedium,
+                                        )
+                                    }
 
-                                item {
-                                    Text(
-                                        modifier = Modifier
-                                            .height(180.dp)
-                                            .padding(5.dp)
-                                            .align(Alignment.CenterStart),
-                                        text = "Tổng số bài hát: ${musics.size}",
-                                        textAlign = TextAlign.Center,
-                                        style = MusicAppTypography.headlineMedium,
-                                    )
-                                }
                             }
 
                             PullRefreshIndicator(
@@ -179,9 +184,8 @@ fun HomeScreen(
                                     bottomSheetState = sheetState,
                                     onClicked = {
                                         Log.d("TAG", "HomeScreen: playlist id ${it.id}")
-                                        onAddToPlaylist(it, selectedSong!!)
+                                        onAddToPlaylist(it, selectedSongToAddPlaylist!!)
                                         isSheetOpen = false
-
                                     }
                                 )
                             }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material3.DropdownMenu
@@ -18,12 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.dev.musicplayer.ui.theme.MusicAppTypography
 
 @Composable
 fun DropDownMenuButton(
     onAddPlayList: () -> Unit,
+    onDeleteClicked: (() -> Unit?)? = null,
+    isInPlaylist: Boolean,
 ) {
 
     var expanded by remember { mutableStateOf(false) }
@@ -40,23 +42,46 @@ fun DropDownMenuButton(
             )
         }
 
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            DropdownMenuItem(
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.PlaylistAdd,
-                        contentDescription = "Add to playlist",
-                    )
-                },
-                text = { Text("Add to Playlist", style = MusicAppTypography.bodySmall) },
-                onClick = {
-                    expanded = false
-                    onAddPlayList()
-                }
-            )
+        if (!isInPlaylist) {
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                DropdownMenuItem(
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.PlaylistAdd,
+                            contentDescription = "Thêm vào playlist",
+                        )
+                    },
+                    text = { Text("Thêm vào Playlist", style = MusicAppTypography.bodySmall) },
+                    onClick = {
+                        expanded = false
+                        onAddPlayList()
+                    }
+                )
+            }
+        } else {
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                DropdownMenuItem(
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Xoá khỏi playlist",
+                        )
+                    },
+                    text = { Text("Xoá khỏi playlist", style = MusicAppTypography.bodySmall) },
+                    onClick = {
+                        expanded = false
+                        if (onDeleteClicked != null) {
+                            onDeleteClicked()
+                        }
+                    }
+                )
+            }
         }
     }
 }

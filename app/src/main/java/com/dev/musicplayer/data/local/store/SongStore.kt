@@ -1,7 +1,9 @@
 package com.dev.musicplayer.data.local.store
 
 import com.dev.musicplayer.data.local.dao.SongDao
+import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.data.local.entities.Song
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class SongStore @Inject constructor(
@@ -9,14 +11,7 @@ class SongStore @Inject constructor(
 ) {
     suspend fun insertSong(song: Song) = songDao.insertSong(song)
 
-    suspend fun deleteSong(song: Song) = songDao.deleteSong(song)
+    suspend fun getSongById(songId: Long) : Song? = songDao.getSongById(songId)
 
-    suspend fun editSong(song: Song) = songDao.editSong(song)
-    fun getAllSongs() = songDao.getAllSongs()
-
-    fun getSongsOrderedByName() = songDao.getSongsOrderedByName()
-
-    fun getSongsOrderedByCreatedAt() = songDao.getSongsOrderedByCreatedAt()
-
-    fun getLikedSongs() = songDao.getLikedSongs()
+    fun getAllSongs(): Flow<List<Song>> = songDao.getAllSongs()
 }

@@ -11,6 +11,7 @@ import com.dev.musicplayer.data.local.Converters
 import com.dev.musicplayer.data.local.MusicAppDatabase
 import com.dev.musicplayer.data.local.dao.PlaylistDao
 import com.dev.musicplayer.data.local.dao.SongDao
+import com.dev.musicplayer.data.local.dao.SongPlaylistsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +27,7 @@ object LocalServiceModule {
     @Singleton
     fun provideMusicAppDatabase(
         @ApplicationContext context: Context,
-        ): MusicAppDatabase = Room.databaseBuilder(
+    ): MusicAppDatabase = Room.databaseBuilder(
         context,
         MusicAppDatabase::class.java,
         DB_NAME,
@@ -40,6 +41,11 @@ object LocalServiceModule {
     @Singleton
     fun providePlaylistDao(musicAppDatabase: MusicAppDatabase): PlaylistDao =
         musicAppDatabase.playlistDao()
+
+    @Provides
+    @Singleton
+    fun provideSongPlaylistDao(musicAppDatabase: MusicAppDatabase): SongPlaylistsDao =
+        musicAppDatabase.songPlaylistDao()
 
     @Singleton
     @Provides
