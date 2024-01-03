@@ -24,6 +24,10 @@ interface SongDao {
     @Update
     suspend fun editSong(song: Song)
 
+    @Query("UPDATE song SET is_liked = NOT is_liked WHERE id = :songId")
+    suspend fun toggleLikeSongBySongId(songId: Long)
+
+
     @Query("SELECT * FROM song ")
     fun getAllSongs(): Flow<List<Song>>
 
@@ -34,10 +38,11 @@ interface SongDao {
     @Query("SELECT * FROM song ORDER BY created_at ASC")
     fun getSongsOrderedByCreatedAt(): Flow<List<Song>>
 
-    @Query("SELECT * FROM song WHERE is_liked = 1")
+    @Query("SELECT * FROM song WHERE is_liked = true")
     fun getLikedSongs(): Flow<List<Song>>
 
     @Query("SELECT * FROM song WHERE title LIKE '%' || :query || '%'")
     suspend fun searchSongs(query: String): List<Song>
+
 
 }

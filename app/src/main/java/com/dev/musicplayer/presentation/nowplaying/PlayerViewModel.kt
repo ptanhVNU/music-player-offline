@@ -1,6 +1,8 @@
 package com.dev.musicplayer.presentation.nowplaying
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.dev.musicplayer.domain.repositories.MusicRepository
 import com.dev.musicplayer.domain.use_case.PauseMusicUseCase
 import com.dev.musicplayer.domain.use_case.ResumeMusicUseCase
 import com.dev.musicplayer.domain.use_case.SeekMusicPositionUseCase
@@ -9,6 +11,7 @@ import com.dev.musicplayer.domain.use_case.SetPlayerRepeatOneEnabledUseCase
 import com.dev.musicplayer.domain.use_case.SkipNextMusicUseCase
 import com.dev.musicplayer.domain.use_case.SkipPreviousMusicUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,7 +22,8 @@ class PlayerViewModel @Inject constructor(
     private val skipNextMusicUseCase: SkipNextMusicUseCase,
     private val skipPreviousMusicUseCase: SkipPreviousMusicUseCase,
     private val setMusicShuffleEnabledUseCase: SetMusicShuffleEnabledUseCase,
-    private val setPlayerRepeatOneEnabledUseCase: SetPlayerRepeatOneEnabledUseCase
+    private val setPlayerRepeatOneEnabledUseCase: SetPlayerRepeatOneEnabledUseCase,
+    private val musicRepository: MusicRepository,
 ) : ViewModel() {
     fun onEvent(event: MusicPlayerEvent) {
         when (event) {
@@ -67,4 +71,12 @@ class PlayerViewModel @Inject constructor(
     private fun setPlayerRepeatOneEnabled(isRepeatOneEnabled: Boolean) {
         setPlayerRepeatOneEnabledUseCase(isRepeatOneEnabled)
     }
+
+    fun toggleLikeSongById(songId: Long) {
+        viewModelScope.launch {
+            musicRepository.toggleLikeSongById(songId)
+        }
+    }
+
+
 }

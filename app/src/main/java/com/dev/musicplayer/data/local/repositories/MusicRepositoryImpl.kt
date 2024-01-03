@@ -76,6 +76,21 @@ class MusicRepositoryImpl @Inject constructor(
 //        }
     }
 
+    override suspend fun toggleLikeSongById(songId: Long) {
+        viewModelScope.launch {
+            songStore.toggleLikeSongById(songId)
+        }
+    }
+
+    override fun getLikedSong(): Flow<List<MusicEntity>> {
+        return flow {
+            val likedSongs =
+                songStore.getLikedSongs().map { songs -> songs.map { it.toMusicEntity() } }.first()
+
+            emit(likedSongs)
+        }
+    }
+
     override suspend fun addMusicToPlaylist(songId: Long, playlistId: Long) {
         val songPlaylist = SongPlaylists(songId = songId, playlistId = playlistId)
 

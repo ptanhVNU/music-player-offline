@@ -10,12 +10,15 @@ interface MusicRepository {
     fun getMusicsStorage(): Flow<List<MusicEntity>>
 
 
-
     suspend fun addMusicToPlaylist(songId: Long, playlistId: Long)
 
     suspend fun deleteMusicFromPlaylist(songId: Long, playlistId: Long)
 
     suspend fun getSongsByPlaylistId(playlistId: Long) : List<MusicEntity>
+
+    suspend fun toggleLikeSongById(songId: Long)
+
+    fun getLikedSong() : Flow<List<MusicEntity>>
 
     fun cancelJobs()
 }

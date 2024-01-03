@@ -49,6 +49,7 @@ import androidx.navigation.NavController
 import com.dev.musicplayer.core.shared.components.MusicPlaybackUiState
 import com.dev.musicplayer.data.local.entities.Playlist
 import com.dev.musicplayer.presentation.home.MusicEvent
+import com.dev.musicplayer.presentation.playlist.components.FavoriteItem
 import com.dev.musicplayer.presentation.playlist.components.PlaylistItemView
 import com.dev.musicplayer.presentation.playlist.components.PlusButton
 import com.dev.musicplayer.presentation.playlist.components.SortButton
@@ -136,6 +137,8 @@ fun PlaylistScreen(
 //                    }
 //                )
                 Spacer(modifier = Modifier.size(10.dp))
+
+                FavoriteItem( onClick = { /*TODO*/ })
                 with(playlistUiState) {
                     when (loading) {
                         true -> {
@@ -172,6 +175,7 @@ fun PlaylistScreen(
                 }
             }
 
+            /// MiniPlayer
             with(musicPlaybackUiState) {
                 if (playerState == PlayerState.PLAYING || playerState == PlayerState.PAUSED) {
                     MusicMiniPlayerCard(

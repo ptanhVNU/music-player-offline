@@ -111,8 +111,6 @@ fun NavGraph(
         ) { backStackEntry ->
             val albumId = backStackEntry.arguments?.getLong("albumId") ?: -1
 
-
-
             val songsInPlaylist = playlistViewModel.getSongsByPlaylistId(albumId)
 
             val playlist by playlistViewModel.playlist.collectAsState()
