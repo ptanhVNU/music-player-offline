@@ -29,6 +29,10 @@ class PlaylistRepositoryImpl @Inject constructor(
         playListStore.deletePlaylist(playlist.id)
     }
 
+    override suspend fun deleteSongFromPlaylist(playlistId: Long, musicEntityJson: String) {
+        playListStore.deleteSongFromPlaylist(playlistId, musicEntityJson)
+    }
+
     override fun getPlaylistsOrderedByName() : Flow<List<Playlist>> = playListStore.getPlaylistsOrderedByName()
 
     override suspend fun update(playlist: Playlist) = withContext(Dispatchers.IO) {

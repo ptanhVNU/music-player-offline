@@ -129,8 +129,8 @@ fun NavGraph(
         ) {
 
             val viewModel = hiltViewModel<AlbumViewModel>()
+            albumViewModel.playlistUiState.sort = true
             val playlist by viewModel.playlist.collectAsState(initial = emptyList())
-            viewModel.playlistUiState.sort = true
 
             PlaylistScreen(
                 playlist = playlist,

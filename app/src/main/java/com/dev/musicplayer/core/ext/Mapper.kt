@@ -11,7 +11,7 @@ fun MediaAudioItem.toMusicEntity() =
         title = name,
         artist = artist,
         source = uri.toString(),
-        image = ""
+        image = "",
     )
 
 fun MediaAudioItem.toSongEntity() = Song(
@@ -26,9 +26,8 @@ fun Song.toMusicEntity() = MusicEntity(
     title = title,
     artist = artistName,
     source = uri,
-    image = ""
+    image = "",
 )
-
 
 fun MediaItem.toMusicEntity() =
     MusicEntity(
@@ -36,5 +35,5 @@ fun MediaItem.toMusicEntity() =
         title = mediaMetadata.title.toString(),
         artist = mediaMetadata.artist.toString(),
         source = mediaId,
-        image = ""
+        image = "",
     )

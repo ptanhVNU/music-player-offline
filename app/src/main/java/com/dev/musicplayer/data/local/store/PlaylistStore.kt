@@ -29,5 +29,5 @@ class PlaylistStore @Inject constructor(
 
     suspend fun getPlaylistByName(title : String) = playlistDao.getPlaylistByName(title)
 
-
+    suspend fun deleteSongFromPlaylist(playlistId: Long, musicEntityJson: String) = playlistDao.deleteSongFromPlaylist(playlistId, musicEntityJson)
 }

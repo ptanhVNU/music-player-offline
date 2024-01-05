@@ -142,6 +142,7 @@ fun PlaylistScreen(
                     }
                 )
                 Spacer(modifier = Modifier.size(10.dp))
+                Log.d("test" , "{${playlistUiState.sort}")
                 with(playlistUiState) {
                     when (loading) {
                         true -> {

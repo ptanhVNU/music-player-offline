@@ -34,7 +34,7 @@ class ListSongViewModel @Inject constructor(
     private var _song: MutableStateFlow<List<MusicEntity>> = MutableStateFlow(arrayListOf())
     val song: StateFlow<List<MusicEntity>> = _song.asStateFlow()
 
-    private val _album = MutableStateFlow<Playlist?>(null)
+    private var _album = MutableStateFlow<Playlist?>(null)
     val album: StateFlow<Playlist?> = _album.asStateFlow()
 
 
@@ -47,10 +47,6 @@ class ListSongViewModel @Inject constructor(
         getPlaylistById(playlistId)
         getSong(playlistId)
     }
-
-    init {
-    }
-
     fun toFormattedMusicEntity(string: String): MusicEntity {
         val gson = Gson()
         return gson.fromJson(string, MusicEntity::class.java)
@@ -58,56 +54,23 @@ class ListSongViewModel @Inject constructor(
 
 
     private fun getPlaylistById(playlistId: Long) {
+//        Log.d("tag", "{${album.value?.songs}")
         viewModelScope.launch {
             val result = playlistRepository.getPlaylistById(playlistId)
             _album.value = result
         }
     }
 
+    fun deleteSong(musicEntity: MusicEntity) {
+        val gson = Gson()
+        val musicEntityJson = gson.toJson(musicEntity)
+        viewModelScope.launch {
+            playlistRepository.deleteSongFromPlaylist(playlistId, musicEntityJson)
+        }
+    }
+
     private fun getSong(playlistId: Long) {
         viewModelScope.launch {
-//            try {
-//            val resultFlow = playlistRepository.getSongsOfPlaylist(playlistId).toList()
-//            resultFlow.map {
-//                println("$it")
-//            }
-//                val musicEntitiesFlow: Flow<List<MusicEntity>> = resultFlow.map { listOfJsonStrings ->
-//                    val music = mutableListOf<MusicEntity>()
-//                    listOfJsonStrings.forEach { jsonString ->
-//                        try {
-//                            val musicEntity = gson.fromJson(jsonString, MusicEntity::class.java)
-//                            music.add(musicEntity)
-//                        } catch (e: Exception) {
-//                            if (e is JsonSyntaxException) {
-//                                try {
-//                                    val jsonArray = JsonParser().parse(jsonString).asJsonArray
-//                                    for (element in jsonArray) {
-//                                        val musicEntity = gson.fromJson(element, MusicEntity::class.java)
-//                                        println("$musicEntity")
-//                                        music.add(musicEntity)
-//                                    }
-//                                } catch (ex: JsonSyntaxException) {
-//                                    println("Lỗi")
-//                                }
-//                            } else {
-//                            }
-//                        }
-//                    }
-//                    music.toList()
-//                }
-//
-//                musicEntitiesFlow.collect { musicEntities ->
-//                    _song.value = musicEntities
-//                }
-//
-//                listSongUiState.copy(
-//                    loading = false
-//                )
-//            } catch (e: Exception) {
-//                listSongUiState.copy(
-//                    loading = true
-//                )
-//            }
             val musicEntities: List<MusicEntity>? = album.value?.songs?.let { songs ->
                 songs.map {
                     toFormattedMusicEntity(it)
@@ -117,7 +80,6 @@ class ListSongViewModel @Inject constructor(
             musicListToShow.let {song ->
                 _song.value = song
             }
-
             listSongUiState.copy(
                 loading = false
             )

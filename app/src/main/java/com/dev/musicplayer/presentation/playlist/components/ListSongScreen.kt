@@ -91,7 +91,6 @@ data class MusicItem(
     var isClicked: Boolean = false
 )
 
-
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun ListSongScreen(
@@ -179,8 +178,9 @@ fun ListSongScreen(
 
                                 items(song) { music ->
                                     val isSelected = selectedMusicIndex == musics.indexOf(music)
-                                    SongItem(
+                                    ListSongItemView(
                                         item = music,
+                                        listSongViewModel = viewModel,
                                         musicPlaybackUiState = musicPlaybackUiState,
                                         onItemClicked = {
                                             if (!isSelected) {
@@ -192,6 +192,19 @@ fun ListSongScreen(
                                         isInPlaylist = true,
                                         isSelected = isSelected,
                                     )
+//                                    SongItem(
+//                                        item = music,
+//                                        musicPlaybackUiState = musicPlaybackUiState,
+//                                        onItemClicked = {
+//                                            if (!isSelected) {
+//                                                selectedMusicIndex = musics.indexOf(music)
+//                                            }
+//                                            onEvent(MusicEvent.OnMusicSelected(music))
+//                                            onEvent(MusicEvent.PlayMusic)
+//                                        },
+//                                        isInPlaylist = true,
+//                                        isSelected = isSelected,
+//                                    )
                                 }
 
                             }

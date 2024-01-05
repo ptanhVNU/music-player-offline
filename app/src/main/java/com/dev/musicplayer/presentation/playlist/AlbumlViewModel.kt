@@ -80,13 +80,16 @@ class AlbumViewModel @Inject constructor(
         viewModelScope.launch {
             getPlaylistUseCase().catch {
                 playlistUiState = playlistUiState.copy(
-                    loading = true
+                    loading = true,
+                    sort = true
                 )
             }.collect {
                 _playlist.value  = it
                 playlistUiState = playlistUiState.copy(
                     loading = false,
-                    playlists = _playlist.value
+                    sort = true,
+                    playlists = _playlist.value,
+
                 )
             }
         }
@@ -156,6 +159,10 @@ class AlbumViewModel @Inject constructor(
                 playlistRepository.getPlaylistsOrderedByName().collect { playlists ->
                     _playlistsOrderedByName.postValue(playlists)
                 }
+                playlistUiState = playlistUiState.copy(
+                    sort = true,
+                    playlists = _playlistsOrderedByName.value,
+                )
             } catch (e: Exception) {
                 Log.d("Sort", "Lỗi hàm sort")
             }

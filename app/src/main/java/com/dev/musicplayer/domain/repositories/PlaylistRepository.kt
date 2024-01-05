@@ -29,4 +29,5 @@ interface PlaylistRepository {
 
     suspend fun getPlaylistByName(title : String): Playlist
 
+    suspend fun deleteSongFromPlaylist(playlistId: Long, musicEntityJson: String)
 }

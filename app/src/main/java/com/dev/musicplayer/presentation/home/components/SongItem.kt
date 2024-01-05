@@ -59,7 +59,7 @@ fun SongItem(
     item: MusicEntity,
     musicPlaybackUiState: MusicPlaybackUiState,
     onItemClicked: () -> Unit,
-    onAddToPlaylist: (() -> Unit)? = null,
+    onAddToPlaylist: (() -> Unit)? = null
 ) {
     Row(
         modifier = modifier
