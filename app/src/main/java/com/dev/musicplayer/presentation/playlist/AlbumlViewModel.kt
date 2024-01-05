@@ -44,8 +44,8 @@ class AlbumViewModel @Inject constructor(
     private var _playlist: MutableStateFlow<List<Playlist>> = MutableStateFlow(arrayListOf())
     val playlist: StateFlow<List<Playlist>> = _playlist.asStateFlow()
 
-    private val _playlistsOrderedByName = MutableLiveData<List<Playlist>>()
-    val playlistsOrderedByName: LiveData<List<Playlist>> = _playlistsOrderedByName
+//    private val _playlistsOrderedByName = MutableLiveData<List<Playlist>>()
+//    val playlistsOrderedByName: LiveData<List<Playlist>> = _playlistsOrderedByName
 
     fun createPlaylist(title : String) {
         viewModelScope.launch {
@@ -157,7 +157,7 @@ class AlbumViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 playlistRepository.getPlaylistsOrderedByName().collect { playlists ->
-                    _playlistsOrderedByName.postValue(playlists)
+                    _playlist.value = playlists
                 }
                 playlistUiState = playlistUiState.copy(
                     sort = true,
